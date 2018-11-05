@@ -1,6 +1,7 @@
 Package: histgadm
 Type: Package
-Title: Creates historical administrative boundaries maps from a time range 
+Title: Makes package containing historical administrative boundaries maps from
+  GADM and from a time range 
 Version: 0.1.0
 Version: 0.1.0
 Authors@R: person("Lucie", "Contamin", 
@@ -8,7 +9,9 @@ Authors@R: person("Lucie", "Contamin",
                     role = c("aut", "cre", "cph"),
                     comment = c(ORCID = "https://orcid.org/0000-0001-5797-1279"))
 Description: From current map from GADM (https://gadm.org/) recreates historical
-  administrative boundaries map. 
+  administrative boundaries map and creates a package containing the raw-data, 
+  a function to call the maps (current and historical) for one or multiple 
+  package.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
