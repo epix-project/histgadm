@@ -39,9 +39,10 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 #' Create a list of historical map
 #'
 #' From a time range (by default: 1960-01-01 / 2020-12-31), recreates old map
-#' by merging back together or spliting admin1 polygons. Two maps will be create
-#' for each year of event (split, merge or rename of admin1), one in high
-#' resolution and one in low resolution.
+#' by merging back together or spliting admin1 polygons from the current admin1
+#' administrative boundaries downloaded from GADM \url{https://gadm.org}. Two
+#' maps will be create for each year of event (split, merge or rename of
+#' admin1), one in high resolution and one in low resolution.
 #'
 #' @details The functions requires a named vector, `hash` and `d.hash` arguments,
 #' to translate the `NAME_1` column (and `NAME_2` if necessary) from GADM
@@ -107,7 +108,7 @@ hist_gadm <- function(country, hash, lst_history, from = "1960",
   # ACTUAL MAP
   # exception for Vietnam
   if (country == "Vietnam" & from <= 2007 ) {
-    df_sf <- readRDS("data-raw/gadm_vn_0407.rds")  %>%
+    df_sf <- get("vn_a1_0407")  %>%
       mutate(province = stringi::stri_escape_unicode(NAME_2) %>%
                hash[.]) %>%
       select(province, geometry)
@@ -149,7 +150,7 @@ hist_gadm <- function(country, hash, lst_history, from = "1960",
   # MAKE THE LIST OF OLD MAP
   total_lst <- lapply(seq_along(sel_year), function (x) {
     if (country == "Vietnam" & sel_year[x] >= "2008") {
-      old_mapr <- current_map %>% define_bbox_proj(boundbox, crs)
+      old_mapr <- df_sf %>% define_bbox_proj(boundbox, crs)
     } else {
       old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x]) %>%
         define_bbox_proj(boundbox, crs)

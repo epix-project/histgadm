@@ -40,9 +40,10 @@ and one in low resolution).
 }
 \description{
 From a time range (by default: 1960-01-01 / 2020-12-31), recreates old map
-by merging back together or spliting admin1 polygons. Two maps will be create
-for each year of event (split, merge or rename of admin1), one in high
-resolution and one in low resolution.
+by merging back together or spliting admin1 polygons from the current admin1
+administrative boundaries downloaded from GADM \url{https://gadm.org}. Two
+maps will be create for each year of event (split, merge or rename of
+admin1), one in high resolution and one in low resolution.
 }
 \details{
 The functions requires a named vector, `hash` and `d.hash` arguments,
