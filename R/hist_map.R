@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
 #' Thinning (simplification)
 #'
-#'  The function performs \code{\link[maptools]{thinnedSpatialPoly}} on a `sf`
-#'  object.
+#' The function performs \code{\link[maptools]{thinnedSpatialPoly}} on a `sf`
+#' object.
 #'
 #' @param sf_obj an objet of class "sf"
 #' @param tolerance the tolerance value in the metric of the input object (cf.
@@ -44,10 +44,10 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 #' maps will be create for each year of event (split, merge or rename of
 #' admin1), one in high resolution and one in low resolution.
 #'
-#' @details The functions requires a named vector, `hash` and `d.hash` arguments,
-#' to translate the `NAME_1` column (and `NAME_2` if necessary) from GADM
-#' \url{https://gadm.org} in a standardized English version. We advice to use
-#' the named vector `xx_province` for admin1 or `xx_district` for admin2
+#' @details The functions requires a named vector, `hash` and `d.hash`
+#' arguments, to translate the `NAME_1` column (and `NAME_2` if necessary) from
+#' GADM \url{https://gadm.org} in a standardized English version. We advice to
+#' use the named vector `xx_province` for admin1 or `xx_district` for admin2
 #' contained in the `dictionary` package, for example:
 #' \code{\link[dictionary]{kh_province}}.
 #' \cr\cr
@@ -83,6 +83,9 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 #' @param tolerance numeric for thinning (simplification). the tolerance value
 #'  should be in the metric of the input object (cf. from function
 #'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.
+#' @param path character string, name where the dowloaded file is saved.
+#' @param file_rm boolean, if TRUE, remove the dowmloaded file.
+#'   By default, TRUE.
 #'
 #' @return list of `sf` object containing the maps of admin1 administrative
 #' boundaries and two maps of the country boundaries (one in high resolution
@@ -92,7 +95,7 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 #'
 #' library(dictionary)
 #'
-#' kh_map <- hist_gadm("Cambodia", kh_province, kh_history)
+#' kh_map <- hist_map("Cambodia", kh_province, kh_history)
 #'
 #' @importFrom dplyr mutate select rename
 #' @importFrom stringi stri_escape_unicode
@@ -103,8 +106,9 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 #' @importFrom stats setNames
 #'
 #' @export
-hist_gadm <- function(country, hash, lst_history, from = "1960",
-                           to = "2020", d.hash = NULL, tolerance = 0.01) {
+hist_map <- function(country, hash, lst_history, from = "1960",
+                      to = "2020", d.hash = NULL, tolerance = 0.01,
+                      path = NULL, file_rm = FALSE) {
   # ACTUAL MAP
   # exception for Vietnam
   if (country == "Vietnam" & from <= 2007 ) {
@@ -112,19 +116,19 @@ hist_gadm <- function(country, hash, lst_history, from = "1960",
       mutate(province = stringi::stri_escape_unicode(NAME_2) %>%
                hash[.]) %>%
       select(province, geometry)
-    current_map <- gadm(country, "sf", 1) %>%
+    current_map <- gadm(country, "sf", 1, path = path, file_rm = file_rm) %>%
       mutate(province = stringi::stri_escape_unicode(NAME_1) %>%
                hash[.]) %>%
       select(province, geometry)
   } else if (lst_history %>% map("event") %>% grepl("complexe", .) %>% any){
-    df_sf <- gadm(country, "sf", 2) %>%
+    df_sf <- gadm(country, "sf", 2, path = path, file_rm = file_rm) %>%
       mutate(province = stringi::stri_escape_unicode(NAME_1) %>%
                hash[.],
              district = stringi::stri_escape_unicode(NAME_2) %>%
                d.hash[.]) %>%
       select(province, district, geometry)
   } else {
-    df_sf <- gadm(country, "sf", 1) %>%
+    df_sf <- gadm(country, "sf", 1, path = path, file_rm = file_rm) %>%
       mutate(province = stringi::stri_escape_unicode(NAME_1) %>%
                hash[.]) %>%
       select(province, geometry)
@@ -133,7 +137,8 @@ hist_gadm <- function(country, hash, lst_history, from = "1960",
   crs <- st_crs(df_sf)
 
   # COUNTRY
-  gadm0r <- gadm(country, "sf", 0) %>% select(-GID_0) %>%
+  gadm0r <- gadm(country, "sf", 0, path = path, file_rm = file_rm) %>%
+    select(-GID_0) %>%
     rename(country = NAME_0) %>%
     define_bbox_proj(boundbox, crs)
   gadm0 <- thin_polygons(gadm0r, tolerance = tolerance) %>%
@@ -178,4 +183,3 @@ if (getRversion() >= "2.15.1") utils::globalVariables(c(".", "GID_0", "NAME_0",
                                                         "NAME_1", "NAME_2",
                                                         "district", "geometry",
                                                         "province"))
-

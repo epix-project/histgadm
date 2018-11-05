@@ -7,13 +7,13 @@ context("`hist_gadm`")
 
 test_that("`hist_gadm` returns the correct output", {
 
-  test1 <- hist_gadm("Cambodia", kh_province, kh_history)
+  test1 <- hist_map("Cambodia", kh_province, kh_history)
   testthat::expect_equal(length(test1), 8)
 
-  test2 <- hist_gadm("Laos", la_province, la_history, d.hash = la_district)
+  test2 <- hist_map("Laos", la_province, la_history, d.hash = la_district)
   testthat::expect_equal(length(test2), 8)
 
-  vn_08 <- hist_gadm("Vietnam", vn_province, vn_history,
+  vn_08 <- hist_map("Vietnam", vn_province, vn_history,
                      from = 2008, to = 2008)
   test3 <- vn_08 %>% purrr::map("province") %>% purrr::discard(is.null) %>%
     purrr::map(data.frame) %>%
@@ -21,7 +21,7 @@ test_that("`hist_gadm` returns the correct output", {
     unlist %>% unique
   testthat::expect_equal(test3, "2008-2020")
 
-  vn_8082 <- hist_gadm("Vietnam", vn_province, vn_history,
+  vn_8082 <- hist_map("Vietnam", vn_province, vn_history,
                        from = 1980, to = 1982)
   test4 <- vn_8082 %>%
     purrr::map("province") %>%
