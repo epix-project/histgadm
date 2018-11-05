@@ -19,7 +19,10 @@ Depends:
 Suggests:
     dictionary,
     testthat
-Imports: 
+Imports:
+    devtools,
+    eply,
+    usethis,
     maptools,
     sp, 
     magrittr, 
