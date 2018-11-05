@@ -3,7 +3,6 @@ Type: Package
 Title: Makes package containing historical administrative boundaries maps from
   GADM and from a time range 
 Version: 0.1.0
-Version: 0.1.0
 Authors@R: person("Lucie", "Contamin", 
                     email = "contamin.lucie@gmail.com", 
                     role = c("aut", "cre", "cph"),
@@ -15,3 +14,19 @@ Description: From current map from GADM (https://gadm.org/) recreates historical
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Depends:
+    R (>= 2.10)
+Suggests:
+    dictionary
+Imports: 
+    maptools,
+    sp, 
+    magrittr, 
+    sf,
+    dplyr,
+    purrr,
+    stringi,
+    sptools,
+    lubridate
+Remotes: choisy/sptools
+RoxygenNote: 6.1.0
