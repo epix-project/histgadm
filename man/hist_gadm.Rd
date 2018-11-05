@@ -5,7 +5,7 @@
 \title{Create a list of historical map}
 \usage{
 hist_gadm(country, hash, lst_history, from = "1960", to = "2020",
-  d.hash = NULL)
+  d.hash = NULL, tolerance = 0.01)
 }
 \arguments{
 \item{country}{character string, name of the country to download}
@@ -28,17 +28,48 @@ or numeric, by default "2020"}
 `lst_history` object.  named character vector containing the translation in
 English (standardized version) of the admin2 names. See `Details` for more
 information.}
+
+\item{tolerance}{numeric for thinning (simplification). the tolerance value
+should be in the metric of the input object (cf. from function
+\code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.}
 }
 \value{
-list of `sf` object
+list of `sf` object containing the maps of admin1 administrative
+boundaries and two maps of the country boundaries (one in high resolution
+and one in low resolution).
 }
 \description{
-Create a list of historical map
+From a time range (by default: 1960-01-01 / 2020-12-31), recreates old map
+by merging back together or spliting admin1 polygons. Two maps will be create
+for each year of event (split, merge or rename of admin1), one in high
+resolution and one in low resolution.
+}
+\details{
+The functions requires a named vector, `hash` and `d.hash` arguments,
+to translate the `NAME_1` column (and `NAME_2` if necessary) from GADM
+\url{https://gadm.org} in a standardized English version. We advice to use
+the named vector `xx_province` for admin1 or `xx_district` for admin2
+contained in the `dictionary` package, for example:
+\code{\link[dictionary]{kh_province}}.
+\cr\cr
+The function requires also a list of event (split/merge/rename/
+complexe merge/complexe split) in a standardized format to recreate
+historical map. We advice to use or the copy the format of the list
+`xx_history` contained in the package `dictionary`.
+For example: \code{\link[dictionary]{kh_history}}.
+\cr\cr
+The package `dictionary` is available on GitHub, to install it, it necessary
+to have the `devtools` package:
+`devtools::install_github("choisy/dictionary")`
+\cr\cr
+The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
+each map object with the tolerance (argument `tolerance`) value in the metric
+of the input object.
 }
 \examples{
 
 library(dictionary)
 
-th_map <- hist_gadm("Thailand", th_province, th_history)
+kh_map <- hist_gadm("Cambodia", kh_province, kh_history)
 
 }
