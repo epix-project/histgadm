@@ -120,8 +120,8 @@ make_format <- function(df){
 # ------------------------------------------------------------------------------
 #' Makes documentation for sf map in a package
 #'
-#' Create a Rd file for the data, containing the documentation for each data
-#  frame.
+#' Create a Rd file for the data, containing the documentation for each sf
+#' object in the package.
 #'
 #' @param path character string path of the package.
 #'
@@ -141,6 +141,11 @@ map_documentation <- function(path) {
     quality <- list_tab[x] %>% stringr::str_extract("high|low")
     country <- list_tab[x] %>% substr(1, 2) %>%
       countrycode::countrycode("iso2c", "country.name")
+    source <- paste0("GADM (version ",
+                     dir(paste0(path, "/data-raw/")) %>% substr(5,6) %>%
+                       unique %>% strsplit("") %>% unlist %>%
+                       paste(collapse = "."),
+                     ") data base from \\url{www.gadm.org}")
 
     if (grep("[[:digit:]]", list_tab[x]) %>% length > 0) {
 
@@ -151,7 +156,7 @@ map_documentation <- function(path) {
         desc = paste0(
           "Maps of the admin1 administrative boundaries of ", country,
           " expressed from: ", from, " to ", to, " in ", quality, " quality."),
-        source = "GADM data base from \url{www.gadm.org}")
+        source = source)
 
     } else {
 
@@ -161,7 +166,7 @@ map_documentation <- function(path) {
         desc = paste0(
           "Maps of the country administrative boundaries of ", country,
           " expressed in ", quality, "quality."),
-        source = "GADM data base from \url{www.gadm.org}")
+        source = source)
     }
     doc <- capture.output(cat(Rd2roxygen::create_roxygen(doc), sep = "\n"))
     doc <- c(doc,
