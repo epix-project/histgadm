@@ -172,7 +172,9 @@ hist_map <- function(country, hash, lst_history, from = "1960",
 
   name <- lapply(seq_along(total_lst), function(x) {
     total_lst[[names(total_lst)[x]]] %>% names %>%
-      paste(names(total_lst)[x], ., sep = "_")
+      paste0(
+        countrycode::countrycode(country, "country.name", "iso2c") %>% tolower,
+        "_", names(total_lst)[x], "_", .)
   }) %>%
     unlist
   total_lst %<>% flatten(.) %>% setNames(name)
