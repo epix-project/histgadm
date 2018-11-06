@@ -1,3 +1,42 @@
+#' Configures the intial files of the package
+#'
+#' Creates a package for the gadm data, allow you to download (if wanted) data
+#' from gadm and recreates historical map from a time range (interactive input)
+#'
+#' @param path character string, path of the package.
+#' @param name_pkg character string, name of the package
+#'
+#' @importFrom usethis create_package use_package
+#' @importFrom countrycode countrycode
+#' @importFrom utils getAnywhere
+#' @import dictionary
+#'
+#' @export
+initial_pkg <-  function(path, name_pkg) {
+
+  pkg_path <-  paste0(path, "/", name_pkg)
+  usethis::create_package(pkg_path, open = FALSE)
+  #usethis::use_dev_package("R (>= 2.10)")
+  usethis::use_package("sf")
+
+  message("Do you want to download GADM file from the internet? y / n (default)"
+          )
+  ans <- readline()
+  if (ans %in% c("y", "")) {
+    message("For which country do you want to download file? /cr
+            The country name should be input in full name and in English")
+    ans <- readline()
+    ccode <- countrycode::countrycode(ans, "country.name", "iso2c") %>%
+      tolower()
+    prov <- eply::evals(paste0("dictionary::", ccode, "_province"))
+    province <- as.vector(prov) %>% setNames(attr(prov, "dimnames")[[1]])
+    hist <- eply::evals(paste0("dictionary::", ccode, "_history"))
+    map_data(path = pkg_path, country = ans, hash = province,
+             lst_history = hist)
+  }
+}
+
+
 # ------------------------------------------------------------------------------
 #' Creates a list of historical map in a package
 #'
@@ -6,7 +45,7 @@
 #' (\url{https://gadm.org}) files in a folder data_raw and the output maps in
 #' the folder data of a package.
 #'
-#' @param path character stringof the package.
+#' @param path character string path of the package.
 #' @param country character string, name of the country to download
 #' @param hash named character vector containing the translation in English
 #'  (standardized version) of the admin1 names. See `Details` for more
