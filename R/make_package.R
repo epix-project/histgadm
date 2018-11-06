@@ -141,11 +141,6 @@ map_documentation <- function(path) {
     quality <- list_tab[x] %>% stringr::str_extract("high|low")
     country <- list_tab[x] %>% substr(1, 2) %>%
       countrycode::countrycode("iso2c", "country.name")
-    source <- paste0("GADM (version ",
-                     dir(paste0(path, "/data-raw/")) %>% substr(5,6) %>%
-                       unique %>% strsplit("") %>% unlist %>%
-                       paste(collapse = "."),
-                     ") data base from \\url{www.gadm.org}")
 
     if (grep("[[:digit:]]", list_tab[x]) %>% length > 0) {
 
@@ -156,7 +151,7 @@ map_documentation <- function(path) {
         desc = paste0(
           "Maps of the admin1 administrative boundaries of ", country,
           " expressed from: ", from, " to ", to, " in ", quality, " quality."),
-        source = source)
+        source = "GADM data base from \url{www.gadm.org}")
 
     } else {
 
@@ -166,7 +161,7 @@ map_documentation <- function(path) {
         desc = paste0(
           "Maps of the country administrative boundaries of ", country,
           " expressed in ", quality, "quality."),
-        source = source)
+        source = "GADM data base from \url{www.gadm.org}")
     }
     doc <- capture.output(cat(Rd2roxygen::create_roxygen(doc), sep = "\n"))
     doc <- c(doc,
