@@ -3,9 +3,9 @@ library(purrr) # for "map", "discard"
 library(dictionary) # for "match_pattern", "XX_history", "XX_province",
 # "XX_district"
 
-context("`hist_gadm`")
+context("`hist_map`")
 
-test_that("`hist_gadm` returns the correct output", {
+test_that("`hist_map` returns the correct output", {
 
   test1 <- hist_map("Cambodia", kh_province, kh_history)
   testthat::expect_equal(length(test1), 8)
