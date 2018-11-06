@@ -2,7 +2,7 @@
 % Please edit documentation in R/make_package.R
 \name{map_documentation}
 \alias{map_documentation}
-\title{Makes documentation for historical map in a package}
+\title{Makes documentation for sf map in a package}
 \usage{
 map_documentation(path)
 }

@@ -109,11 +109,11 @@ map_data <- function(path, country, hash, lst_history, from = "1960",
 #' @keywords internal
 #' @noRd
 make_format <- function(df){
-  paste(roxygen2::object_format(df), "\n \\itemize{",
+  paste0(roxygen2::object_format(df), "\n \\itemize{",
         lapply(seq_len(dim(df)[2]), function(x) {
-          paste("\\item \\code{",names(df)[x], "} ",
+          paste0("\\item \\code{", names(df)[x], "} ",
                 paste0("A column of class : ",
-                       class(df[, x]), "."))
+                       class(df[[x]]) %>% paste(collapse = ", "), "."))
         }) %>% paste0(collapse = "\n"), "}")
 }
 
@@ -150,7 +150,7 @@ map_documentation <- function(path) {
         format = make_format(df),
         desc = paste0(
           "Maps of the admin1 administrative boundaries of ", country,
-          " expressed from: ", from, ", to ", to, " in", quality, " quality."))
+          " expressed from: ", from, " to ", to, " in ", quality, " quality."))
 
     } else {
 
@@ -159,7 +159,7 @@ map_documentation <- function(path) {
         format = make_format(df),
         desc = paste0(
           "Maps of the country administrative boundaries of ", country,
-          " expressed in", quality, "quality."))
+          " expressed in ", quality, "quality."))
     }
     doc <- capture.output(cat(Rd2roxygen::create_roxygen(doc), sep = "\n"))
     doc <- c(doc,
