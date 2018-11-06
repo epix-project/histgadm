@@ -8,7 +8,7 @@ map_data(path, country, hash, lst_history, from = "1960", to = "2020",
   d.hash = NULL, tolerance = 0.01)
 }
 \arguments{
-\item{path}{character stringof the package.}
+\item{path}{character string path of the package.}
 
 \item{country}{character string, name of the country to download}
 
