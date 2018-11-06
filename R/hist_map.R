@@ -109,6 +109,7 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 hist_map <- function(country, hash, lst_history, from = "1960",
                       to = "2020", d.hash = NULL, tolerance = 0.01,
                       path = NULL, file_rm = FALSE) {
+
   # ACTUAL MAP
   # exception for Vietnam
   if (country == "Vietnam" & from <= 2007 ) {
@@ -150,7 +151,6 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   sel_year <- lst_history %>% purrr::map("year") %>% purrr::map(as.Date) %>%
     c(from, .) %>% unlist %>% unique %>% .[which(. < to & . >= from)] %>%
     lubridate::year(.)
-  print(sel_year)
 
   # MAKE THE LIST OF OLD MAP
   total_lst <- lapply(seq_along(sel_year), function (x) {
