@@ -6,7 +6,7 @@
 #' @param path character string, path of the package.
 #' @param name_pkg character string, name of the package
 #'
-#' @importFrom usethis create_package use_package
+#' @importFrom usethis create_package use_package use_description
 #' @importFrom countrycode countrycode
 #' @importFrom utils getAnywhere
 #' @import dictionary
@@ -16,7 +16,7 @@ initial_pkg <-  function(path, name_pkg) {
 
   pkg_path <-  paste0(path, "/", name_pkg)
   usethis::create_package(pkg_path, open = FALSE)
-  #usethis::use_dev_package("R (>= 2.10)")
+  usethis::use_description(fields = list(Depends = "R (>= 2.10)"))
   usethis::use_package("sf")
 
   message("Do you want to download GADM file from the internet? y / n (default)"
@@ -36,7 +36,6 @@ initial_pkg <-  function(path, name_pkg) {
     map_documentation(pkg_path)
   }
 }
-
 
 # ------------------------------------------------------------------------------
 #' Creates a list of historical map in a package
@@ -81,10 +80,8 @@ initial_pkg <-  function(path, name_pkg) {
 map_data <- function(path, country, hash, lst_history, from = "1960",
                      to = "2020", d.hash = NULL, tolerance = 0.01) {
   setwd(path)
-  # data-raw
   datarawdir <- paste0(path, "/data-raw")
   if (!dir.exists(datarawdir)) usethis::use_data_raw()
-  # data
   datadir <- paste0(path, "/data")
   if (!dir.exists(datadir)) dir.create(datadir)
   data <- hist_map(country = country, hash = hash, lst_history = lst_history,
@@ -114,7 +111,8 @@ make_format <- function(df){
           paste0("\\item \\code{", names(df)[x], "} ",
                 paste0("A column of class : ",
                        class(df[[x]]) %>% paste(collapse = ", "), "."))
-        }) %>% paste0(collapse = "\n"), "}")
+        }) %>%
+          paste0(collapse = "\n"), "}")
 }
 
 # ------------------------------------------------------------------------------
@@ -142,7 +140,7 @@ map_documentation <- function(path) {
     country <- list_tab[x] %>% substr(1, 2) %>%
       countrycode::countrycode("iso2c", "country.name")
     source <- paste0("GADM (version ",
-                     dir(paste0(path, "/data-raw/")) %>% substr(5,6) %>%
+                     dir(paste0(path, "/data-raw/")) %>% substr(5, 6) %>%
                        unique %>% strsplit("") %>% unlist %>%
                        paste(collapse = "."),
                      ") data base from \\url{www.gadm.org}")
@@ -155,13 +153,13 @@ map_documentation <- function(path) {
         format = make_format(df),
         desc = paste0(
           "Maps of the admin1 administrative boundaries of ", country,
-          " expressed from: ", from, " to ", to, " in ", quality, " quality."),
+          " expressed from ", from, " to ", to, " in ", quality, " quality."),
         source = source)
 
     } else {
 
       doc <- list(
-        title = paste0(country,"Country boundaries"),
+        title = paste0(country, "Country boundaries"),
         format = make_format(df),
         desc = paste0(
           "Maps of the country administrative boundaries of ", country,
