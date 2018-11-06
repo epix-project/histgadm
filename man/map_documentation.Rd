@@ -10,5 +10,6 @@ map_documentation(path)
 \item{path}{character string path of the package.}
 }
 \description{
-Create a Rd file for the data, containing the documentation for each data
+Create a Rd file for the data, containing the documentation for each sf
+object in the package.
 }
