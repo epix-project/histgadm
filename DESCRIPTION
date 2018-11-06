@@ -31,7 +31,10 @@ Imports:
     dplyr,
     purrr,
     stringi,
+    stringr,
+    Rd2roxygen,
     sptools,
-    lubridate
+    lubridate,
+    roxygen2
 Remotes: choisy/sptools
 RoxygenNote: 6.1.0
