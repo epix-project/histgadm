@@ -59,12 +59,13 @@ initial_pkg <-  function(path, name_pkg) {
 
     message(cat(
       paste0("\n", "For which country do you want to download file? \n",
+             "(Currently, the function is working only for: ",
+             "Cambodia, Laos, Thailand and Vietnam. For other country, use ",
+             "the functions `map_data`, `map_documentation`). \n",
              "The country name should be input in full name and in English, \n",
              "For example: Cambodia \n",
              "Multiple country name is also accepted, separated by a ','. \n",
-             "For example: Vietnam, Cambodia \n",
-             "Currently, the function is working only for: ",
-             "Cambodia, Laos, Thailand and Vietnam")))
+             "For example: Vietnam, Cambodia \n")))
     ans <- readline("Selection: ")
     if (grepl(",", ans)) ans %<>% strsplit(",") %>% map(trimws) %>% unlist
 
