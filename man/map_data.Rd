@@ -10,7 +10,7 @@ map_data(path, country, hash, lst_history, from = "1960", to = "2020",
 \arguments{
 \item{path}{character string path of the package.}
 
-\item{country}{character string, name of the country to download}
+\item{country}{character string, name of the country to download.}
 
 \item{hash}{named character vector containing the translation in English
 (standardized version) of the admin1 names. See `Details` for more
@@ -24,7 +24,7 @@ complexe split) and a slot year. See `Details` for more information.}
 character or numeric. By default "1960".}
 
 \item{to}{Final date of the time range selected, of the class Date, character
-or numeric, by default "2020"}
+or numeric, by default "2020".}
 
 \item{d.hash}{used in case of `complexe split` or `complexe merge` in the
 `lst_history` object.  named character vector containing the translation in

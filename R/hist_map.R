@@ -4,9 +4,9 @@
 #' The function performs \code{\link[maptools]{thinnedSpatialPoly}} on a `sf`
 #' object.
 #'
-#' @param sf_obj an objet of class "sf"
+#' @param sf_obj an objet of class "sf".
 #' @param tolerance the tolerance value in the metric of the input object (cf.
-#'  function `thinnedSpatialPoly`)
+#'  function `thinnedSpatialPoly`).
 #'
 #' @importFrom sf as_Spatial st_as_sf
 #' @importFrom magrittr %>% %<>%
@@ -24,9 +24,9 @@ thin_polygons <- function(sf_obj, tolerance) {
 #'
 #' The function defines the attributes `bbox` and `crs` of a sf object.
 #'
-#' @param sf_obj an objet of class "sf"
-#' @param boundbox character, bounding box
-#' @param crs character, coordinate reference system
+#' @param sf_obj an objet of class "sf".
+#' @param boundbox character, bounding box.
+#' @param crs character, coordinate reference system.
 #' @keywords internal
 #' @noRd
 define_bbox_proj <- function(sf_obj, boundbox, crs) {
@@ -65,7 +65,7 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 #' each map object with the tolerance (argument `tolerance`) value in the metric
 #' of the input object.
 #'
-#' @param country character string, name of the country to download
+#' @param country character string, name of the country to download.
 #' @param hash named character vector containing the translation in English
 #'  (standardized version) of the admin1 names. See `Details` for more
 #'  information.
@@ -75,7 +75,7 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 #' @param from Initial date of the time range selected, of the class Date,
 #'   character or numeric. By default "1960".
 #' @param to Final date of the time range selected, of the class Date, character
-#'  or numeric, by default "2020"
+#'  or numeric, by default "2020".
 #' @param d.hash used in case of `complexe split` or `complexe merge` in the
 #'  `lst_history` object.  named character vector containing the translation in
 #'  English (standardized version) of the admin2 names. See `Details` for more
