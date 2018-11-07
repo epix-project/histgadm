@@ -1,3 +1,21 @@
+#' Creates data and documentation for one country (internal)
+#'
+#' @param country character string, country name
+#' @param path character string, path of the package.
+#'
+#' @keywords internal
+#' @noRd
+internal_data <- function(country, path) {
+  ccode <- countrycode::countrycode(country, "country.name", "iso2c") %>%
+    tolower()
+  prov <- eply::evals(paste0("dictionary::", ccode, "_province"))
+  province <- as.vector(prov) %>% setNames(attr(prov, "dimnames")[[1]])
+  hist <- eply::evals(paste0("dictionary::", ccode, "_history"))
+  map_data(path = path, country = country, hash = province, lst_history = hist)
+  map_documentation(path)
+}
+
+# ------------------------------------------------------------------------------
 #' Configures the intial files of the package
 #'
 #' Creates a package for the gadm data, allow you to download (if wanted) data
@@ -9,31 +27,33 @@
 #' @importFrom usethis create_package use_package use_description
 #' @importFrom countrycode countrycode
 #' @importFrom utils getAnywhere
+#' @importFrom purrr map
 #' @import dictionary
 #'
 #' @export
 initial_pkg <-  function(path, name_pkg) {
 
   pkg_path <-  paste0(path, "/", name_pkg)
-  usethis::create_package(pkg_path, open = FALSE)
-  usethis::use_description(fields = list(Depends = "R (>= 2.10)"))
+  usethis::create_package(pkg_path, open = FALSE,
+                          fields = list(Depends = "R (>= 2.10)"))
   usethis::use_package("sf")
 
-  message("Do you want to download GADM file from the internet? y / n (default)"
-          )
-  ans <- readline()
-  if (ans %in% c("y", "")) {
-    message("For which country do you want to download file? /cr
-            The country name should be input in full name and in English")
-    ans <- readline()
-    ccode <- countrycode::countrycode(ans, "country.name", "iso2c") %>%
-      tolower()
-    prov <- eply::evals(paste0("dictionary::", ccode, "_province"))
-    province <- as.vector(prov) %>% setNames(attr(prov, "dimnames")[[1]])
-    hist <- eply::evals(paste0("dictionary::", ccode, "_history"))
-    map_data(path = pkg_path, country = ans, hash = province,
-             lst_history = hist)
-    map_documentation(pkg_path)
+  message(cat(paste0("\n",
+                     "Do you want to download GADM file from the internet?",
+                     " y / n (default)")))
+  ans <- readline("Selection: ")
+  if (ans %in% c("y", "yes")) {
+    message(cat(paste0("\n",
+                       "For which country do you want to download file? \n",
+              "The country name should be input in full name and in English,",
+              " accept multiple country name separate by a ','.",
+              "For example: Vietnam, Cambodia")))
+    ans <- readline("Selection: ")
+    if (grepl(",", ans)) ans %<>% strsplit(",") %>% map(trimws) %>% unlist
+    if (length(ans) > 1) {
+      lapply(ans, function(x) {internal_data(x, pkg_path)})
+    } else
+      internal_data(ans, pkg_path)
   }
 }
 

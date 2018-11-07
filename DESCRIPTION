@@ -19,22 +19,22 @@ Depends:
 Suggests:
     testthat
 Imports:
-    dictionary,
     countrycode,
+    dictionary,
     devtools,
-    eply,
-    usethis,
-    maptools,
-    sp, 
-    magrittr, 
-    sf,
     dplyr,
+    eply, 
+    lubridate,
+    magrittr,
+    maptools,
     purrr,
+    sf,
+    sp,
+    sptools,
     stringi,
     stringr,
     Rd2roxygen,
-    sptools,
-    lubridate,
-    roxygen2
+    roxygen2,
+    usethis
 Remotes: choisy/sptools
 RoxygenNote: 6.1.0
