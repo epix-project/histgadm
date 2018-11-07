@@ -10,13 +10,21 @@
 #' @keywords internal
 #' @noRd
 internal_data <- function(country, path, from = "1960", to = "2020") {
+
   ccode <- countrycode::countrycode(country, "country.name", "iso2c") %>%
     tolower()
   prov <- eply::evals(paste0("dictionary::", ccode, "_province"))
   province <- as.vector(prov) %>% setNames(attr(prov, "dimnames")[[1]])
   hist <- eply::evals(paste0("dictionary::", ccode, "_history"))
+  if (hist %>% map("event") %>% grepl("complexe", .) %>% any) {
+    distr <- eply::evals(paste0("dictionary::", ccode, "_district"))
+    district <- as.vector(distr) %>% setNames(attr(distr, "dimnames")[[1]])
+  } else {
+    district <- NULL
+  }
+
   map_data(path = path, country = country, hash = province, lst_history = hist,
-           from = from, to = to)
+           from = from, to = to, d.hash = district)
   map_documentation(path)
 }
 
