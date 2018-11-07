@@ -1,17 +1,22 @@
 #' Creates data and documentation for one country (internal)
 #'
-#' @param country character string, country name
+#' @param country character string, country name.
 #' @param path character string, path of the package.
+#' @param from Initial date of the time range selected, of the class Date,
+#'   character or numeric. By default "1960".
+#' @param to Final date of the time range selected, of the class Date, character
+#'  or numeric, by default "2020".
 #'
 #' @keywords internal
 #' @noRd
-internal_data <- function(country, path) {
+internal_data <- function(country, path, from = "1960", to = "2020") {
   ccode <- countrycode::countrycode(country, "country.name", "iso2c") %>%
     tolower()
   prov <- eply::evals(paste0("dictionary::", ccode, "_province"))
   province <- as.vector(prov) %>% setNames(attr(prov, "dimnames")[[1]])
   hist <- eply::evals(paste0("dictionary::", ccode, "_history"))
-  map_data(path = path, country = country, hash = province, lst_history = hist)
+  map_data(path = path, country = country, hash = province, lst_history = hist,
+           from = from, to = to)
   map_documentation(path)
 }
 
@@ -22,7 +27,7 @@ internal_data <- function(country, path) {
 #' from gadm and recreates historical map from a time range (interactive input)
 #'
 #' @param path character string, path of the package.
-#' @param name_pkg character string, name of the package
+#' @param name_pkg character string, name of the package.
 #'
 #' @importFrom usethis create_package use_package use_description
 #' @importFrom countrycode countrycode
@@ -43,17 +48,34 @@ initial_pkg <-  function(path, name_pkg) {
                      " y / n (default)")))
   ans <- readline("Selection: ")
   if (ans %in% c("y", "yes")) {
-    message(cat(paste0("\n",
-                       "For which country do you want to download file? \n",
-              "The country name should be input in full name and in English,",
-              " accept multiple country name separate by a ','.",
-              "For example: Vietnam, Cambodia")))
+
+    message(cat(
+      paste0("\n", "For which country do you want to download file? \n",
+             "The country name should be input in full name and in English, \n",
+             " for example: Cambodia \n",
+             "Multiple country name is also accepted, separated by a ','. \n",
+             "For example: Vietnam, Cambodia")))
     ans <- readline("Selection: ")
     if (grepl(",", ans)) ans %<>% strsplit(",") %>% map(trimws) %>% unlist
+
+    message(cat(
+      paste0("\n", "For which time range do you want to download file? \n",
+             "The time range should be input in date format separateb by '-',",
+             " by default the time range is '1960-01-01 2020-12-31'. \n",
+             "For example: 1960-01-01 2020-12-31")))
+    ans_date <- readline("Selection: ")
+    if (ans_date == "") {
+      from <- "1960-01-01"; to <- "2020-12-31"
+    } else {
+      from <- ans_date %>% strsplit(" ") %>% purrr::map(1) %>% unlist
+      to <- ans_date %>% strsplit(" ") %>% purrr::map(2) %>% unlist
+    }
+
     if (length(ans) > 1) {
-      lapply(ans, function(x) {internal_data(x, pkg_path)})
+      lapply(ans, function(x) {internal_data(x, pkg_path, from = from,
+                                             to = to)})
     } else
-      internal_data(ans, pkg_path)
+      internal_data(ans, pkg_path, from = from, to = to)
   }
 }
 
@@ -66,7 +88,7 @@ initial_pkg <-  function(path, name_pkg) {
 #' the folder data of a package.
 #'
 #' @param path character string path of the package.
-#' @param country character string, name of the country to download
+#' @param country character string, name of the country to download.
 #' @param hash named character vector containing the translation in English
 #'  (standardized version) of the admin1 names. See `Details` for more
 #'  information.
@@ -76,7 +98,7 @@ initial_pkg <-  function(path, name_pkg) {
 #' @param from Initial date of the time range selected, of the class Date,
 #'   character or numeric. By default "1960".
 #' @param to Final date of the time range selected, of the class Date, character
-#'  or numeric, by default "2020"
+#'  or numeric, by default "2020".
 #' @param d.hash used in case of `complexe split` or `complexe merge` in the
 #'  `lst_history` object.  named character vector containing the translation in
 #'  English (standardized version) of the admin2 names. See `Details` for more
@@ -120,7 +142,7 @@ map_data <- function(path, country, hash, lst_history, from = "1960",
 #' An object of class \code{data.frame, sf} with `THE DIMENSION OF THE DF`.
 #' And a list of the columns name and the class of each column.
 #'
-#' @param df a object of class `data.frame`
+#' @param df a object of class `data.frame`.
 #'
 #' @importFrom roxygen2 object_format
 #' @keywords internal

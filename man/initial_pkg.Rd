@@ -9,7 +9,7 @@ initial_pkg(path, name_pkg)
 \arguments{
 \item{path}{character string, path of the package.}
 
-\item{name_pkg}{character string, name of the package}
+\item{name_pkg}{character string, name of the package.}
 }
 \description{
 Creates a package for the gadm data, allow you to download (if wanted) data
