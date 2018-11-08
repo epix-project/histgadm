@@ -128,12 +128,14 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
 #' maps will be create for each year of event (split, merge or rename of
 #' admin1), one in high resolution and one in low resolution.
 #'
-#' @details The functions requires a named vector, `hash` and `d.hash`
+#' @details The functions  needs a named vector, `hash` and `d.hash`
 #' arguments, to translate the `NAME_1` column (and `NAME_2` if necessary) from
 #' GADM \url{https://gadm.org} in a standardized English version. We advice to
 #' use the named vector `xx_province` for admin1 or `xx_district` for admin2
 #' contained in the `dictionary` package, for example:
-#' \code{\link[dictionary]{kh_province}}.
+#' \code{\link[dictionary]{kh_province}}. If no `hash` and/or `d.hash` arguments
+#' is missing the column(s) `NAME_1` and/or `NAME_2` are encoded in UNICODE and
+#' keep in native language.
 #' \cr\cr
 #' The function requires also a list of event (split/merge/rename/
 #' complexe merge/complexe split) in a standardized format to recreate
@@ -176,7 +178,6 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
 #' and one in low resolution).
 #'
 #' @examples
-#'
 #' library(dictionary)
 #'
 #' kh_map <- hist_map("Cambodia", kh_province, kh_history)
