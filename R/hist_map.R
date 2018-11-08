@@ -36,6 +36,90 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 }
 
 # ------------------------------------------------------------------------------
+#' Translates vector to standardized English
+#'
+#' @param vector vector to translate
+#' @param hash named character vector containing the translation in English
+#'  (standardized version) of the admin1 names. See `Details` for more
+#'  information.
+#'
+#' @importFrom stringi stri_escape_unicode
+#' @keywords internal
+#' @noRd
+translate <- function(vector, hash = NULL) {
+ vector %<>% stringi::stri_escape_unicode(.)
+ if (is.null(hash) == FALSE) vector %<>% hash[.]
+ vector
+}
+
+# ------------------------------------------------------------------------------
+#' Filters list by a time range
+#'
+#' Filters a list to keep only the data corresponding to a certain time
+#' range in year (between \code{to} and \code{from} (exclude)).
+#'
+#' @param hist_lst A list containing at least the variable \code{year}.
+#' @param from Initial date of the time range, \code{character}, \code{numeric}
+#' or of class \code{Date}. Select year after `from`.
+#' @param to Final date of the data, \code{character}, \code{numeric} or of
+#' class \code{Date}.
+#' @return A list with the same variables as \code{}.hist_lst
+#' @keywords internal
+#' @noRd
+select_events <- function(hist_lst, from, to) {
+  sel0 <- purrr::map(hist_lst, "year") %>% unlist %>% as.Date()
+  sel0 <- sel0 > as.Date(paste0(from, "-01-01")) &
+    sel0 <= as.Date(paste0(to, "-12-31"))
+  event_lst <- hist_lst[sel0]
+}
+
+# ------------------------------------------------------------------------------
+#' Download current map for one country
+#'
+#' @param country character string, name of the country to download.
+#' @param hash named character vector containing the translation in English
+#'  (standardized version) of the admin1 names. See `Details` for more
+#'  information.
+#' @param lst_history A list containing a list of event, each code with a slot
+#'  after, a slot before, a slotevent (split/merge/rename/ complexe merge/
+#'  complexe split) and a slot year. See `Details` for more information.
+#' @param from Initial date of the time range selected, of the class Date,
+#'   character or numeric. By default "1960".
+#' @param d.hash used in case of `complexe split` or `complexe merge` in the
+#'  `lst_history` object.  named character vector containing the translation in
+#'  English (standardized version) of the admin2 names. See `Details` for more
+#'  information.
+#' @param path character string, name where the dowloaded file is saved.
+#' @param file_rm boolean, if TRUE, remove the dowmloaded file.
+#'   By default, TRUE.
+#'
+#' @importFrom sptools gadm
+#' @keywords internal
+#' @noRd
+current_map <- function(country, hash, lst_history, from, to, d.hash,
+                        path, file_rm) {
+
+  # exception for Vietnam
+  if (country == "Vietnam" & from <= 2007 ) {
+    df_sf <- get("vn_a1_0407")  %>%
+      mutate(province = translate(NAME_2, hash)) %>%
+      select(province, geometry)
+
+  } else if (select_events(lst_history, from, to) %>% map("event") %>%
+             grepl("complexe", .) %>% any) {
+    df_sf <- gadm(country, "sf", 2, path = path, file_rm = file_rm) %>%
+      mutate(province = translate(NAME_1, hash),
+             district = translate(NAME_2, d.hash)) %>%
+      select(province, district, geometry)
+
+  } else {
+    df_sf <- gadm(country, "sf", 1, path = path, file_rm = file_rm) %>%
+      mutate(province = translate(NAME_1, hash)) %>%
+      select(province, geometry)
+  }
+}
+
+# ------------------------------------------------------------------------------
 #' Create a list of historical map
 #'
 #' From a time range (by default: 1960-01-01 / 2020-12-31), recreates old map
@@ -98,9 +182,8 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 #' kh_map <- hist_map("Cambodia", kh_province, kh_history)
 #'
 #' @importFrom dplyr mutate select rename
-#' @importFrom stringi stri_escape_unicode
 #' @importFrom sf st_crs st_bbox
-#' @importFrom sptools gadm sf_aggregate_lst
+#' @importFrom sptools sf_aggregate_lst
 #' @importFrom purrr map flatten
 #' @importFrom lubridate year
 #' @importFrom stats setNames
@@ -110,28 +193,17 @@ hist_map <- function(country, hash, lst_history, from = "1960",
                       to = "2020", d.hash = NULL, tolerance = 0.01,
                       path = NULL, file_rm = FALSE) {
 
+  if (missing(hash)) hash <- NULL
+  if (missing(lst_history)) lst_history <- NULL
+
   # ACTUAL MAP
+  df_sf <- current_map(country = country, hash = hash, lst_history,
+                       from = from, to = to, d.hash = d.hash, path = path,
+                       file_rm = file_rm)
   # exception for Vietnam
   if (country == "Vietnam" & from <= 2007 ) {
-    df_sf <- get("vn_a1_0407")  %>%
-      mutate(province = stringi::stri_escape_unicode(NAME_2) %>%
-               hash[.]) %>%
-      select(province, geometry)
     current_map <- gadm(country, "sf", 1, path = path, file_rm = file_rm) %>%
-      mutate(province = stringi::stri_escape_unicode(NAME_1) %>%
-               hash[.]) %>%
-      select(province, geometry)
-  } else if (lst_history %>% map("event") %>% grepl("complexe", .) %>% any){
-    df_sf <- gadm(country, "sf", 2, path = path, file_rm = file_rm) %>%
-      mutate(province = stringi::stri_escape_unicode(NAME_1) %>%
-               hash[.],
-             district = stringi::stri_escape_unicode(NAME_2) %>%
-               d.hash[.]) %>%
-      select(province, district, geometry)
-  } else {
-    df_sf <- gadm(country, "sf", 1, path = path, file_rm = file_rm) %>%
-      mutate(province = stringi::stri_escape_unicode(NAME_1) %>%
-               hash[.]) %>%
+      mutate(province = translate(NAME_1, hash)) %>%
       select(province, geometry)
   }
   boundbox <- st_bbox(df_sf)
