@@ -105,18 +105,19 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
       mutate(province = translate(NAME_2, hash)) %>%
       select(province, geometry)
 
-  } else if (select_events(lst_history, from, to) %>% map("event") %>%
-             grepl("complexe", .) %>% any) {
-    df_sf <- gadm(country, "sf", 2, path = path, file_rm = file_rm) %>%
-      mutate(province = translate(NAME_1, hash),
-             district = translate(NAME_2, d.hash)) %>%
-      select(province, district, geometry)
-
+  } else if (is.null(lst_history) == FALSE &&
+             select_events(lst_history, from, to) %>% map("event") %>%
+               grepl("complexe", .) %>% any) {
+      df_sf <- gadm(country, "sf", 2, path = path, file_rm = file_rm) %>%
+        mutate(province = translate(NAME_1, hash),
+               district = translate(NAME_2, d.hash)) %>%
+        select(province, district, geometry)
   } else {
     df_sf <- gadm(country, "sf", 1, path = path, file_rm = file_rm) %>%
       mutate(province = translate(NAME_1, hash)) %>%
       select(province, geometry)
   }
+  df_sf
 }
 
 # ------------------------------------------------------------------------------
@@ -137,11 +138,14 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
 #' is missing the column(s) `NAME_1` and/or `NAME_2` are encoded in UNICODE and
 #' keep in native language.
 #' \cr\cr
-#' The function requires also a list of event (split/merge/rename/
+#' The function needs also a list of event (split/merge/rename/
 #' complexe merge/complexe split) in a standardized format to recreate
 #' historical map. We advice to use or the copy the format of the list
 #' `xx_history` contained in the package `dictionary`.
 #' For example: \code{\link[dictionary]{kh_history}}.
+#' If no list are inputed in the `lst_history` argument, only the current map of
+#' admin1 administrative boundary and the country boundary in high and low
+#' resolution in a list will be created.
 #' \cr\cr
 #' The package `dictionary` is available on GitHub, to install it, it necessary
 #' to have the `devtools` package:
@@ -198,9 +202,10 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   if (missing(lst_history)) lst_history <- NULL
 
   # ACTUAL MAP
-  df_sf <- current_map(country = country, hash = hash, lst_history,
-                       from = from, to = to, d.hash = d.hash, path = path,
-                       file_rm = file_rm)
+  df_sf <- current_map(country = country, hash = hash,
+                       lst_history = lst_history, from = from, to = to,
+                       d.hash = d.hash, path = path, file_rm = file_rm)
+
   # exception for Vietnam
   if (country == "Vietnam" & from <= 2007 ) {
     current_map <- gadm(country, "sf", 1, path = path, file_rm = file_rm) %>%
@@ -218,31 +223,42 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   gadm0 <- thin_polygons(gadm0r, tolerance = tolerance) %>%
     define_bbox_proj(boundbox, crs)
 
-  # SELECT THE YEARS
+  # SELECT THE YEARS & MAKE THE LIST OF OLD MAP
   from <-  paste0(from, "-01-01") %>% as.Date()
   to <- paste0(to, "-12-31") %>% as.Date()
-  sel_year <- lst_history %>% purrr::map("year") %>% purrr::map(as.Date) %>%
-    c(from, .) %>% unlist %>% unique %>% .[which(. < to & . >= from)] %>%
-    lubridate::year(.)
-
-  # MAKE THE LIST OF OLD MAP
-  total_lst <- lapply(seq_along(sel_year), function (x) {
-    if (country == "Vietnam" & sel_year[x] >= "2008") {
-      old_mapr <- df_sf %>% define_bbox_proj(boundbox, crs)
-    } else {
-      old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x]) %>%
+  if (is.null(lst_history)) {
+    sel_year <- NULL
+    total_lst <- list(list(df_sf,
+                      df_sf %<>%
+                        thin_polygons(tolerance = tolerance) %>%
+                        define_bbox_proj(boundbox, crs)) %>%
+                        setNames(c("high", "low"))) %>%
+      setNames(Sys.time() %>% lubridate::year(.))
+  } else {
+    sel_year <- lst_history %>% purrr::map("year") %>% purrr::map(as.Date) %>%
+      c(from, .) %>% unlist %>% unique %>% .[which(. < to & . >= from)] %>%
+      lubridate::year(.)
+    total_lst <- lapply(seq_along(sel_year), function (x) {
+      if (country == "Vietnam" & sel_year[x] >= "2008") {
+        old_mapr <- df_sf %>% define_bbox_proj(boundbox, crs)
+      } else {
+        old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x]) %>%
+          define_bbox_proj(boundbox, crs)
+      }
+      old_map <- thin_polygons(old_mapr, tolerance = tolerance) %>%
         define_bbox_proj(boundbox, crs)
-    }
-    old_map <- thin_polygons(old_mapr, tolerance = tolerance) %>%
-      define_bbox_proj(boundbox, crs)
-    list(old_mapr, old_map) %>% setNames(c("high", "low"))
-  }) %>%
-    setNames(sel_year %>% paste(c(sel_year[-1], lubridate::year(to)),
-                                sep = "_")) %>%
-    append(list(list(country = gadm0r, gadm0) %>%
-                  setNames(c("high", "low"))) %>%
-             setNames("country"))
+      list(old_mapr, old_map) %>% setNames(c("high", "low"))
+    }) %>%
+      setNames(sel_year %>% paste(c(sel_year[-1], lubridate::year(to)),
+                                  sep = "_"))
+  }
 
+  # APPEND COUNTRY MAP
+  total_lst %<>% append(list(list(country = gadm0r, gadm0) %>%
+                               setNames(c("high", "low"))) %>%
+                          setNames("country"))
+
+  # MAKE NAME FILE
   name <- lapply(seq_along(total_lst), function(x) {
     total_lst[[names(total_lst)[x]]] %>% names %>%
       paste0(

@@ -60,11 +60,14 @@ contained in the `dictionary` package, for example:
 is missing the column(s) `NAME_1` and/or `NAME_2` are encoded in UNICODE and
 keep in native language.
 \cr\cr
-The function requires also a list of event (split/merge/rename/
+The function needs also a list of event (split/merge/rename/
 complexe merge/complexe split) in a standardized format to recreate
 historical map. We advice to use or the copy the format of the list
 `xx_history` contained in the package `dictionary`.
 For example: \code{\link[dictionary]{kh_history}}.
+If no list are inputed in the `lst_history` argument, only the current map of
+admin1 administrative boundary and the country boundary in high and low
+resolution in a list will be created.
 \cr\cr
 The package `dictionary` is available on GitHub, to install it, it necessary
 to have the `devtools` package:
