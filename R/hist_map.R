@@ -67,10 +67,11 @@ translate <- function(vector, hash = NULL) {
 #' @keywords internal
 #' @noRd
 select_events <- function(hist_lst, from, to) {
-  sel0 <- purrr::map(hist_lst, "year") %>% unlist %>% as.Date()
+  sel0 <- map(hist_lst, "year") %>% unlist %>% as.Date()
   sel0 <- sel0 > as.Date(paste0(from, "-01-01")) &
     sel0 <= as.Date(paste0(to, "-12-31"))
-  event_lst <- hist_lst[sel0]
+  hist_lst <- hist_lst[sel0]
+  hist_lst
 }
 
 # ------------------------------------------------------------------------------
@@ -199,7 +200,7 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
 #' @importFrom dplyr mutate select rename
 #' @importFrom sf st_crs st_bbox
 #' @importFrom sptools sf_aggregate_lst
-#' @importFrom purrr map flatten
+#' @importFrom purrr map flatten discard
 #' @importFrom lubridate year
 #' @importFrom stats setNames
 #' @importFrom dictionary match_pattern
@@ -247,7 +248,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
                         setNames(c("high", "low"))) %>%
       setNames(Sys.time() %>% lubridate::year(.))
   } else {
-    sel_year <- lst_history %>% purrr::map("year") %>% purrr::map(as.Date) %>%
+    sel_year <- lst_history %>% map("year") %>% map(as.Date) %>%
       c(from, .) %>% unlist %>% unique %>% .[which(. < to & . >= from)] %>%
       lubridate::year(.)
     total_lst <- lapply(seq_along(sel_year), function (x) {
@@ -265,16 +266,6 @@ hist_map <- function(country, hash, lst_history, from = "1960",
                                   sep = "_"))
   }
 
-  if (is.null(lst_province_year) == FALSE){
-    test <- total_lst %>% purrr::map(as.data.frame) %>%
-      purrr::map(select, "province") %>%
-      purrr::map(dictionary::match_pattern, "province", lst_province_year) %>%
-      setNames(names(.) %>% gsub("^.._", "", .) %>% gsub("_.{3,4}$", "", .)) %>%
-      purrr::map(stringr::str_replace, "-", "_")
-    sel <- names(test[which(test != names(test))])
-    total_lst <- total_lst[-sel]
-  }
-
   # APPEND COUNTRY MAP
   total_lst %<>% append(list(list(country = gadm0r, gadm0) %>%
                                setNames(c("high", "low"))) %>%
@@ -289,6 +280,25 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   }) %>%
     unlist
   total_lst %<>% flatten(.) %>% setNames(name)
+
+  if (is.null(lst_province_year) == FALSE){
+
+    test <- total_lst %>%
+      map(as.data.frame) %>%
+      map(select, -"geometry") %>%
+      discard(grepl("country", names(.))) %>%
+      map(dictionary::match_pattern, "province", lst_province_year) %>%
+      setNames(names(.) %>% gsub("^.._", "", .) %>% gsub("_.{3,4}$", "", .)) %>%
+      map(stringr::str_replace, "-", "_")
+    sel1 <- names(test[which(substr(test, 1, 4) !=
+                               names(test) %>% substr(1, 4))])
+    sel2 <- names(test[which(substr(test, 6, 9) !=
+                               names(test) %>% substr(6, 9))])
+    sel <- intersect(sel1, sel2)
+    total_lst <- discard(total_lst, grepl(sel %>% paste(collapse = "|"),
+                                          names(total_lst)))
+  }
+ total_lst
 }
 
 ## quiets concerns of R CMD check for the values that appear in pipelines
