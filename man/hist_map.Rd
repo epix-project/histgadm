@@ -5,7 +5,8 @@
 \title{Create a list of historical map}
 \usage{
 hist_map(country, hash, lst_history, from = "1960", to = "2020",
-  d.hash = NULL, tolerance = 0.01, path = NULL, file_rm = FALSE)
+  d.hash = NULL, tolerance = 0.01, path = NULL, file_rm = FALSE,
+  lst_province_year = NULL)
 }
 \arguments{
 \item{country}{character string, name of the country to download.}
@@ -37,6 +38,10 @@ should be in the metric of the input object (cf. from function
 
 \item{file_rm}{boolean, if TRUE, remove the dowmloaded file.
 By default, TRUE.}
+
+\item{lst_province_year}{A list containing the spatial expression of admin1
+for each year of change, use to select the map expressed with the right
+admin1 definition in time. See `Details` for more inforamtion}
 }
 \value{
 list of `sf` object containing the maps of admin1 administrative
@@ -51,18 +56,23 @@ maps will be create for each year of event (split, merge or rename of
 admin1), one in high resolution and one in low resolution.
 }
 \details{
-The functions requires a named vector, `hash` and `d.hash`
+The functions  needs a named vector, `hash` and `d.hash`
 arguments, to translate the `NAME_1` column (and `NAME_2` if necessary) from
 GADM \url{https://gadm.org} in a standardized English version. We advice to
 use the named vector `xx_province` for admin1 or `xx_district` for admin2
 contained in the `dictionary` package, for example:
-\code{\link[dictionary]{kh_province}}.
+\code{\link[dictionary]{kh_province}}. If no `hash` and/or `d.hash` arguments
+is missing the column(s) `NAME_1` and/or `NAME_2` are encoded in UNICODE and
+keep in native language.
 \cr\cr
-The function requires also a list of event (split/merge/rename/
+The function needs also a list of event (split/merge/rename/
 complexe merge/complexe split) in a standardized format to recreate
 historical map. We advice to use or the copy the format of the list
 `xx_history` contained in the package `dictionary`.
 For example: \code{\link[dictionary]{kh_history}}.
+If no list are inputed in the `lst_history` argument, only the current map of
+admin1 administrative boundary and the country boundary in high and low
+resolution in a list will be created.
 \cr\cr
 The package `dictionary` is available on GitHub, to install it, it necessary
 to have the `devtools` package:
@@ -71,9 +81,15 @@ to have the `devtools` package:
 The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
 each map object with the tolerance (argument `tolerance`) value in the metric
 of the input object.
+\cr\cr
+The arguments `lst_province_year` should be input as a list of charactor
+vector containing the names of the admin1 written in a same way as `hash`
+and/or `lst_history` ordered by year of change in administrative boundaries.
+We advice to use or the copy the format of the list `xx_province_year`
+contained in the package `dictionary`. For example:
+\code{\link[dictionary]{kh_province_year}}.
 }
 \examples{
-
 library(dictionary)
 
 kh_map <- hist_map("Cambodia", kh_province, kh_history)

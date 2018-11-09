@@ -36,5 +36,7 @@ Imports:
     Rd2roxygen,
     roxygen2,
     usethis
-Remotes: choisy/sptools
+Remotes: 
+    choisy/sptools,
+    choisy/dictionary
 RoxygenNote: 6.1.0
