@@ -202,6 +202,8 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
 #' @importFrom purrr map flatten
 #' @importFrom lubridate year
 #' @importFrom stats setNames
+#' @importFrom dictionary match_pattern
+#' @importFrom stringr str_replace
 #'
 #' @export
 hist_map <- function(country, hash, lst_history, from = "1960",
