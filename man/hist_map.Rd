@@ -5,7 +5,8 @@
 \title{Create a list of historical map}
 \usage{
 hist_map(country, hash, lst_history, from = "1960", to = "2020",
-  d.hash = NULL, tolerance = 0.01, path = NULL, file_rm = FALSE)
+  d.hash = NULL, tolerance = 0.01, path = NULL, file_rm = FALSE,
+  lst_province_year = NULL)
 }
 \arguments{
 \item{country}{character string, name of the country to download.}
@@ -37,6 +38,10 @@ should be in the metric of the input object (cf. from function
 
 \item{file_rm}{boolean, if TRUE, remove the dowmloaded file.
 By default, TRUE.}
+
+\item{lst_province_year}{A list containing the spatial expression of admin1
+for each year of change, use to select the map expressed with the right
+admin1 definition in time. See `Details` for more inforamtion}
 }
 \value{
 list of `sf` object containing the maps of admin1 administrative
@@ -76,6 +81,13 @@ to have the `devtools` package:
 The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
 each map object with the tolerance (argument `tolerance`) value in the metric
 of the input object.
+\cr\cr
+The arguments `lst_province_year` should be input as a list of charactor
+vector containing the names of the admin1 written in a same way as `hash`
+and/or `lst_history` ordered by year of change in administrative boundaries.
+We advice to use or the copy the format of the list `xx_province_year`
+contained in the package `dictionary`. For example:
+\code{\link[dictionary]{kh_province_year}}.
 }
 \examples{
 library(dictionary)

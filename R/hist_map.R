@@ -154,6 +154,13 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
 #' The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
 #' each map object with the tolerance (argument `tolerance`) value in the metric
 #' of the input object.
+#' \cr\cr
+#' The arguments `lst_province_year` should be input as a list of charactor
+#' vector containing the names of the admin1 written in a same way as `hash`
+#' and/or `lst_history` ordered by year of change in administrative boundaries.
+#' We advice to use or the copy the format of the list `xx_province_year`
+#' contained in the package `dictionary`. For example:
+#' \code{\link[dictionary]{kh_province_year}}.
 #'
 #' @param country character string, name of the country to download.
 #' @param hash named character vector containing the translation in English
@@ -176,6 +183,9 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
 #' @param path character string, name where the dowloaded file is saved.
 #' @param file_rm boolean, if TRUE, remove the dowmloaded file.
 #'   By default, TRUE.
+#' @param lst_province_year A list containing the spatial expression of admin1
+#' for each year of change, use to select the map expressed with the right
+#' admin1 definition in time. See `Details` for more inforamtion
 #'
 #' @return list of `sf` object containing the maps of admin1 administrative
 #' boundaries and two maps of the country boundaries (one in high resolution
@@ -196,7 +206,7 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
 #' @export
 hist_map <- function(country, hash, lst_history, from = "1960",
                       to = "2020", d.hash = NULL, tolerance = 0.01,
-                      path = NULL, file_rm = FALSE) {
+                      path = NULL, file_rm = FALSE, lst_province_year = NULL) {
 
   if (missing(hash)) hash <- NULL
   if (missing(lst_history)) lst_history <- NULL
@@ -251,6 +261,16 @@ hist_map <- function(country, hash, lst_history, from = "1960",
     }) %>%
       setNames(sel_year %>% paste(c(sel_year[-1], lubridate::year(to)),
                                   sep = "_"))
+  }
+
+  if (is.null(lst_province_year) == FALSE){
+    test <- total_lst %>% purrr::map(as.data.frame) %>%
+      purrr::map(select, "province") %>%
+      purrr::map(dictionary::match_pattern, "province", lst_province_year) %>%
+      setNames(names(.) %>% gsub("^.._", "", .) %>% gsub("_.{3,4}$", "", .)) %>%
+      purrr::map(stringr::str_replace, "-", "_")
+    sel <- names(test[which(test != names(test))])
+    total_lst <- total_lst[-sel]
   }
 
   # APPEND COUNTRY MAP
