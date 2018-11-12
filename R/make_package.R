@@ -83,8 +83,9 @@ initial_pkg <-  function(path, name_pkg) {
     }
 
     if (length(ans) > 1) {
-      lapply(ans, function(x) {internal_data(x, pkg_path, from = from,
-                                             to = to)})
+      lapply(ans, function(x) {
+        internal_data(x, pkg_path, from = from, to = to)
+        })
     } else
       internal_data(ans, pkg_path, from = from, to = to)
   }
