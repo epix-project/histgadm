@@ -40,6 +40,7 @@
 #' @export
 map_data <- function(path, country, hash, lst_history, from = "1960",
                      to = "2020", d.hash = NULL, tolerance = 0.01) {
+  path0 <- getwd()
   setwd(path)
   datarawdir <- paste0(path, "/data-raw")
   if (!dir.exists(datarawdir)) usethis::use_data_raw()
@@ -52,4 +53,5 @@ map_data <- function(path, country, hash, lst_history, from = "1960",
   eply::evals(paste0("usethis::use_data(`", paste(names(data),
                                                   collapse = "`, `"),
                      "`, overwrite = TRUE)"))
+  setwd(path0)
 }
