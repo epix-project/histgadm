@@ -76,6 +76,6 @@ map_documentation <- function(path) {
              paste0("'", gsub(".rda", "", list_tab[x]) %>%
                       as.character(), "'\n"))
   })
-  writeLines(unlist(tot_rd), con = paste0("R/data.R"), sep = "\n")
+  writeLines(unlist(tot_rd), con = paste0(path, "/R/data.R"), sep = "\n")
   roxygen2::roxygenize(path)
 }
