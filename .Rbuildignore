@@ -1,3 +1,4 @@
+^tests/testthat/pkgtest$
 ^data-raw$
 ^.*\.Rproj$
 ^\.Rproj\.user$
