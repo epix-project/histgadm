@@ -1,4 +1,3 @@
-
 library(dictionary) # for "XX_history", "XX_province"
 
 context("`map_documentation`")
