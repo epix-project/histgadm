@@ -254,12 +254,6 @@ hist_map <- function(country, hash, lst_history, from = "1960",
                        lst_history = lst_history, from = from, to = to,
                        d.hash = d.hash, path = path, file_rm = file_rm)
 
-  # exception for Vietnam
-  if (country == "Vietnam" & from <= 2007 ) {
-    current_map <- gadm(country, "sf", 1, path = path, file_rm = file_rm) %>%
-      mutate(province = translate(NAME_1, hash)) %>%
-      select(province, geometry)
-  }
   boundbox <- st_bbox(df_sf)
   crs <- st_crs(df_sf)
 
@@ -275,6 +269,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   from <-  paste0(from, "-01-01") %>% as.Date()
   to <- paste0(to, "-12-31") %>% as.Date()
   if (is.null(lst_history)) {
+
     sel_year <- NULL
     total_lst <- list(list(df_sf,
                       df_sf %<>%
@@ -282,17 +277,22 @@ hist_map <- function(country, hash, lst_history, from = "1960",
                         define_bbox_proj(boundbox, crs)) %>%
                         setNames(c("high", "low"))) %>%
       setNames(Sys.time() %>% lubridate::year(.))
+
   } else {
+
     sel_year <- lst_history %>% map("year") %>% map(as.Date) %>%
       c(from, .) %>% unlist %>% unique %>% .[which(. < to & . >= from)] %>%
       lubridate::year(.)
+
     total_lst <- lapply(seq_along(sel_year), function (x) {
+
       if (country == "Vietnam" & sel_year[x] >= "2008") {
         old_mapr <- df_sf %>% define_bbox_proj(boundbox, crs)
       } else {
         old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x]) %>%
-          define_bbox_proj(boundbox, crs)
+         define_bbox_proj(boundbox, crs)
       }
+      print(old_mapr)
       old_map <- thin_polygons(old_mapr, tolerance = tolerance) %>%
         define_bbox_proj(boundbox, crs)
       list(old_mapr, old_map) %>% setNames(c("high", "low"))
