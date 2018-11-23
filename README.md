@@ -3,6 +3,8 @@
 histgadm
 ========
 
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/epix-project/histgadm?branch=master&svg=true)](https://ci.appveyor.com/project/epix-project/histgadm)
+
 `histgadm` is a workflow package: From current map from GADM (<https://gadm.org/>) recreates historical administrative boundaries map and creates one or multiple packages (one by country inputed) containing the data and the documentation.
 
 Installation
