@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 # histgadm
 
-[![AppVeyor build status](https://ci.appveyor.com/api/pruojects/status/github/epix-project/histgadm?branch=master&svg=true)](https://ci.appveyor.com/project/epix-project/histgadm)
+[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/8a3jtxe4uiehushs/branch/master?svg=true)](https://ci.appveyor.com/project/epixproject/histgadm-cs9wa/branch/master)
 [![Travis build status](https://travis-ci.org/epix-project/histgadm.svg?branch=master)](https://travis-ci.org/epix-project/histgadm)
 [![Coverage status](https://codecov.io/gh/epix-project/histgadm/branch/master/graph/badge.svg)](https://codecov.io/github/epix-project/histgadm?branch=master)
 [![CRAN status](https://www.r-pkg.org/badges/version/histgadm)](https://cran.r-project.org/package=histgadm)
@@ -73,8 +73,3 @@ map_documentation(pgkg_dir)
 ```
 
 For more information, please take a look at the vignettes.
-
-
-
-
-

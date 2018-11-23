@@ -4,7 +4,7 @@
 # histgadm
 
 [![AppVeyor build
-status](https://ci.appveyor.com/api/pruojects/status/github/epix-project/histgadm?branch=master&svg=true)](https://ci.appveyor.com/project/epix-project/histgadm)
+status](https://ci.appveyor.com/api/projects/status/8a3jtxe4uiehushs/branch/master?svg=true)](https://ci.appveyor.com/project/epixproject/histgadm-cs9wa/branch/master)
 [![Travis build
 status](https://travis-ci.org/epix-project/histgadm.svg?branch=master)](https://travis-ci.org/epix-project/histgadm)
 [![Coverage
@@ -52,7 +52,7 @@ library("histgadm")
 tmp <- file.path(tempdir(), "pkgtest")
 dir.create(tmp)
 initial_pkg(tmp, "test")
-#> ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpfaKATm/pkgtest/test'
+#> ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpmvjKEI/pkgtest/test'
 #> ✔ Creating 'R/'
 #> ✔ Creating 'man/'
 #> ✔ Writing 'DESCRIPTION'
@@ -164,7 +164,7 @@ each object.
 
 ``` r
 map_documentation(pgkg_dir)
-#> Updating roxygen version in /private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpfaKATm/pkgtest/test/DESCRIPTION
+#> Updating roxygen version in /private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpmvjKEI/pkgtest/test/DESCRIPTION
 #> Writing NAMESPACE
 #> Loading test
 #> Writing kh_1980_1997_high.Rd
