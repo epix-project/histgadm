@@ -6,10 +6,6 @@ cache: packages
 
 dist: trusty
 
-matrix:
-  include:
-    - os: osx
-
 before_install:
   - sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable --yes
   - sudo apt-get --yes --force-yes update -qq
@@ -28,6 +24,3 @@ r_packages:
   - covr
 
 r_check_args: "--no-examples --no-tests"
-
-after_success:
-  - Rscript -e 'library(covr);codecov()'
