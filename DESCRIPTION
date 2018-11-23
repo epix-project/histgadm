@@ -17,7 +17,8 @@ LazyData: true
 Depends:
     R (>= 2.10)
 Suggests:
-    testthat
+    testthat,
+    covr
 Imports:
     countrycode,
     dictionary,
@@ -39,4 +40,4 @@ Imports:
 Remotes: 
     choisy/sptools,
     choisy/dictionary
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1

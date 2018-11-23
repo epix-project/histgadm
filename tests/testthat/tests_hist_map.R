@@ -7,10 +7,15 @@ context("`hist_map`")
 
 test_that("`hist_map` returns the correct output", {
 
-  test1 <- hist_map("Cambodia", kh_province, kh_history, file_rm = TRUE)
-  testthat::expect_equal(length(test1), 8)
+  test1a <- hist_map("Cambodia", kh_province, kh_history, file_rm = TRUE)
+  testthat::expect_equal(length(test1a), 8)
 
-  test2 <- hist_map("Laos", la_province, la_history, d.hash = la_district)
+  test1b <- hist_map("Cambodia", kh_province, kh_history, file_rm = TRUE,
+                    lst_province_year = kh_province_year)
+  testthat::expect_equal(length(test1b), 8)
+
+  test2 <- hist_map("Laos", la_province, la_history, d.hash = la_district,
+                    file_rm = TRUE)
   testthat::expect_equal(length(test2), 8)
 
   vn_08 <- hist_map("Vietnam", vn_province, vn_history,

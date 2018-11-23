@@ -122,6 +122,41 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
 }
 
 # ------------------------------------------------------------------------------
+#' Tests and selects map
+#'
+#' Test and select map with the spatial expression corresponding to the time
+#' frame selected.
+#'
+#' @param lst A list containing sf object containing two columns: `geometry` and
+#'   `province` , with named slot : `XX_YEAR_YEAR_QUALITY`, XX is the country
+#'   name in two letters code.
+#' @param test_lst  A list containing the spatial expression of admin1
+#' for each year of change, use to select the map expressed with the right
+#' admin1 definition in time.
+#'
+#' @importFrom sptools gadm
+#' @keywords internal
+#' @noRd
+sel_map <- function(lst, test_lst) {
+  test <- lst %>%
+      map(as.data.frame) %>%
+      map(select, -"geometry") %>%
+      discard(grepl("country", names(.))) %>%
+      map(dictionary::match_pattern, "province", test_lst) %>%
+      setNames(names(.) %>% gsub("^.._", "", .) %>% gsub("_.{3,4}$", "", .)) %>%
+      map(stringr::str_replace, "-", "_")
+  sel1 <- names(test[which(substr(test, 1, 4) != names(test) %>% substr(1, 4))])
+  sel2 <- names(test[which(substr(test, 6, 9) != names(test) %>% substr(6, 9))])
+  sel <- intersect(sel1, sel2)
+  if (length(sel) != 0) {
+    total_lst <- discard(lst, grepl(sel %>% paste(collapse = "|"), names(lst)))
+  } else {
+    total_lst <- lst
+  }
+  total_lst
+}
+
+# ------------------------------------------------------------------------------
 #' Create a list of historical map
 #'
 #' From a time range (by default: 1960-01-01 / 2020-12-31), recreates old map
@@ -219,12 +254,6 @@ hist_map <- function(country, hash, lst_history, from = "1960",
                        lst_history = lst_history, from = from, to = to,
                        d.hash = d.hash, path = path, file_rm = file_rm)
 
-  # exception for Vietnam
-  if (country == "Vietnam" & from <= 2007 ) {
-    current_map <- gadm(country, "sf", 1, path = path, file_rm = file_rm) %>%
-      mutate(province = translate(NAME_1, hash)) %>%
-      select(province, geometry)
-  }
   boundbox <- st_bbox(df_sf)
   crs <- st_crs(df_sf)
 
@@ -240,6 +269,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   from <-  paste0(from, "-01-01") %>% as.Date()
   to <- paste0(to, "-12-31") %>% as.Date()
   if (is.null(lst_history)) {
+
     sel_year <- NULL
     total_lst <- list(list(df_sf,
                       df_sf %<>%
@@ -247,17 +277,22 @@ hist_map <- function(country, hash, lst_history, from = "1960",
                         define_bbox_proj(boundbox, crs)) %>%
                         setNames(c("high", "low"))) %>%
       setNames(Sys.time() %>% lubridate::year(.))
+
   } else {
+
     sel_year <- lst_history %>% map("year") %>% map(as.Date) %>%
       c(from, .) %>% unlist %>% unique %>% .[which(. < to & . >= from)] %>%
       lubridate::year(.)
+
     total_lst <- lapply(seq_along(sel_year), function (x) {
+
       if (country == "Vietnam" & sel_year[x] >= "2008") {
         old_mapr <- df_sf %>% define_bbox_proj(boundbox, crs)
       } else {
         old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x]) %>%
-          define_bbox_proj(boundbox, crs)
+         define_bbox_proj(boundbox, crs)
       }
+      print(old_mapr)
       old_map <- thin_polygons(old_mapr, tolerance = tolerance) %>%
         define_bbox_proj(boundbox, crs)
       list(old_mapr, old_map) %>% setNames(c("high", "low"))
@@ -265,7 +300,6 @@ hist_map <- function(country, hash, lst_history, from = "1960",
       setNames(sel_year %>% paste(c(sel_year[-1], lubridate::year(to)),
                                   sep = "_"))
   }
-
   # APPEND COUNTRY MAP
   total_lst %<>% append(list(list(country = gadm0r, gadm0) %>%
                                setNames(c("high", "low"))) %>%
@@ -282,21 +316,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   total_lst %<>% flatten(.) %>% setNames(name)
 
   if (is.null(lst_province_year) == FALSE){
-
-    test <- total_lst %>%
-      map(as.data.frame) %>%
-      map(select, -"geometry") %>%
-      discard(grepl("country", names(.))) %>%
-      map(dictionary::match_pattern, "province", lst_province_year) %>%
-      setNames(names(.) %>% gsub("^.._", "", .) %>% gsub("_.{3,4}$", "", .)) %>%
-      map(stringr::str_replace, "-", "_")
-    sel1 <- names(test[which(substr(test, 1, 4) !=
-                               names(test) %>% substr(1, 4))])
-    sel2 <- names(test[which(substr(test, 6, 9) !=
-                               names(test) %>% substr(6, 9))])
-    sel <- intersect(sel1, sel2)
-    total_lst <- discard(total_lst, grepl(sel %>% paste(collapse = "|"),
-                                          names(total_lst)))
+    total_lst <- sel_map(total_lst, lst_province_year)
   }
  total_lst
 }
