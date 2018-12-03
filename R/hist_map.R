@@ -300,7 +300,6 @@ hist_map <- function(country, hash, lst_history, from = "1960",
         old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x]) %>%
          define_bbox_proj(boundbox, crs)
       }
-      print(old_mapr)
       old_map <- thin_polygons(old_mapr, tolerance = tolerance) %>%
         define_bbox_proj(boundbox, crs)
       list(old_mapr, old_map) %>% setNames(c("high", "low"))
