@@ -197,6 +197,12 @@ sel_map <- function(lst, test_lst) {
 #' We advice to use or the copy the format of the list `xx_province_year`
 #' contained in the package `dictionary`. For example:
 #' \code{\link[dictionary]{kh_province_year}}.
+#' \cr\cr
+#' The output of the function is a named list: the admin1 boundaries named are
+#' named as: the 2 characters ISO code, the year of expression of this admin1
+#' administrative boundaries and the quality. For example: "vn_1997_2004_high"
+#' for the admin1 boundaries of Vietnam from 1997-01-01 until 2004-01-01 (not
+#' include) in high quality.
 #'
 #' @param country character string, name of the country to download.
 #' @param hash named character vector containing the translation in English
