@@ -287,7 +287,9 @@ hist_map <- function(country, hash, lst_history, from = "1960",
     total_lst <- lapply(seq_along(sel_year), function (x) {
 
       if (country == "Vietnam" & sel_year[x] >= "2008") {
-        old_mapr <- df_sf %>% define_bbox_proj(boundbox, crs)
+        old_mapr <- gadm(country, "sf", 1, path = path, file_rm = file_rm) %>%
+          mutate(province = translate(NAME_1, hash)) %>%
+          select(province, geometry)
       } else {
         old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x]) %>%
          define_bbox_proj(boundbox, crs)
@@ -297,7 +299,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
         define_bbox_proj(boundbox, crs)
       list(old_mapr, old_map) %>% setNames(c("high", "low"))
     }) %>%
-      setNames(sel_year %>% paste(c(sel_year[-1], lubridate::year(to)),
+      setNames(sel_year %>% paste(c(sel_year[-1], lubridate::year(to) + 1),
                                   sep = "_"))
   }
   # APPEND COUNTRY MAP
