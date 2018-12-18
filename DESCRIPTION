@@ -18,7 +18,9 @@ Depends:
     R (>= 2.10)
 Suggests:
     testthat,
-    covr
+    covr,
+    knitr,
+    rmarkdown
 Imports:
     countrycode,
     dictionary,
@@ -41,3 +43,4 @@ Remotes:
     choisy/sptools,
     choisy/dictionary
 RoxygenNote: 6.1.1
+VignetteBuilder: knitr
