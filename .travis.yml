@@ -23,4 +23,4 @@ r_packages:
   - rmarkdown
   - covr
 
-r_check_args: "--no-examples --no-tests"
+r_check_args: "--no-examples --no-tests --no-vignettes"
