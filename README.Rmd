@@ -51,25 +51,4 @@ initial_pkg(tmp, "test")
 By default, the package created contained no data but if `y` is answer the package will then ask the user to imput at least one country name and a time range to download the data corresponding to gadm and to recreate the historical map corresonding to the time range inputed.
 Currently, it works only for `Cambodia, Laos, Thailand and Vietnam`. 
 
-For other country, the users will need to use the functions `map_data`, `map_documentation` to complete their packages. 
-If the user want to recreate historical map, it will need to input a list containing the historical event and a dictionary for the admin1, admin2 names. 
-For now, the package `dictionary` contains functions to create them but also dictionary and list of event for Cambodia, Laos, Thailand and Vietnam.
-
-To install it:
-``` {r, eval = FALSE}
-# install.packages("devtools")
-devtools::install_github("choisy/dictionary")
-```
-
-Let's now take a look at `map_data`: it download the current map from GADM and recreates historical map:
-```{r}
-pgkg_dir <- paste0(tmp, "/test")
-map_data(pgkg_dir, "Cambodia", dictionary::kh_province, dictionary::kh_history, from = "1980", to = "2018")
-```
-
-And the function `map_documentation` will create the documentation for each object.
-```{r}
-map_documentation(pgkg_dir)
-```
-
-For more information, please take a look at the vignettes.
+For other country, the users will need to use the functions `map_data`, `map_documentation` to complete their packages. For more details, please take a look at the vignettes `histgadm Usage`.
