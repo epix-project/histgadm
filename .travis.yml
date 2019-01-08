@@ -23,4 +23,5 @@ r_packages:
   - rmarkdown
   - covr
 
+r_build_args: "--no-build-vignettes"
 r_check_args: "--no-examples --no-tests --no-vignettes"
