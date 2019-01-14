@@ -17,6 +17,7 @@ cache:
 
 build_script:
   - travis-tool.sh install_deps
+  - travis-tool.sh r_binary_install curl
 
 test_script:
   - travis-tool.sh run_tests
@@ -35,7 +36,7 @@ environment:
 
   matrix:
     - R_VERSION: release
-    
+
 artifacts:
   - path: '*.Rcheck\**\*.log'
     name: Logs
