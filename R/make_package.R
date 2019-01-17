@@ -11,8 +11,16 @@
 #' @noRd
 internal_data <- function(country, path, from = "1960", to = "2020") {
 
-  ccode <- countrycode::countrycode(country, "country.name", "iso2c") %>%
-    tolower()
+  suppressWarnings(
+    ccode <- countrycode::countrycode(country, "country.name", "iso2c") %>%
+    tolower())
+  if(is.na(ccode)) {
+    stop(paste0("The `country` inputed:", country, " , was not matched.
+                A complete description of available country languages is ",
+                "available in the package `countrycode`:",
+                " ?countrycode::codelist"))
+  }
+
   prov <- eply::evals(paste0("dictionary::", ccode, "_province"))
   province <- as.vector(prov) %>% setNames(attr(prov, "dimnames")[[1]])
   hist <- eply::evals(paste0("dictionary::", ccode, "_history"))
@@ -41,6 +49,7 @@ internal_data <- function(country, path, from = "1960", to = "2020") {
 #' @importFrom countrycode countrycode
 #' @importFrom utils getAnywhere
 #' @importFrom purrr map
+#' @importFrom crayon silver
 #' @import dictionary
 #'
 #' @export
@@ -58,22 +67,24 @@ initial_pkg <-  function(path, name_pkg) {
   if (ans %in% c("y", "yes")) {
 
     message(cat(
-      paste0("\n", "For which country do you want to download file? \n",
-             "(Currently, the function is working only for: ",
+      paste0("\n", "For which country do you want to download file?")))
+    message(cat(crayon::silver(paste0(
+             "Currently, the function is working only for: ",
              "Cambodia, Laos, Thailand and Vietnam. For other country, use ",
-             "the functions `map_data`, `map_documentation`). \n",
+             "the functions `map_data`, `map_documentation`. \n",
              "The country name should be input in full name and in English, \n",
              "For example: Cambodia \n",
              "Multiple country name is also accepted, separated by a ','. \n",
-             "For example: Vietnam, Cambodia \n")))
+             "For example: Vietnam, Cambodia \n"))))
     ans <- readline("Selection: ")
     if (grepl(",", ans)) ans %<>% strsplit(",") %>% map(trimws) %>% unlist
 
     message(cat(
-      paste0("\n", "For which time range do you want to download file? \n",
+      paste0("\n", "For which time range do you want to download file?")))
+    message(cat(crayon::silver(paste0(
              "The time range should be input in date format separateb by '-',",
              " by default the time range is '1960-01-01 2020-12-31'. \n",
-             "For example: 1960-01-01 2020-12-31")))
+             "For example: 1960-01-01 2020-12-31"))))
     ans_date <- readline("Selection: ")
     if (ans_date == "") {
       from <- "1960-01-01"; to <- "2020-12-31"

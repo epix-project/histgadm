@@ -23,6 +23,7 @@ Suggests:
     rmarkdown
 Imports:
     countrycode,
+    crayon,
     dictionary,
     devtools,
     dplyr,
