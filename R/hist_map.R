@@ -101,7 +101,8 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
                         path, file_rm) {
 
   # exception for Vietnam
-  if (country == "Vietnam" & from <= 2007 ) {
+  if (country == "Vietnam" &
+      as.Date(paste0(from, "-01-01")) < as.Date("2008-01-01")) {
     df_sf <- get("vn_a1_0407")  %>%
       mutate(province = translate(NAME_2, hash)) %>%
       select(province, geometry)
