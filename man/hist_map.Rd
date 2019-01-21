@@ -5,7 +5,7 @@
 \title{Create a list of historical map}
 \usage{
 hist_map(country, hash, lst_history, from = "1960", to = "2020",
-  d.hash = NULL, tolerance = 0.01, path = NULL, file_rm = FALSE,
+  d.hash = NULL, tolerance = 0.01, path = NULL, intlib = FALSE,
   lst_province_year = NULL)
 }
 \arguments{
@@ -34,10 +34,11 @@ information.}
 should be in the metric of the input object (cf. from function
 \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.}
 
-\item{path}{character string, name where the dowloaded file is saved.}
+\item{path}{character string, name where the dowloaded file is saved. If
+`FALSE`, the downloaded file is not saved.}
 
-\item{file_rm}{boolean, if TRUE, remove the dowmloaded file.
-By default, TRUE.}
+\item{intlib}{boolean, if `TRUE`, saved the downloaded file in internal
+library. By default, `FALSE`.}
 
 \item{lst_province_year}{A list containing the spatial expression of admin1
 for each year of change, use to select the map expressed with the right
@@ -81,6 +82,10 @@ to have the `devtools` package:
 The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
 each map object with the tolerance (argument `tolerance`) value in the metric
 of the input object.
+\cr\cr
+The function uses the function \code{\link[sptools]{gadm}} from the package
+`gadm`, to have more information on the parameter `path` and `intlib`, please
+take a look at the help of this function.
 \cr\cr
 The arguments `lst_province_year` should be input as a list of charactor
 vector containing the names of the admin1 written in a same way as `hash`
