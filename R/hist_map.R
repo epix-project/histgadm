@@ -242,7 +242,7 @@ sel_map <- function(lst, test_lst) {
 #' @examples
 #' library(dictionary)
 #'
-#' kh_map <- hist_map("Cambodia", kh_province, kh_history)
+#' kh_map <- hist_map("Cambodia", kh_province, kh_history, path = FALSE)
 #'
 #' @importFrom dplyr mutate select rename
 #' @importFrom sf st_crs st_bbox
