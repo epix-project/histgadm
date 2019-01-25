@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Contamin Lucie" />
+
+<meta name="date" content="2019-01-25" />
+
+<title>histgadm Usage</title>
+
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css">
+a.sourceLine { display: inline-block; min-height: 1.25em; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; }
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+@media screen {
+a.sourceLine::before { text-decoration: underline; color: initial; }
+}
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.bn { color: #40a070; } /* BaseN */
+code span.fl { color: #40a070; } /* Float */
+code span.ch { color: #4070a0; } /* Char */
+code span.st { color: #4070a0; } /* String */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.ot { color: #007020; } /* Other */
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.fu { color: #06287e; } /* Function */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code span.cn { color: #880000; } /* Constant */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.im { } /* Import */
+code span.va { color: #19177c; } /* Variable */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.op { color: #666666; } /* Operator */
+code span.bu { } /* BuiltIn */
+code span.ex { } /* Extension */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.at { color: #7d9029; } /* Attribute */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+</style>
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">histgadm Usage</h1>
+<h4 class="author"><em>Contamin Lucie</em></h4>
+<h4 class="date"><em>2019-01-25</em></h4>
+
+
+
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>You can install the development version of histgadm from <a href="https://github.com/epix-project/histgadm">GitHub</a> with:</p>
+<pre class="sourceCode r" id="cb1"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># install.packages(&quot;devtools&quot;)</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;epix-project/histgadm&quot;</span>)</a></code></pre>
+</div>
+<div id="usage" class="section level2">
+<h2>Usage</h2>
+<p>The <code>histgadm</code> contains four functions.</p>
+<p>The function <code>init_package</code> creates a package for the GADM data (<a href="https://gadm.org/" class="uri">https://gadm.org/</a>), and interactively allows the user to download data from GADM for one or more country and recreates historical map from a time range (interactive input) by merging or spliting back admin1 polygons. The ouput are <code>sf</code> maps of the country in high and low definition with the different admin1 historial and current administrative boundaries but also the country administrative boundaries. The historical map are “approximate” map because the package only split or merge admin1 polygons when in reality, this event are ofter more complexe and the boundaries may not be exact.</p>
+<p>Below is a quick look at how <code>histgadm</code> is working:</p>
+<pre class="sourceCode r" id="cb2"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(<span class="st">&quot;histgadm&quot;</span>)</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co"># Create a new package ---------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4">tmp &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pkgtest&quot;</span>)</a>
+<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">dir.create</span>(tmp)</a>
+<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw">initial_pkg</span>(tmp, <span class="st">&quot;test&quot;</span>)</a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpNyQj8W/pkgtest/test'</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; ✔ Creating 'R/'</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; ✔ Creating 'man/'</span></a>
+<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></a>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; ✔ Adding 'sf' to Imports field in DESCRIPTION</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; ● Refer to functions with `sf::fun()`</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt; Do you want to download GADM file from the internet? y / n (default)</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt; Selection:</span></a></code></pre>
+<p>By default, the package created contained no data but if <code>y</code> is answer the package will then ask the user to imput at least one country name and a time range to download the data corresponding to gadm and to recreate the historical map corresonding to the time range inputed. Currently, it works only for <code>Cambodia, Laos, Thailand and Vietnam</code>.</p>
+</div>
+<div id="for-other-country" class="section level2">
+<h2>For other country</h2>
+<p>For other country, the users will need to use the functions <code>map_data</code>, <code>map_documentation</code> to complete their packages. If the user want to recreate historical map, it will need to input a list containing the historical event and a dictionary for the admin1, admin2 names. For now, the package <code>dictionary</code> contains functions to create them but also dictionary and list of event for Cambodia, Laos, Thailand and Vietnam.</p>
+<p>To install it:</p>
+<pre class="sourceCode r" id="cb3"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># install.packages(&quot;devtools&quot;)</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;choisy/dictionary&quot;</span>)</a></code></pre>
+<p>Let’s now take a look at <code>map_data</code>: it download the current map from GADM and recreates historical map:</p>
+<pre class="sourceCode r" id="cb4"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">pgkg_dir &lt;-<span class="st"> </span><span class="kw">paste0</span>(tmp, <span class="st">&quot;/test&quot;</span>)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">map_data</span>(pgkg_dir, <span class="st">&quot;Cambodia&quot;</span>, dictionary<span class="op">::</span>kh_province, dictionary<span class="op">::</span>kh_history, <span class="dt">from =</span> <span class="st">&quot;1980&quot;</span>, <span class="dt">to =</span> <span class="st">&quot;2018&quot;</span>)</a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; ✔ Creating 'data-raw/'</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; ✔ Adding '^data-raw$' to '.Rbuildignore'</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt; Next:</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; ● Add data creation scripts in 'data-raw/'</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt; ● Use `usethis::use_data()` to add data to package</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt; ✔ Saving 'kh_1980_1997_high', 'kh_1980_1997_low', 'kh_1997_2013_high', 'kh_1997_2013_low', 'kh_2013_2019_high', 'kh_2013_2019_low', 'kh_country_high', 'kh_country_low' to 'data/kh_1980_1997_high.rda', 'data/kh_1980_1997_low.rda', 'data/kh_1997_2013_high.rda', 'data/kh_1997_2013_low.rda', 'data/kh_2013_2019_high.rda', 'data/kh_2013_2019_low.rda', 'data/kh_country_high.rda', 'data/kh_country_low.rda'</span></a></code></pre>
+<p>And the function <code>map_documentation</code> will create the documentation for each object.</p>
+<pre class="sourceCode r" id="cb5"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">map_documentation</span>(pgkg_dir)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Updating roxygen version in /private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpNyQj8W/pkgtest/test/DESCRIPTION</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; Writing NAMESPACE</span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; Loading test</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; Writing kh_1980_1997_high.Rd</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt; Writing kh_1980_1997_low.Rd</span></a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt; Writing kh_1997_2013_high.Rd</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; Writing kh_1997_2013_low.Rd</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; Writing kh_2013_2019_high.Rd</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; Writing kh_2013_2019_low.Rd</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; Writing kh_country_high.Rd</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; Writing kh_country_low.Rd</span></a></code></pre>
+<p>For more information, please take a look at the vignettes.</p>
+</div>
+
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
