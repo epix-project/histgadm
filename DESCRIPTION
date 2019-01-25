@@ -33,7 +33,6 @@ Imports:
     maptools,
     purrr,
     sf,
-    sp,
     sptools,
     stringi,
     stringr,
