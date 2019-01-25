@@ -230,7 +230,7 @@ sel_map <- function(lst, test_lst) {
 #' for each year of change, use to select the map expressed with the right
 #' admin1 definition in time. See `Details` for more inforamtion
 #'
-#' @return list of `sf` object containing the maps of admin1 administrative
+#' @return a list of `sf` object containing the maps of admin1 administrative
 #' boundaries and two maps of the country boundaries (one in high resolution
 #' and one in low resolution).
 #'

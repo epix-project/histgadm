@@ -38,6 +38,7 @@ library("histgadm")
 # Create a new package ---------------------------------------------------------
 tmp <- file.path(tempdir(), "pkgtest")
 dir.create(tmp)
+# Interactively download/save/create documentation for one or multiple country
 initial_pkg(tmp, "test")
 ```
 
