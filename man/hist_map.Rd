@@ -5,7 +5,7 @@
 \title{Create a list of historical map}
 \usage{
 hist_map(country, hash, lst_history, from = "1960", to = "2020",
-  d.hash = NULL, tolerance = 0.01, path = NULL, intlib = FALSE,
+  d.hash = NULL, tolerance = 0.01, path = NULL, intlib = TRUE,
   lst_province_year = NULL)
 }
 \arguments{
@@ -96,7 +96,7 @@ contained in the package `dictionary`. For example:
 \cr\cr
 The output of the function is a named list: the admin1 boundaries named are
 named as: the 2 characters ISO code, the year of expression of this admin1
-administrative boundaries and the quality. For example: "vn_1997_2004_high"
+administrative boundaries and the resolution. For example: "vn_1997_2004_high"
 for the admin1 boundaries of Vietnam from 1997-01-01 until 2004-01-01 (not
 include) in high quality.
 }

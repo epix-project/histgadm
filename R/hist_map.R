@@ -205,7 +205,7 @@ sel_map <- function(lst, test_lst) {
 #' \cr\cr
 #' The output of the function is a named list: the admin1 boundaries named are
 #' named as: the 2 characters ISO code, the year of expression of this admin1
-#' administrative boundaries and the quality. For example: "vn_1997_2004_high"
+#' administrative boundaries and the resolution. For example: "vn_1997_2004_high"
 #' for the admin1 boundaries of Vietnam from 1997-01-01 until 2004-01-01 (not
 #' include) in high quality.
 #'
@@ -256,7 +256,7 @@ sel_map <- function(lst, test_lst) {
 #' @export
 hist_map <- function(country, hash, lst_history, from = "1960",
                       to = "2020", d.hash = NULL, tolerance = 0.01,
-                      path = NULL, intlib = FALSE, lst_province_year = NULL) {
+                      path = NULL, intlib = TRUE, lst_province_year = NULL) {
 
   if (missing(hash)) hash <- NULL
   if (missing(lst_history)) lst_history <- NULL
