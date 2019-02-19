@@ -70,5 +70,3 @@ And the function `map_documentation` will create the documentation for each obje
 ```{r}
 map_documentation(pgkg_dir)
 ```
-
-For more information, please take a look at the vignettes.
