@@ -6,7 +6,7 @@
 \usage{
 hist_map(country, hash, lst_history, from = "1960", to = "2020",
   d.hash = NULL, tolerance = 0.01, save = FALSE, path = NULL,
-  intlib = TRUE, lst_province_year = NULL)
+  intlib = TRUE, force = FALSE, lst_province_year = NULL)
 }
 \arguments{
 \item{country}{character string, name of the country to download.}
@@ -46,9 +46,12 @@ By default \code{FALSE}.}
 in the library of packages. If \code{NULL}, it will be asked interactively.
 By default \code{TRUE}.}
 
+\item{force}{boolean, force to download the file even if already in the path.
+By default \code{FALSE}.}
+
 \item{lst_province_year}{A list containing the spatial expression of admin1
 for each year of change, use to select the map expressed with the right
-admin1 definition in time. See `Details` for more inforamtion}
+admin1 definition in time. See `Details` for more inforamtion.}
 }
 \value{
 a list of `sf` object containing the maps of admin1 administrative

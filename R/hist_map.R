@@ -96,12 +96,14 @@ select_events <- function(hist_lst, from, to) {
 #' \code{NULL}, the file will be saved in the working directory.
 #' @param intlib boolean, specifies whether the downloaded file should be saved
 #' in the library of packages. If \code{NULL}, it will be asked interactively.
+#' @param force boolean, force to download the file even if already in the path.
+#' By default \code{FALSE}.
 #'
 #' @importFrom sptools gadm
 #' @keywords internal
 #' @noRd
 current_map <- function(country, hash, lst_history, from, to, d.hash, save,
-                        path, intlib) {
+                        path, intlib, force) {
 
   # exception for Vietnam
   if (country == "Vietnam" &
@@ -114,13 +116,13 @@ current_map <- function(country, hash, lst_history, from, to, d.hash, save,
              select_events(lst_history, from, to) %>% map("event") %>%
                grepl("complexe", .) %>% any) {
       df_sf <- gadm(country, "sf", 2, save = save, path = path,
-                    intlib = intlib) %>%
+                    intlib = intlib, force = force) %>%
         mutate(province = translate(NAME_1, hash),
                district = translate(NAME_2, d.hash)) %>%
         select(province, district, geometry)
   } else {
     df_sf <- gadm(country, "sf", 1, save = save, path = path,
-                  intlib = intlib) %>%
+                  intlib = intlib, force = force) %>%
       mutate(province = translate(NAME_1, hash)) %>%
       select(province, geometry)
   }
@@ -244,7 +246,9 @@ sel_map <- function(lst, test_lst) {
 #' By default \code{TRUE}.
 #' @param lst_province_year A list containing the spatial expression of admin1
 #' for each year of change, use to select the map expressed with the right
-#' admin1 definition in time. See `Details` for more inforamtion
+#' admin1 definition in time. See `Details` for more inforamtion.
+#' @param force boolean, force to download the file even if already in the path.
+#' By default \code{FALSE}.
 #'
 #' @return a list of `sf` object containing the maps of admin1 administrative
 #' boundaries and two maps of the country boundaries (one in high resolution
@@ -267,7 +271,7 @@ sel_map <- function(lst, test_lst) {
 #' @export
 hist_map <- function(country, hash, lst_history, from = "1960",
                      to = "2020", d.hash = NULL, tolerance = 0.01,
-                     save = FALSE, path = NULL, intlib = TRUE,
+                     save = FALSE, path = NULL, intlib = TRUE, force = FALSE,
                      lst_province_year = NULL) {
 
   if (missing(hash)) hash <- NULL
@@ -277,14 +281,14 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   df_sf <- current_map(country = country, hash = hash,
                        lst_history = lst_history, from = from, to = to,
                        d.hash = d.hash, save = save, path = path,
-                       intlib = intlib)
+                       intlib = intlib, force = force)
 
   boundbox <- st_bbox(df_sf)
   crs <- st_crs(df_sf)
 
   # COUNTRY
   gadm0r <- gadm(country, "sf", 0, save = save, path = path,
-                 intlib = intlib) %>%
+                 intlib = intlib, force = force) %>%
     select(-GID_0) %>%
     rename(country = NAME_0) %>%
     define_bbox_proj(boundbox, crs)
@@ -314,7 +318,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
 
       if (country == "Vietnam" & sel_year[x] >= "2008") {
         old_mapr <- gadm(country, "sf", 1, save = save, path = path,
-                         intlib = intlib) %>%
+                         intlib = intlib, force = force) %>%
           mutate(province = translate(NAME_1, hash)) %>%
           select(province, geometry)
       } else {
