@@ -110,6 +110,6 @@ include) in high quality.
 \examples{
 library(dictionary)
 
-kh_map <- hist_map("Cambodia", kh_province, kh_history, path = FALSE)
+kh_map <- hist_map("Cambodia", kh_province, kh_history)
 
 }
