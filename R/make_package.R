@@ -14,7 +14,7 @@ internal_data <- function(country, path, from = "1960", to = "2020") {
   suppressWarnings(
     ccode <- countrycode::countrycode(country, "country.name", "iso2c") %>%
     tolower())
-  if(is.na(ccode)) {
+  if (is.na(ccode)) {
     stop(paste0("The `country` inputed:", country, " , was not matched.
                 A complete description of available country languages is ",
                 "available in the package `countrycode`:",
