@@ -5,8 +5,8 @@
 \title{Create a list of historical map}
 \usage{
 hist_map(country, hash, lst_history, from = "1960", to = "2020",
-  d.hash = NULL, tolerance = 0.01, path = NULL, intlib = TRUE,
-  lst_province_year = NULL)
+  d.hash = NULL, tolerance = 0.01, save = FALSE, path = NULL,
+  intlib = TRUE, lst_province_year = NULL)
 }
 \arguments{
 \item{country}{character string, name of the country to download.}
@@ -34,11 +34,17 @@ information.}
 should be in the metric of the input object (cf. from function
 \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.}
 
-\item{path}{character string, name where the dowloaded file is saved. If
-`FALSE`, the downloaded file is not saved.}
+\item{save}{boolean, specifies whether the downloaded file should be saved
+in a specific path or not. If \code{NULL}, it will be asked interactively.
+By default \code{FALSE}.}
 
-\item{intlib}{boolean, if `TRUE`, saved the downloaded file in internal
-library. By default, `FALSE`.}
+\item{path}{character string, path to save the downloaded file. If
+\code{NULL}, the file will be saved in the working directory. By default
+\code{NULL}.}
+
+\item{intlib}{boolean, specifies whether the downloaded file should be saved
+in the library of packages. If \code{NULL}, it will be asked interactively.
+By default \code{TRUE}.}
 
 \item{lst_province_year}{A list containing the spatial expression of admin1
 for each year of change, use to select the map expressed with the right
@@ -84,8 +90,9 @@ each map object with the tolerance (argument `tolerance`) value in the metric
 of the input object.
 \cr\cr
 The function uses the function \code{\link[sptools]{gadm}} from the package
-`gadm`, to have more information on the parameter `path` and `intlib`, please
-take a look at the help of this function.
+\code{gadm}, to have more information on the parameters \code{save},
+\code{path} and \code{intlib}, please take a look at the help of this
+function.
 \cr\cr
 The arguments `lst_province_year` should be input as a list of charactor
 vector containing the names of the admin1 written in a same way as `hash`

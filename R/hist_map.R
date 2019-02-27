@@ -90,14 +90,17 @@ select_events <- function(hist_lst, from, to) {
 #'  `lst_history` object.  named character vector containing the translation in
 #'  English (standardized version) of the admin2 names. See `Details` for more
 #'  information.
-#' @param path character string, name where the dowloaded file is saved.
-#' @param intlib boolean, if TRUE, saved the downloaded file in internal
-#' library. By default, FALSE.
+#' @param save boolean, specifies whether the downloaded file should be saved
+#' in a specific path or not. If \code{NULL}, it will be asked interactively.
+#' @param path character string, path to save the downloaded file. If
+#' \code{NULL}, the file will be saved in the working directory.
+#' @param intlib boolean, specifies whether the downloaded file should be saved
+#' in the library of packages. If \code{NULL}, it will be asked interactively.
 #'
 #' @importFrom sptools gadm
 #' @keywords internal
 #' @noRd
-current_map <- function(country, hash, lst_history, from, to, d.hash,
+current_map <- function(country, hash, lst_history, from, to, d.hash, save,
                         path, intlib) {
 
   # exception for Vietnam
@@ -110,12 +113,14 @@ current_map <- function(country, hash, lst_history, from, to, d.hash,
   } else if (is.null(lst_history) == FALSE &&
              select_events(lst_history, from, to) %>% map("event") %>%
                grepl("complexe", .) %>% any) {
-      df_sf <- gadm(country, "sf", 2, path = path, intlib = intlib) %>%
+      df_sf <- gadm(country, "sf", 2, save = save, path = path,
+                    intlib = intlib) %>%
         mutate(province = translate(NAME_1, hash),
                district = translate(NAME_2, d.hash)) %>%
         select(province, district, geometry)
   } else {
-    df_sf <- gadm(country, "sf", 1, path = path, intlib = intlib) %>%
+    df_sf <- gadm(country, "sf", 1, save = save, path = path,
+                  intlib = intlib) %>%
       mutate(province = translate(NAME_1, hash)) %>%
       select(province, geometry)
   }
@@ -193,8 +198,9 @@ sel_map <- function(lst, test_lst) {
 #' of the input object.
 #' \cr\cr
 #' The function uses the function \code{\link[sptools]{gadm}} from the package
-#' `gadm`, to have more information on the parameter `path` and `intlib`, please
-#' take a look at the help of this function.
+#' \code{gadm}, to have more information on the parameters \code{save},
+#' \code{path} and \code{intlib}, please take a look at the help of this
+#' function.
 #' \cr\cr
 #' The arguments `lst_province_year` should be input as a list of charactor
 #' vector containing the names of the admin1 written in a same way as `hash`
@@ -227,10 +233,15 @@ sel_map <- function(lst, test_lst) {
 #' @param tolerance numeric for thinning (simplification). the tolerance value
 #'  should be in the metric of the input object (cf. from function
 #'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.
-#' @param path character string, name where the dowloaded file is saved. If
-#' `FALSE`, the downloaded file is not saved.
-#' @param intlib boolean, if `TRUE`, saved the downloaded file in internal
-#' library. By default, `FALSE`.
+#' @param save boolean, specifies whether the downloaded file should be saved
+#' in a specific path or not. If \code{NULL}, it will be asked interactively.
+#' By default \code{FALSE}.
+#' @param path character string, path to save the downloaded file. If
+#' \code{NULL}, the file will be saved in the working directory. By default
+#' \code{NULL}.
+#' @param intlib boolean, specifies whether the downloaded file should be saved
+#' in the library of packages. If \code{NULL}, it will be asked interactively.
+#' By default \code{TRUE}.
 #' @param lst_province_year A list containing the spatial expression of admin1
 #' for each year of change, use to select the map expressed with the right
 #' admin1 definition in time. See `Details` for more inforamtion
@@ -255,8 +266,9 @@ sel_map <- function(lst, test_lst) {
 #'
 #' @export
 hist_map <- function(country, hash, lst_history, from = "1960",
-                      to = "2020", d.hash = NULL, tolerance = 0.01,
-                      path = NULL, intlib = TRUE, lst_province_year = NULL) {
+                     to = "2020", d.hash = NULL, tolerance = 0.01,
+                     save = FALSE, path = NULL, intlib = TRUE,
+                     lst_province_year = NULL) {
 
   if (missing(hash)) hash <- NULL
   if (missing(lst_history)) lst_history <- NULL
@@ -264,13 +276,15 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   # ACTUAL MAP
   df_sf <- current_map(country = country, hash = hash,
                        lst_history = lst_history, from = from, to = to,
-                       d.hash = d.hash, path = path, intlib = intlib)
+                       d.hash = d.hash, save = save, path = path,
+                       intlib = intlib)
 
   boundbox <- st_bbox(df_sf)
   crs <- st_crs(df_sf)
 
   # COUNTRY
-  gadm0r <- gadm(country, "sf", 0, path = path, intlib = intlib) %>%
+  gadm0r <- gadm(country, "sf", 0, save = save, path = path,
+                 intlib = intlib) %>%
     select(-GID_0) %>%
     rename(country = NAME_0) %>%
     define_bbox_proj(boundbox, crs)
@@ -299,7 +313,8 @@ hist_map <- function(country, hash, lst_history, from = "1960",
     total_lst <- lapply(seq_along(sel_year), function (x) {
 
       if (country == "Vietnam" & sel_year[x] >= "2008") {
-        old_mapr <- gadm(country, "sf", 1, path = path, intlib = intlib) %>%
+        old_mapr <- gadm(country, "sf", 1, save = save, path = path,
+                         intlib = intlib) %>%
           mutate(province = translate(NAME_1, hash)) %>%
           select(province, geometry)
       } else {

@@ -48,7 +48,8 @@ map_data <- function(path, country, hash, lst_history, from = "1960",
   if (!dir.exists(datadir)) dir.create(datadir)
   data <- hist_map(country = country, hash = hash, lst_history = lst_history,
                    from = from, to = to, d.hash = d.hash,
-                   tolerance = tolerance, intlib = FALSE, path = datarawdir)
+                   tolerance = tolerance, intlib = FALSE, save = TRUE,
+                   path = datarawdir)
   list2env(data, envir = environment())
   eply::evals(paste0("usethis::use_data(`", paste(names(data),
                                                   collapse = "`, `"),
