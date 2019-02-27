@@ -27,7 +27,6 @@
 #'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.
 #'
 #' @examples
-#'
 #' library(dictionary)
 #' \dontrun{
 #' map_data("PACKAGE", "Cambodia", kh_province, kh_history)

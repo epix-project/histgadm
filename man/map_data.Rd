@@ -42,7 +42,6 @@ Creates a list of historical map with the function
 the folder data of a package.
 }
 \examples{
-
 library(dictionary)
 \dontrun{
 map_data("PACKAGE", "Cambodia", kh_province, kh_history)
