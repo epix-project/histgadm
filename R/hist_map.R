@@ -311,7 +311,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   } else {
 
     sel_year <- lst_history %>% map("year") %>% map(as.Date) %>%
-      c(from, .) %>% unlist %>% unique %>% .[which(. < to & . >= from)] %>%
+      c(from, .) %>% unlist() %>% unique() %>% .[which(. < to & . >= from)] %>%
       lubridate::year(.)
 
     total_lst <- lapply(seq_along(sel_year), function (x) {
@@ -341,8 +341,8 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   name <- lapply(seq_along(total_lst), function(x) {
     total_lst[[names(total_lst)[x]]] %>% names %>%
       paste0(
-        countrycode::countrycode(country, "country.name", "iso2c") %>% tolower,
-        "_", names(total_lst)[x], "_", .)
+        countrycode::countrycode(country, "country.name", "iso2c") %>%
+          tolower(), "_", names(total_lst)[x], "_", .)
   }) %>%
     unlist
   total_lst %<>% flatten(.) %>% setNames(name)
