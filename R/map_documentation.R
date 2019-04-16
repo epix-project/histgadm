@@ -2,10 +2,10 @@
 #' Format documentation of a data.frame
 #'
 #' From a data frame, return one vector of length one containing:
-#' An object of class \code{data.frame, sf} with `THE DIMENSION OF THE DF`.
+#' An object of class \code{data.frame, sf} with \code{THE DIMENSION OF THE DF}.
 #' And a list of the columns name and the class of each column.
 #'
-#' @param df a object of class `data.frame`.
+#' @param df a object of class \code{data.frame}.
 #'
 #' @importFrom roxygen2 object_format
 #' @keywords internal
@@ -46,11 +46,11 @@ map_documentation <- function(path) {
       countrycode::countrycode("iso2c", "country.name")
     source <- paste0("GADM (version ",
                      dir(paste0(path, "/data-raw/")) %>% substr(5, 6) %>%
-                       unique %>% strsplit("") %>% unlist %>%
+                       unique() %>% strsplit("") %>% unlist() %>%
                        paste(collapse = "."),
                      ") data base from \\url{www.gadm.org}")
 
-    if (grep("[[:digit:]]", list_tab[x]) %>% length > 0) {
+    if (grep("[[:digit:]]", list_tab[x]) %>% length(.) > 0) {
 
       doc <- list(
         title = paste0("Admin1 Administrative boundaries of ", country,

@@ -12,12 +12,12 @@ hist_map(country, hash, lst_history, from = "1960", to = "2020",
 \item{country}{character string, name of the country to download.}
 
 \item{hash}{named character vector containing the translation in English
-(standardized version) of the admin1 names. See `Details` for more
+(standardized version) of the admin1 names. See \code{Details} for more
 information.}
 
 \item{lst_history}{A list containing a list of event, each code with a slot
 after, a slot before, a slotevent (split/merge/rename/ complexe merge/
-complexe split) and a slot year. See `Details` for more information.}
+complexe split) and a slot year. See \code{Details} for more information.}
 
 \item{from}{Initial date of the time range selected, of the class Date,
 character or numeric. By default "1960".}
@@ -25,10 +25,10 @@ character or numeric. By default "1960".}
 \item{to}{Final date of the time range selected, of the class Date, character
 or numeric, by default "2020".}
 
-\item{d.hash}{used in case of `complexe split` or `complexe merge` in the
-`lst_history` object.  named character vector containing the translation in
-English (standardized version) of the admin2 names. See `Details` for more
-information.}
+\item{d.hash}{used in case of \code{complexe split} or \code{complexe merge}
+in the \code{lst_history} object.  named character vector containing the
+translation in English (standardized version) of the admin2 names.
+See \code{Details} for more information.}
 
 \item{tolerance}{numeric for thinning (simplification). the tolerance value
 should be in the metric of the input object (cf. from function
@@ -51,12 +51,12 @@ By default \code{FALSE}.}
 
 \item{lst_province_year}{A list containing the spatial expression of admin1
 for each year of change, use to select the map expressed with the right
-admin1 definition in time. See `Details` for more inforamtion.}
+admin1 definition in time. See \code{Details} for more inforamtion.}
 }
 \value{
-a list of `sf` object containing the maps of admin1 administrative
-boundaries and two maps of the country boundaries (one in high resolution
-and one in low resolution).
+a list of \code{sf} object containing the maps of admin1 a
+dministrative boundaries and two maps of the country boundaries (one in high
+resolution and one in low resolution).
 }
 \description{
 From a time range (by default: 1960-01-01 / 2020-12-31), recreates old map
@@ -66,49 +66,51 @@ maps will be create for each year of event (split, merge or rename of
 admin1), one in high resolution and one in low resolution.
 }
 \details{
-The functions  needs a named vector, `hash` and `d.hash`
-arguments, to translate the `NAME_1` column (and `NAME_2` if necessary) from
-GADM \url{https://gadm.org} in a standardized English version. We advice to
-use the named vector `xx_province` for admin1 or `xx_district` for admin2
-contained in the `dictionary` package, for example:
-\code{\link[dictionary]{kh_province}}. If no `hash` and/or `d.hash` arguments
-is missing the column(s) `NAME_1` and/or `NAME_2` are encoded in UNICODE and
-keep in native language.
+The functions  needs a named vector, \code{hash} and \code{d.hash}
+arguments, to translate the \code{NAME_1} column (and \code{NAME_2} if
+necessary) from GADM \url{https://gadm.org} in a standardized English
+version. We advice to use the named vector \code{xx_province} for admin1 or
+\code{xx_district} for admin2
+contained in the \code{dictionary}package, for example:
+\code{\link[dictionary]{kh_province}}. If no \code{hash} and/or \code{d.hash}
+ arguments is missing the column(s) \code{NAME_1} and/or \code{NAME_2} are
+encoded in UNICODE and keep in native language.
 \cr\cr
 The function needs also a list of event (split/merge/rename/
 complexe merge/complexe split) in a standardized format to recreate
 historical map. We advice to use or the copy the format of the list
-`xx_history` contained in the package `dictionary`.
+\code{xx_history} contained in the package \code{dictionary}.
 For example: \code{\link[dictionary]{kh_history}}.
-If no list are inputed in the `lst_history` argument, only the current map of
-admin1 administrative boundary and the country boundary in high and low
-resolution in a list will be created.
+If no list are inputed in the \code{lst_history} argument, only the current
+map of admin1 administrative boundary and the country boundary in high and
+low resolution in a list will be created.
 \cr\cr
-The package `dictionary` is available on GitHub, to install it, it necessary
-to have the `devtools` package:
-`devtools::install_github("choisy/dictionary")`
+The package \code{dictionary} is available on GitHub, to install it, it
+necessary to have the \code{devtools} package:
+\code{devtools::install_github("choisy/dictionary")}
 \cr\cr
 The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
-each map object with the tolerance (argument `tolerance`) value in the metric
-of the input object.
+each map object with the tolerance (argument \code{tolerance}) value in the
+metric of the input object.
 \cr\cr
 The function uses the function \code{\link[sptools]{gadm}} from the package
 \code{gadm}, to have more information on the parameters \code{save},
 \code{path} and \code{intlib}, please take a look at the help of this
 function.
 \cr\cr
-The arguments `lst_province_year` should be input as a list of charactor
-vector containing the names of the admin1 written in a same way as `hash`
-and/or `lst_history` ordered by year of change in administrative boundaries.
-We advice to use or the copy the format of the list `xx_province_year`
-contained in the package `dictionary`. For example:
+The arguments \code{lst_province_year} should be input as a list of charactor
+vector containing the names of the admin1 written in a same way as
+\code{hash} and/or \code{lst_history} ordered by year of change in
+administrative boundaries.
+We advice to use or the copy the format of the list \code{xx_province_year}
+contained in the package \code{dictionary}. For example:
 \code{\link[dictionary]{kh_province_year}}.
 \cr\cr
 The output of the function is a named list: the admin1 boundaries named are
 named as: the 2 characters ISO code, the year of expression of this admin1
-administrative boundaries and the resolution. For example: "vn_1997_2004_high"
-for the admin1 boundaries of Vietnam from 1997-01-01 until 2004-01-01 (not
-include) in high quality.
+administrative boundaries and the resolution. For example:
+"vn_1997_2004_high" for the admin1 boundaries of Vietnam from 1997-01-01
+until 2004-01-01 (not include) in high quality.
 }
 \examples{
 library(dictionary)

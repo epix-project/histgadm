@@ -1,8 +1,8 @@
 # ------------------------------------------------------------------------------
 #' Thinning (simplification)
 #'
-#' The function performs \code{\link[maptools]{thinnedSpatialPoly}} on a `sf`
-#' object.
+#' The function performs \code{\link[maptools]{thinnedSpatialPoly}} on a
+#' \code{sf} object.
 #'
 #' @param sf_obj an objet of class "sf".
 #' @param tolerance the tolerance value in the metric of the input object (cf.
@@ -22,7 +22,8 @@ thin_polygons <- function(sf_obj, tolerance) {
 # ------------------------------------------------------------------------------
 #' Defines new boundaries box and projections of a sf object
 #'
-#' The function defines the attributes `bbox` and `crs` of a sf object.
+#' The function defines the attributes \code{bbox} and \code{crs} of a sf
+#' object.
 #'
 #' @param sf_obj an objet of class "sf".
 #' @param boundbox character, bounding box.
@@ -40,7 +41,7 @@ define_bbox_proj <- function(sf_obj, boundbox, crs) {
 #'
 #' @param vector vector to translate
 #' @param hash named character vector containing the translation in English
-#'  (standardized version) of the admin1 names. See `Details` for more
+#'  (standardized version) of the admin1 names. See \code{Details}for more
 #'  information.
 #'
 #' @importFrom stringi stri_escape_unicode
@@ -60,14 +61,14 @@ translate <- function(vector, hash = NULL) {
 #'
 #' @param hist_lst A list containing at least the variable \code{year}.
 #' @param from Initial date of the time range, \code{character}, \code{numeric}
-#' or of class \code{Date}. Select year after `from`.
+#' or of class \code{Date}. Select year after \code{from}.
 #' @param to Final date of the data, \code{character}, \code{numeric} or of
 #' class \code{Date}.
 #' @return A list with the same variables as \code{}.hist_lst
 #' @keywords internal
 #' @noRd
 select_events <- function(hist_lst, from, to) {
-  sel0 <- map(hist_lst, "year") %>% unlist %>% as.Date()
+  sel0 <- map(hist_lst, "year") %>% unlist() %>% as.Date()
   sel0 <- sel0 > as.Date(paste0(from, "-01-01")) &
     sel0 <= as.Date(paste0(to, "-12-31"))
   hist_lst <- hist_lst[sel0]
@@ -79,17 +80,17 @@ select_events <- function(hist_lst, from, to) {
 #'
 #' @param country character string, name of the country to download.
 #' @param hash named character vector containing the translation in English
-#'  (standardized version) of the admin1 names. See `Details` for more
+#'  (standardized version) of the admin1 names. See \code{Details} for more
 #'  information.
 #' @param lst_history A list containing a list of event, each code with a slot
 #'  after, a slot before, a slotevent (split/merge/rename/ complexe merge/
-#'  complexe split) and a slot year. See `Details` for more information.
+#'  complexe split) and a slot year. See \code{Details} for more information.
 #' @param from Initial date of the time range selected, of the class Date,
 #'   character or numeric. By default "1960".
-#' @param d.hash used in case of `complexe split` or `complexe merge` in the
-#'  `lst_history` object.  named character vector containing the translation in
-#'  English (standardized version) of the admin2 names. See `Details` for more
-#'  information.
+#' @param d.hash used in case of \code{complexe split} or \code{complexe merge}
+#' in the \code{lst_history} object.  named character vector containing the
+#' translation in English (standardized version) of the admin2 names. See
+#' \code{Details} for more information.
 #' @param save boolean, specifies whether the downloaded file should be saved
 #' in a specific path or not. If \code{NULL}, it will be asked interactively.
 #' @param path character string, path to save the downloaded file. If
@@ -135,9 +136,9 @@ current_map <- function(country, hash, lst_history, from, to, d.hash, save,
 #' Test and select map with the spatial expression corresponding to the time
 #' frame selected.
 #'
-#' @param lst A list containing sf object containing two columns: `geometry` and
-#'   `province` , with named slot : `XX_YEAR_YEAR_QUALITY`, XX is the country
-#'   name in two letters code.
+#' @param lst A list containing sf object containing two columns:
+#' \code{geometry} and \code{province} , with named slot :
+#' \code{XX_YEAR_YEAR_QUALITY}, XX is the country name in two letters code.
 #' @param test_lst  A list containing the spatial expression of admin1
 #' for each year of change, use to select the map expressed with the right
 #' admin1 definition in time.
@@ -173,65 +174,67 @@ sel_map <- function(lst, test_lst) {
 #' maps will be create for each year of event (split, merge or rename of
 #' admin1), one in high resolution and one in low resolution.
 #'
-#' @details The functions  needs a named vector, `hash` and `d.hash`
-#' arguments, to translate the `NAME_1` column (and `NAME_2` if necessary) from
-#' GADM \url{https://gadm.org} in a standardized English version. We advice to
-#' use the named vector `xx_province` for admin1 or `xx_district` for admin2
-#' contained in the `dictionary` package, for example:
-#' \code{\link[dictionary]{kh_province}}. If no `hash` and/or `d.hash` arguments
-#' is missing the column(s) `NAME_1` and/or `NAME_2` are encoded in UNICODE and
-#' keep in native language.
+#' @details The functions  needs a named vector, \code{hash} and \code{d.hash}
+#' arguments, to translate the \code{NAME_1} column (and \code{NAME_2} if
+#' necessary) from GADM \url{https://gadm.org} in a standardized English
+#' version. We advice to use the named vector \code{xx_province} for admin1 or
+#' \code{xx_district} for admin2
+#' contained in the \code{dictionary}package, for example:
+#' \code{\link[dictionary]{kh_province}}. If no \code{hash} and/or \code{d.hash}
+#'  arguments is missing the column(s) \code{NAME_1} and/or \code{NAME_2} are
+#' encoded in UNICODE and keep in native language.
 #' \cr\cr
 #' The function needs also a list of event (split/merge/rename/
 #' complexe merge/complexe split) in a standardized format to recreate
 #' historical map. We advice to use or the copy the format of the list
-#' `xx_history` contained in the package `dictionary`.
+#' \code{xx_history} contained in the package \code{dictionary}.
 #' For example: \code{\link[dictionary]{kh_history}}.
-#' If no list are inputed in the `lst_history` argument, only the current map of
-#' admin1 administrative boundary and the country boundary in high and low
-#' resolution in a list will be created.
+#' If no list are inputed in the \code{lst_history} argument, only the current
+#' map of admin1 administrative boundary and the country boundary in high and
+#' low resolution in a list will be created.
 #' \cr\cr
-#' The package `dictionary` is available on GitHub, to install it, it necessary
-#' to have the `devtools` package:
-#' `devtools::install_github("choisy/dictionary")`
+#' The package \code{dictionary} is available on GitHub, to install it, it
+#' necessary to have the \code{devtools} package:
+#' \code{devtools::install_github("choisy/dictionary")}
 #' \cr\cr
 #' The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
-#' each map object with the tolerance (argument `tolerance`) value in the metric
-#' of the input object.
+#' each map object with the tolerance (argument \code{tolerance}) value in the
+#' metric of the input object.
 #' \cr\cr
 #' The function uses the function \code{\link[sptools]{gadm}} from the package
 #' \code{gadm}, to have more information on the parameters \code{save},
 #' \code{path} and \code{intlib}, please take a look at the help of this
 #' function.
 #' \cr\cr
-#' The arguments `lst_province_year` should be input as a list of charactor
-#' vector containing the names of the admin1 written in a same way as `hash`
-#' and/or `lst_history` ordered by year of change in administrative boundaries.
-#' We advice to use or the copy the format of the list `xx_province_year`
-#' contained in the package `dictionary`. For example:
+#' The arguments \code{lst_province_year} should be input as a list of charactor
+#' vector containing the names of the admin1 written in a same way as
+#' \code{hash} and/or \code{lst_history} ordered by year of change in
+#' administrative boundaries.
+#' We advice to use or the copy the format of the list \code{xx_province_year}
+#' contained in the package \code{dictionary}. For example:
 #' \code{\link[dictionary]{kh_province_year}}.
 #' \cr\cr
 #' The output of the function is a named list: the admin1 boundaries named are
 #' named as: the 2 characters ISO code, the year of expression of this admin1
-#' administrative boundaries and the resolution. For example: "vn_1997_2004_high"
-#' for the admin1 boundaries of Vietnam from 1997-01-01 until 2004-01-01 (not
-#' include) in high quality.
+#' administrative boundaries and the resolution. For example:
+#' "vn_1997_2004_high" for the admin1 boundaries of Vietnam from 1997-01-01
+#' until 2004-01-01 (not include) in high quality.
 #'
 #' @param country character string, name of the country to download.
 #' @param hash named character vector containing the translation in English
-#'  (standardized version) of the admin1 names. See `Details` for more
+#'  (standardized version) of the admin1 names. See \code{Details} for more
 #'  information.
 #' @param lst_history A list containing a list of event, each code with a slot
 #'  after, a slot before, a slotevent (split/merge/rename/ complexe merge/
-#'  complexe split) and a slot year. See `Details` for more information.
+#'  complexe split) and a slot year. See \code{Details} for more information.
 #' @param from Initial date of the time range selected, of the class Date,
 #'   character or numeric. By default "1960".
 #' @param to Final date of the time range selected, of the class Date, character
 #'  or numeric, by default "2020".
-#' @param d.hash used in case of `complexe split` or `complexe merge` in the
-#'  `lst_history` object.  named character vector containing the translation in
-#'  English (standardized version) of the admin2 names. See `Details` for more
-#'  information.
+#' @param d.hash used in case of \code{complexe split} or \code{complexe merge}
+#' in the \code{lst_history} object.  named character vector containing the
+#' translation in English (standardized version) of the admin2 names.
+#' See \code{Details} for more information.
 #' @param tolerance numeric for thinning (simplification). the tolerance value
 #'  should be in the metric of the input object (cf. from function
 #'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.
@@ -246,13 +249,13 @@ sel_map <- function(lst, test_lst) {
 #' By default \code{TRUE}.
 #' @param lst_province_year A list containing the spatial expression of admin1
 #' for each year of change, use to select the map expressed with the right
-#' admin1 definition in time. See `Details` for more inforamtion.
+#' admin1 definition in time. See \code{Details} for more inforamtion.
 #' @param force boolean, force to download the file even if already in the path.
 #' By default \code{FALSE}.
 #'
-#' @return a list of `sf` object containing the maps of admin1 administrative
-#' boundaries and two maps of the country boundaries (one in high resolution
-#' and one in low resolution).
+#' @return a list of \code{sf} object containing the maps of admin1 a
+#' dministrative boundaries and two maps of the country boundaries (one in high
+#' resolution and one in low resolution).
 #'
 #' @examples
 #' library(dictionary)
@@ -344,7 +347,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
         countrycode::countrycode(country, "country.name", "iso2c") %>%
           tolower(), "_", names(total_lst)[x], "_", .)
   }) %>%
-    unlist
+    unlist()
   total_lst %<>% flatten(.) %>% setNames(name)
 
   if (is.null(lst_province_year) == FALSE){

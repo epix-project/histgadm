@@ -15,7 +15,7 @@ test_that("`initial_pkg` returns the correct output", {
   unlink(tmp, recursive = TRUE)
 
   tmp <- file.path(tempdir(), "pkgtest")
-  create_package(tmp, open = FALSE)
+  usethis::create_package(tmp, open = FALSE)
   histgadm:::internal_data("Laos", tmp)
 
   test2 <- dir(paste0(tmp, "/man/"))

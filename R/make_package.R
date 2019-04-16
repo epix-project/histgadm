@@ -77,7 +77,7 @@ initial_pkg <-  function(path, name_pkg) {
              "Multiple country name is also accepted, separated by a ','. \n",
              "For example: Vietnam, Cambodia \n"))))
     ans <- readline("Selection: ")
-    if (grepl(",", ans)) ans %<>% strsplit(",") %>% map(trimws) %>% unlist
+    if (grepl(",", ans)) ans %<>% strsplit(",") %>% map(trimws) %>% unlist()
 
     message(cat(
       paste0("\n", "For which time range do you want to download file?")))
@@ -89,8 +89,8 @@ initial_pkg <-  function(path, name_pkg) {
     if (ans_date == "") {
       from <- "1960-01-01"; to <- "2020-12-31"
     } else {
-      from <- ans_date %>% strsplit(" ") %>% purrr::map(1) %>% unlist
-      to <- ans_date %>% strsplit(" ") %>% purrr::map(2) %>% unlist
+      from <- ans_date %>% strsplit(" ") %>% purrr::map(1) %>% unlist()
+      to <- ans_date %>% strsplit(" ") %>% purrr::map(2) %>% unlist()
     }
 
     if (length(ans) > 1) {

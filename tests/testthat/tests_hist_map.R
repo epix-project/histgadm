@@ -24,7 +24,7 @@ test_that("`hist_map` returns the correct output", {
   test3 <- vn_08 %>% purrr::map("province") %>% purrr::discard(is.null) %>%
     purrr::map(data.frame) %>%
     purrr::map(dictionary::match_pattern, ".x..i..", vn_province_year) %>%
-    unlist %>% unique
+    unlist() %>% unique()
   testthat::expect_equal(test3, "2008-2020")
 
   vn_8082 <- hist_map("Vietnam", vn_province, vn_history, save = FALSE,
@@ -34,7 +34,7 @@ test_that("`hist_map` returns the correct output", {
     purrr::discard(is.null) %>%
     purrr::map(data.frame) %>%
     purrr::map(dictionary::match_pattern, ".x..i..", vn_province_year) %>%
-    unlist %>% unique
+    unlist() %>% unique()
   testthat::expect_equal(test4, "1979-1990")
 
   test5 <- hist_map("France", intlib = FALSE, save = FALSE)

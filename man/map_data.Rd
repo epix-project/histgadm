@@ -13,12 +13,12 @@ map_data(path, country, hash, lst_history, from = "1960", to = "2020",
 \item{country}{character string, name of the country to download.}
 
 \item{hash}{named character vector containing the translation in English
-(standardized version) of the admin1 names. See `Details` for more
+(standardized version) of the admin1 names. See \code{Details} for more
 information.}
 
 \item{lst_history}{A list containing a list of event, each code with a slot
 after, a slot before, a slotevent (split/merge/rename/ complexe merge/
-complexe split) and a slot year. See `Details` for more information.}
+complexe split) and a slot year. See \code{Details} for more information.}
 
 \item{from}{Initial date of the time range selected, of the class Date,
 character or numeric. By default "1960".}
@@ -26,10 +26,10 @@ character or numeric. By default "1960".}
 \item{to}{Final date of the time range selected, of the class Date, character
 or numeric, by default "2020".}
 
-\item{d.hash}{used in case of `complexe split` or `complexe merge` in the
-`lst_history` object.  named character vector containing the translation in
-English (standardized version) of the admin2 names. See `Details` for more
-information.}
+\item{d.hash}{used in case of \code{complexe split} or \code{complexe merge}
+in the \code{lst_history} object.  named character vector containing the
+translation in English (standardized version) of the admin2 names. See
+\code{Details} for more information.}
 
 \item{tolerance}{numeric for thinning (simplification). the tolerance value
 should be in the metric of the input object (cf. from function
