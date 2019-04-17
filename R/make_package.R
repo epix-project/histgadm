@@ -57,8 +57,8 @@ initial_pkg <-  function(path, name_pkg) {
 
   pkg_path <-  paste0(path, "/", name_pkg)
   usethis::create_package(pkg_path, open = FALSE,
-                          fields = list(Depends = "R (>= 2.10)"))
-  usethis::use_package("sf")
+                          fields = list(Depends = "R (>= 2.10)",
+                                        Imports = "sf"))
 
   message(cat(paste0("\n",
                      "Do you want to download GADM file from the internet?",
