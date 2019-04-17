@@ -12,28 +12,34 @@
 
 <meta name="author" content="Contamin Lucie" />
 
-<meta name="date" content="2019-02-19" />
+<meta name="date" content="2019-04-16" />
 
 <title>histgadm Usage</title>
 
 
 
 <style type="text/css">code{white-space: pre;}</style>
-<style type="text/css">
-a.sourceLine { display: inline-block; min-height: 1.25em; }
+<style type="text/css" data-origin="pandoc">
+a.sourceLine { display: inline-block; line-height: 1.25; }
 a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
 @media print {
 code.sourceCode { white-space: pre-wrap; }
 a.sourceLine { text-indent: -1em; padding-left: 1em; }
 }
 pre.numberSource a.sourceLine
-  { position: relative; }
+  { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
   { content: attr(data-line-number);
-    position: absolute; left: -5em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all;
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -41,39 +47,63 @@ pre.numberSource a.sourceLine::before
     color: #aaaaaa;
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
 @media screen {
-a.sourceLine::before { text-decoration: underline; color: initial; }
+a.sourceLine::before { text-decoration: underline; }
 }
-code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
 code span.dt { color: #902000; } /* DataType */
 code span.dv { color: #40a070; } /* DecVal */
-code span.bn { color: #40a070; } /* BaseN */
-code span.fl { color: #40a070; } /* Float */
-code span.ch { color: #4070a0; } /* Char */
-code span.st { color: #4070a0; } /* String */
-code span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code span.ot { color: #007020; } /* Other */
-code span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code span.fu { color: #06287e; } /* Function */
 code span.er { color: #ff0000; font-weight: bold; } /* Error */
-code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code span.cn { color: #880000; } /* Constant */
-code span.sc { color: #4070a0; } /* SpecialChar */
-code span.vs { color: #4070a0; } /* VerbatimString */
-code span.ss { color: #bb6688; } /* SpecialString */
-code span.im { } /* Import */
-code span.va { color: #19177c; } /* Variable */
-code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code span.op { color: #666666; } /* Operator */
-code span.bu { } /* BuiltIn */
 code span.ex { } /* Extension */
-code span.pp { color: #bc7a00; } /* Preprocessor */
-code span.at { color: #7d9029; } /* Attribute */
-code span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
 code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
 </style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -261,6 +291,9 @@ code > span.al { color: #ff0000; font-weight: bold; }
 code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
+
+
+
 </head>
 
 <body>
@@ -269,63 +302,67 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 
 <h1 class="title toc-ignore">histgadm Usage</h1>
-<h4 class="author"><em>Contamin Lucie</em></h4>
-<h4 class="date"><em>2019-02-19</em></h4>
+<h4 class="author">Contamin Lucie</h4>
+<h4 class="date">2019-04-16</h4>
 
 
 
 <div id="installation" class="section level2">
 <h2>Installation</h2>
 <p>You can install the development version of histgadm from <a href="https://github.com/epix-project/histgadm">GitHub</a> with:</p>
-<pre class="sourceCode r" id="cb1"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># install.packages(&quot;devtools&quot;)</span></a>
-<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;epix-project/histgadm&quot;</span>)</a></code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># install.packages(&quot;devtools&quot;)</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;epix-project/histgadm&quot;</span>)</a></code></pre></div>
 </div>
 <div id="usage" class="section level2">
 <h2>Usage</h2>
 <p>The <code>histgadm</code> contains four functions.</p>
 <p>The function <code>init_package</code> creates a package for the GADM data (<a href="https://gadm.org/" class="uri">https://gadm.org/</a>), and interactively allows the user to download data from GADM for one or more country and recreates historical map from a time range (interactive input) by merging or spliting back admin1 polygons. The ouput are <code>sf</code> maps of the country in high and low definition with the different admin1 historial and current administrative boundaries but also the country administrative boundaries. The historical map are “approximate” map because the package only split or merge admin1 polygons when in reality, this event are ofter more complexe and the boundaries may not be exact.</p>
 <p>Below is a quick look at how <code>histgadm</code> is working:</p>
-<pre class="sourceCode r" id="cb2"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(<span class="st">&quot;histgadm&quot;</span>)</a>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(<span class="st">&quot;histgadm&quot;</span>)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"></a>
 <a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co"># Create a new package ---------------------------------------------------------</span></a>
 <a class="sourceLine" id="cb2-4" data-line-number="4">tmp &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pkgtest&quot;</span>)</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">dir.create</span>(tmp)</a>
 <a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw">initial_pkg</span>(tmp, <span class="st">&quot;test&quot;</span>)</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpcFzRYV/pkgtest/test'</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; ✔ Creating 'R/'</span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; ✔ Creating 'man/'</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; ✔ Creating '/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVe2Qb9/pkgtest/test/'</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVe2Qb9/pkgtest/test'</span></a>
+<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; ✔ Creating 'R/'</span></a>
 <a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; ✔ Adding 'sf' to Imports field in DESCRIPTION</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; ● Refer to functions with `sf::fun()`</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt; Do you want to download GADM file from the internet? y / n (default)</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt; Selection:</span></a></code></pre>
+<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; Package: test</span></a>
+<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; Title: What the Package Does (One Line, Title Case)</span></a>
+<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; Version: 0.0.0.9000</span></a>
+<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; Authors@R (parsed):</span></a>
+<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt;     * First Last &lt;first.last@example.com&gt; [aut, cre] (&lt;https://orcid.org/YOUR-ORCID-ID&gt;)</span></a>
+<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt; Description: What the package does (one paragraph).</span></a>
+<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt; License: What license it uses</span></a>
+<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt; Depends:</span></a>
+<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt;     R (&gt;= 2.10)</span></a>
+<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#&gt; Imports:</span></a>
+<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt;     sf</span></a>
+<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt; Encoding: UTF-8</span></a>
+<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co">#&gt; LazyData: true</span></a>
+<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></a>
+<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#&gt; ✔ Setting active project to '&lt;no active project&gt;'</span></a>
+<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co">#&gt; Do you want to download GADM file from the internet? y / n (default)</span></a>
+<a class="sourceLine" id="cb2-28" data-line-number="28"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co">#&gt; Selection:</span></a></code></pre></div>
 <p>By default, the package created contained no data but if <code>y</code> is answer the package will then ask the user to imput at least one country name and a time range to download the data corresponding to gadm and to recreate the historical map corresonding to the time range inputed. Currently, it works only for <code>Cambodia, Laos, Thailand and Vietnam</code>.</p>
 </div>
 <div id="for-other-country" class="section level2">
 <h2>For other country</h2>
 <p>For other country, the users will need to use the functions <code>map_data</code>, <code>map_documentation</code> to complete their packages. If the user want to recreate historical map, it will need to input a list containing the historical event and a dictionary for the admin1, admin2 names. For now, the package <code>dictionary</code> contains functions to create them but also dictionary and list of event for Cambodia, Laos, Thailand and Vietnam.</p>
 <p>To install it:</p>
-<pre class="sourceCode r" id="cb3"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># install.packages(&quot;devtools&quot;)</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;choisy/dictionary&quot;</span>)</a></code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># install.packages(&quot;devtools&quot;)</span></a>
+<a class="sourceLine" id="cb3-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;choisy/dictionary&quot;</span>)</a></code></pre></div>
 <p>Let’s now take a look at <code>map_data</code>: it download the current map from GADM and recreates historical map:</p>
-<pre class="sourceCode r" id="cb4"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">pgkg_dir &lt;-<span class="st"> </span><span class="kw">paste0</span>(tmp, <span class="st">&quot;/test&quot;</span>)</a>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">pgkg_dir &lt;-<span class="st"> </span><span class="kw">paste0</span>(tmp, <span class="st">&quot;/test&quot;</span>)</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">map_data</span>(pgkg_dir, <span class="st">&quot;Cambodia&quot;</span>, dictionary<span class="op">::</span>kh_province, dictionary<span class="op">::</span>kh_history, <span class="dt">from =</span> <span class="st">&quot;1980&quot;</span>, <span class="dt">to =</span> <span class="st">&quot;2018&quot;</span>)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; ✔ Creating 'data-raw/'</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; ✔ Adding '^data-raw$' to '.Rbuildignore'</span></a>
-<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt; Next:</span></a>
-<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; ● Add data creation scripts in 'data-raw/'</span></a>
-<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt; ● Use `usethis::use_data()` to add data to package</span></a>
-<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt; The file ' gadm36_KHM_1_sf.rds ' is already present in the library</span></a>
-<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt; The file ' gadm36_KHM_0_sf.rds ' is already present in the library</span></a>
-<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt; ✔ Saving 'kh_1980_1997_high', 'kh_1980_1997_low', 'kh_1997_2013_high', 'kh_1997_2013_low', 'kh_2013_2019_high', 'kh_2013_2019_low', 'kh_country_high', 'kh_country_low' to 'data/kh_1980_1997_high.rda', 'data/kh_1980_1997_low.rda', 'data/kh_1997_2013_high.rda', 'data/kh_1997_2013_low.rda', 'data/kh_2013_2019_high.rda', 'data/kh_2013_2019_low.rda', 'data/kh_country_high.rda', 'data/kh_country_low.rda'</span></a></code></pre>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVe2Qb9/pkgtest/test'</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; ✔ Saving 'kh_1980_1997_high', 'kh_1980_1997_low', 'kh_1997_2013_high', 'kh_1997_2013_low', 'kh_2013_2019_high', 'kh_2013_2019_low', 'kh_country_high', 'kh_country_low' to 'data/kh_1980_1997_high.rda', 'data/kh_1980_1997_low.rda', 'data/kh_1997_2013_high.rda', 'data/kh_1997_2013_low.rda', 'data/kh_2013_2019_high.rda', 'data/kh_2013_2019_low.rda', 'data/kh_country_high.rda', 'data/kh_country_low.rda'</span></a></code></pre></div>
 <p>And the function <code>map_documentation</code> will create the documentation for each object.</p>
-<pre class="sourceCode r" id="cb5"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">map_documentation</span>(pgkg_dir)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Updating roxygen version in /private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpcFzRYV/pkgtest/test/DESCRIPTION</span></a>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">map_documentation</span>(pgkg_dir)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Updating roxygen version in /private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVe2Qb9/pkgtest/test/DESCRIPTION</span></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; Writing NAMESPACE</span></a>
 <a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; Loading test</span></a>
 <a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; Writing kh_1980_1997_high.Rd</span></a>
@@ -335,7 +372,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; Writing kh_2013_2019_high.Rd</span></a>
 <a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; Writing kh_2013_2019_low.Rd</span></a>
 <a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; Writing kh_country_high.Rd</span></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; Writing kh_country_low.Rd</span></a></code></pre>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; Writing kh_country_low.Rd</span></a></code></pre></div>
 </div>
 
 

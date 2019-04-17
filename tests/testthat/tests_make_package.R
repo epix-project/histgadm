@@ -9,9 +9,11 @@ test_that("`initial_pkg` returns the correct output", {
   dir.create(tmp)
   initial_pkg(tmp, "test")
 
-  test1 <- dir(paste0(tmp, "/test"))
+  testthat::expect_error(histgadm:::internal_data("BLABLA", tmp))
 
-  testthat::expect_length(test1, 4)
+  test1 <- dir(paste0(tmp, "/test"))
+  print(test1)
+  testthat::expect_length(test1, 3)
   unlink(tmp, recursive = TRUE)
 
   tmp <- file.path(tempdir(), "pkgtest")
