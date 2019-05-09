@@ -47,6 +47,7 @@ make_format <- function(df) {
 #' @param path character string path of the package.
 #'
 #' @importFrom Rd2roxygen create_roxygen
+#' @importFrom roxygen2 roxygenize
 #' @importFrom utils capture.output
 #' @export
 map_documentation <- function(path) {

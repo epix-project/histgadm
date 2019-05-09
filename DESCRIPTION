@@ -29,6 +29,7 @@ Imports:
     sptools,
     stringi,
     Rd2roxygen,
+    roxygen2,
     usethis
 Remotes: 
     choisy/sptools,
