@@ -24,7 +24,6 @@ Suggests:
 Imports:
     countrycode,
     dictionary,
-    maptools,
     sf,
     sptools,
     stringi,

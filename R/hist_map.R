@@ -1,41 +1,4 @@
 # ------------------------------------------------------------------------------
-#' Thinning (simplification)
-#'
-#' The function performs \code{\link[maptools]{thinnedSpatialPoly}} on a
-#' \code{sf} object.
-#'
-#' @param sf_obj an objet of class "sf".
-#' @param tolerance the tolerance value in the metric of the input object (cf.
-#'  function `thinnedSpatialPoly`).
-#'
-#' @importFrom sf as_Spatial st_as_sf
-#' @importFrom maptools thinnedSpatialPoly
-#' @keywords internal
-#' @noRd
-thin_polygons <- function(sf_obj, tolerance) {
-  sf_obj <- as_Spatial(sf_obj)
-  sf_obj <- thinnedSpatialPoly(sf_obj, tolerance)
-  sf_obj <- st_as_sf(sf_obj)
-}
-
-# ------------------------------------------------------------------------------
-#' Defines new boundaries box and projections of a sf object
-#'
-#' The function defines the attributes \code{bbox} and \code{crs} of a sf
-#' object.
-#'
-#' @param sf_obj an objet of class "sf".
-#' @param boundbox character, bounding box.
-#' @param crs character, coordinate reference system.
-#' @keywords internal
-#' @noRd
-define_bbox_proj <- function(sf_obj, boundbox, crs) {
-  attr(sf_obj[["geometry"]], "bbox") <- boundbox
-  attr(sf_obj[["geometry"]], "crs") <- crs
-  sf_obj
-}
-
-# ------------------------------------------------------------------------------
 #' Translates vector to standardized English
 #'
 #' @param vector vector to translate
@@ -268,7 +231,7 @@ sel_map <- function(lst, test_lst) {
 #' kh_map <- hist_map("Cambodia", kh_province, kh_history)
 #'
 #' @importFrom sf st_crs st_bbox st_as_sf
-#' @importFrom sptools sf_aggregate_lst
+#' @importFrom sptools sf_aggregate_lst thin_polygons define_bbox_proj
 #' @importFrom stats setNames
 #' @importFrom dictionary match_pattern
 #'
@@ -296,10 +259,10 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   gadm0r <- gadm0r[, -which(names(gadm0r) == "GID_0")]
   names(gadm0r)[which(names(gadm0r) == "NAME_0")] <- "country"
   gadm0r <- sf::st_as_sf(gadm0r)
-  gadm0r <- define_bbox_proj(gadm0r, boundbox, crs)
+  gadm0r <- sptools::define_bbox_proj(gadm0r, boundbox, crs)
 
-  gadm0 <- thin_polygons(gadm0r, tolerance = tolerance)
-  gadm0 <- define_bbox_proj(gadm0, boundbox, crs)
+  gadm0 <- sptools::thin_polygons(gadm0r, tolerance = tolerance)
+  gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
 
   # SELECT THE YEARS & MAKE THE LIST OF OLD MAP
   from <-  as.Date(paste0(from, "-01-01"))
@@ -307,10 +270,10 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   if (is.null(lst_history)) {
 
     sel_year <- NULL
-    df_sf_r <- thin_polygons(df_sf, tolerance = tolerance)
-    df_sf_r <- define_bbox_proj(df_sf_r, boundbox, crs)
+    df_sf_r <- sptools::thin_polygons(df_sf, tolerance = tolerance)
+    df_sf_r <- sptools::define_bbox_proj(df_sf_r, boundbox, crs)
     total_lst <- list(setNames(list(df_sf, df_sf_r), c("high", "low")))
-    total_lst <- setNames(total_lst, lubridate::year(Sys.time()))
+    total_lst <- setNames(total_lst, format(Sys.time(), "%Y"))
 
   } else {
 
@@ -331,10 +294,10 @@ hist_map <- function(country, hash, lst_history, from = "1960",
         old_mapr <- sf::st_as_sf(old_mapr)
       } else {
         old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x])
-        old_mapr <- define_bbox_proj(old_mapr, boundbox, crs)
+        old_mapr <- sptools::define_bbox_proj(old_mapr, boundbox, crs)
       }
-      old_map <- thin_polygons(old_mapr, tolerance = tolerance)
-      old_map <- define_bbox_proj(old_map, boundbox, crs)
+      old_map <- sptools::thin_polygons(old_mapr, tolerance = tolerance)
+      old_map <- sptools::define_bbox_proj(old_map, boundbox, crs)
       setNames(list(old_mapr, old_map), c("high", "low"))
     })
     date_lst <- paste(sel_year,
