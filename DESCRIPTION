@@ -24,16 +24,11 @@ Suggests:
 Imports:
     countrycode,
     dictionary,
-    devtools,
-    eply, 
-    magrittr,
     maptools,
     sf,
     sptools,
     stringi,
-    stringr,
     Rd2roxygen,
-    roxygen2,
     usethis
 Remotes: 
     choisy/sptools,

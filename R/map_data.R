@@ -32,9 +32,6 @@
 #' map_data("PACKAGE", "Cambodia", kh_province, kh_history)
 #' }
 #'
-#' @importFrom devtools use_data_raw
-#' @importFrom eply evals
-#'
 #' @export
 map_data <- function(path, country, hash, lst_history, from = "1960",
                      to = "2020", d.hash = NULL, tolerance = 0.01) {
@@ -49,8 +46,8 @@ map_data <- function(path, country, hash, lst_history, from = "1960",
                    tolerance = tolerance, intlib = FALSE, save = TRUE,
                    path = datarawdir)
   list2env(data, envir = environment())
-  eply::evals(paste0("usethis::use_data(`", paste(names(data),
+  eval(parse(text = paste0("usethis::use_data(`", paste(names(data),
                                                   collapse = "`, `"),
-                     "`, overwrite = TRUE)"))
+                     "`, overwrite = TRUE)")))
   setwd(path0)
 }

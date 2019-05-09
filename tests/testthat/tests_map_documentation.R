@@ -6,7 +6,7 @@ context("`map_documentation`")
 testthat::test_that("`map_documentation` returns the correct output", {
 
   tmp <- file.path(tempdir(), "pkgtest")
-  create_package(tmp, open = FALSE)
+  usethis::create_package(tmp, open = FALSE)
   map_data(tmp, "Cambodia", kh_province, kh_history)
   map_documentation(tmp)
 
