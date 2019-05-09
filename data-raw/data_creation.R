@@ -9,7 +9,7 @@ vn_a1_0407 <-  sf::st_cast(vn_a1_0407, "MULTIPOLYGON")
 
 # Save data and empty environment ----------------------------------------------
 
-devtools::use_data(vn_a1_0407,
+usethis::use_data(vn_a1_0407,
                    internal = TRUE, overwrite = TRUE)
 
 rm(list = ls())
