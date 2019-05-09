@@ -47,6 +47,7 @@ internal_data <- function(country, path, from = "1960", to = "2020") {
 #'
 #' @importFrom usethis create_package use_package use_description
 #' @importFrom countrycode countrycode
+#' @importFrom magrittr %>% %<>%
 #' @importFrom utils getAnywhere
 #' @importFrom purrr map
 #' @importFrom crayon silver
