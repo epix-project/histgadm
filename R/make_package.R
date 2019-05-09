@@ -8,25 +8,24 @@
 #'  or numeric, by default "2020".
 #'
 #' @keywords internal
+#' @importFrom countrycode countrycode
 #' @noRd
 internal_data <- function(country, path, from = "1960", to = "2020") {
 
-  suppressWarnings(
-    ccode <- countrycode::countrycode(country, "country.name", "iso2c") %>%
-    tolower())
+  suppressWarnings(ccode <- countrycode::countrycode(country, "country.name",
+                                                     "iso2c"))
+  ccode <- tolower(ccode)
   if (is.na(ccode)) {
     stop(paste0("The `country` inputed:", country, " , was not matched.
                 A complete description of available country languages is ",
                 "available in the package `countrycode`:",
                 " ?countrycode::codelist"))
   }
-
-  prov <- eply::evals(paste0("dictionary::", ccode, "_province"))
-  province <- as.vector(prov) %>% setNames(attr(prov, "dimnames")[[1]])
-  hist <- eply::evals(paste0("dictionary::", ccode, "_history"))
-  if (hist %>% map("event") %>% grepl("complexe", .) %>% any) {
-    distr <- eply::evals(paste0("dictionary::", ccode, "_district"))
-    district <- as.vector(distr) %>% setNames(attr(distr, "dimnames")[[1]])
+  province <- eval(parse(text = paste0("dictionary::", ccode, "_province")))
+  hist <- eval(parse(text = paste0("dictionary::", ccode, "_history")))
+  event_hist <- lapply(hist, "[", "event")
+  if (any(grepl("complexe", unlist(event_hist)))) {
+    district <- eval(parse(text = paste0("dictionary::", ccode, "_district")))
   } else {
     district <- NULL
   }
@@ -45,12 +44,7 @@ internal_data <- function(country, path, from = "1960", to = "2020") {
 #' @param path character string, path of the package.
 #' @param name_pkg character string, name of the package.
 #'
-#' @importFrom usethis create_package use_package use_description
-#' @importFrom countrycode countrycode
-#' @importFrom magrittr %>% %<>%
-#' @importFrom utils getAnywhere
-#' @importFrom purrr map
-#' @importFrom crayon silver
+#' @importFrom usethis create_package
 #' @import dictionary
 #'
 #' @export
@@ -69,29 +63,33 @@ initial_pkg <-  function(path, name_pkg) {
 
     message(cat(
       paste0("\n", "For which country do you want to download file?")))
-    message(cat(crayon::silver(paste0(
+    message(cat(
              "Currently, the function is working only for: ",
              "Cambodia, Laos, Thailand and Vietnam. For other country, use ",
              "the functions `map_data`, `map_documentation`. \n",
              "The country name should be input in full name and in English, \n",
              "For example: Cambodia \n",
              "Multiple country name is also accepted, separated by a ','. \n",
-             "For example: Vietnam, Cambodia \n"))))
+             "For example: Vietnam, Cambodia \n"))
     ans <- readline("Selection: ")
-    if (grepl(",", ans)) ans %<>% strsplit(",") %>% map(trimws) %>% unlist()
+    if (grepl(",", ans)) {
+      ans <- strsplit(ans, ",")
+      ans <- unlist(lapply(ans, trimws))
+    }
 
     message(cat(
       paste0("\n", "For which time range do you want to download file?")))
-    message(cat(crayon::silver(paste0(
+    message(cat(
              "The time range should be input in date format separateb by '-',",
              " by default the time range is '1960-01-01 2020-12-31'. \n",
-             "For example: 1960-01-01 2020-12-31"))))
+             "For example: 1960-01-01 2020-12-31"))
     ans_date <- readline("Selection: ")
     if (ans_date == "") {
       from <- "1960-01-01"; to <- "2020-12-31"
     } else {
-      from <- ans_date %>% strsplit(" ") %>% purrr::map(1) %>% unlist()
-      to <- ans_date %>% strsplit(" ") %>% purrr::map(2) %>% unlist()
+      date_lst <-  strsplit(ans_date, " ")
+      from <- unlist(lapply(date_lst , "[", 1))
+      to <- unlist(lapply(date_lst , "[", 2))
     }
 
     if (length(ans) > 1) {

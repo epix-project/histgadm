@@ -23,14 +23,11 @@ Suggests:
     rmarkdown
 Imports:
     countrycode,
-    crayon,
     dictionary,
     devtools,
     eply, 
-    lubridate,
     magrittr,
     maptools,
-    purrr,
     sf,
     sptools,
     stringi,

@@ -29,6 +29,7 @@ make_format <- function(df){
 #' @param path character string path of the package.
 #'
 #' @importFrom stringr str_extract
+#' @importFrom magrittr %>% %<>%
 #' @importFrom Rd2roxygen create_roxygen
 #' @importFrom utils capture.output
 #' @export

@@ -293,7 +293,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   # COUNTRY
   gadm0r <- gadm(country, "sf", 0, save = save, path = path,
                  intlib = intlib, force = force)
-  gadm0r <- gadm0r[, -which(names(gadm0r) == "GID_0")] #%>%
+  gadm0r <- gadm0r[, -which(names(gadm0r) == "GID_0")]
   names(gadm0r)[which(names(gadm0r) == "NAME_0")] <- "country"
   gadm0r <- sf::st_as_sf(gadm0r)
   gadm0r <- define_bbox_proj(gadm0r, boundbox, crs)
