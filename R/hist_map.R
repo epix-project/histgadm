@@ -1,21 +1,4 @@
 # ------------------------------------------------------------------------------
-#' Translates vector to standardized English
-#'
-#' @param vector vector to translate
-#' @param hash named character vector containing the translation in English
-#'  (standardized version) of the admin1 names. See \code{Details}for more
-#'  information.
-#'
-#' @importFrom stringi stri_escape_unicode
-#' @keywords internal
-#' @noRd
-translate <- function(vector, hash = NULL) {
- vector <- stringi::stri_escape_unicode(vector)
- if (is.null(hash) == FALSE) vector <- hash[vector]
- vector
-}
-
-# ------------------------------------------------------------------------------
 #' Filters list by a time range
 #'
 #' Filters a list to keep only the data corresponding to a certain time
@@ -46,11 +29,11 @@ select_events <- function(hist_lst, from, to) {
 #'  (standardized version) of the admin1 names. See \code{Details} for more
 #'  information.
 #' @param lst_history A list containing a list of event, each code with a slot
-#'  after, a slot before, a slotevent (split/merge/rename/ complexe merge/
-#'  complexe split) and a slot year. See \code{Details} for more information.
+#'  after, a slot before, a slotevent (split/merge/rename/ complex merge/
+#'  complex split) and a slot year. See \code{Details} for more information.
 #' @param from Initial date of the time range selected, of the class Date,
 #'   character or numeric. By default "1960".
-#' @param d.hash used in case of \code{complexe split} or \code{complexe merge}
+#' @param d.hash used in case of \code{complex split} or \code{complex merge}
 #' in the \code{lst_history} object.  named character vector containing the
 #' translation in English (standardized version) of the admin2 names. See
 #' \code{Details} for more information.
@@ -82,7 +65,7 @@ current_map <- function(country, hash, lst_history, from, to, d.hash, save,
     df_sf <- df_sf[, c("province", "geometry")]
 
   } else if (!is.null(lst_history) &&
-             any(grepl("complexe", event_history))) {
+             any(grepl("complex", event_history))) {
       df_sf <- gadm(country, "sf", 2, save = save, path = path,
                     intlib = intlib, force = force)
       df_sf <- transform(df_sf, province = translate(df_sf$NAME_1, hash),
@@ -153,10 +136,11 @@ sel_map <- function(lst, test_lst) {
 #' encoded in UNICODE and keep in native language.
 #' \cr\cr
 #' The function needs also a list of event (split/merge/rename/
-#' complexe merge/complexe split) in a standardized format to recreate
+#' complex merge/complex split) in a standardized format to recreate
 #' historical map. We advice to use or the copy the format of the list
 #' \code{xx_history} contained in the package \code{dictionary}.
-#' For example: \code{\link[dictionary]{kh_history}}.
+#' For example: \code{\link[dictionary]{kh_history}}. Example of a list with
+#' complex events:  \code{\link[dictionary]{la_history}}
 #' If no list are inputed in the \code{lst_history} argument, only the current
 #' map of admin1 administrative boundary and the country boundary in high and
 #' low resolution in a list will be created.
@@ -193,13 +177,13 @@ sel_map <- function(lst, test_lst) {
 #'  (standardized version) of the admin1 names. See \code{Details} for more
 #'  information.
 #' @param lst_history A list containing a list of event, each code with a slot
-#'  after, a slot before, a slotevent (split/merge/rename/ complexe merge/
-#'  complexe split) and a slot year. See \code{Details} for more information.
+#'  after, a slot before, a slotevent (split/merge/rename/ complex merge/
+#'  complex split) and a slot year. See \code{Details} for more information.
 #' @param from Initial date of the time range selected, of the class Date,
 #'   character or numeric. By default "1960".
 #' @param to Final date of the time range selected, of the class Date, character
 #'  or numeric, by default "2020".
-#' @param d.hash used in case of \code{complexe split} or \code{complexe merge}
+#' @param d.hash used in case of \code{complex split} or \code{complex merge}
 #' in the \code{lst_history} object.  named character vector containing the
 #' translation in English (standardized version) of the admin2 names.
 #' See \code{Details} for more information.
@@ -233,7 +217,7 @@ sel_map <- function(lst, test_lst) {
 #' @importFrom sf st_crs st_bbox st_as_sf
 #' @importFrom sptools sf_aggregate_lst thin_polygons define_bbox_proj
 #' @importFrom stats setNames
-#' @importFrom dictionary match_pattern
+#' @importFrom dictionary match_pattern translate
 #'
 #' @export
 hist_map <- function(country, hash, lst_history, from = "1960",
