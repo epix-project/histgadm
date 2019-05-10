@@ -16,8 +16,8 @@ hist_map(country, hash, lst_history, from = "1960", to = "2020",
 information.}
 
 \item{lst_history}{A list containing a list of event, each code with a slot
-after, a slot before, a slotevent (split/merge/rename/ complexe merge/
-complexe split) and a slot year. See \code{Details} for more information.}
+after, a slot before, a slotevent (split/merge/rename/ complex merge/
+complex split) and a slot year. See \code{Details} for more information.}
 
 \item{from}{Initial date of the time range selected, of the class Date,
 character or numeric. By default "1960".}
@@ -25,7 +25,7 @@ character or numeric. By default "1960".}
 \item{to}{Final date of the time range selected, of the class Date, character
 or numeric, by default "2020".}
 
-\item{d.hash}{used in case of \code{complexe split} or \code{complexe merge}
+\item{d.hash}{used in case of \code{complex split} or \code{complex merge}
 in the \code{lst_history} object.  named character vector containing the
 translation in English (standardized version) of the admin2 names.
 See \code{Details} for more information.}
@@ -77,7 +77,7 @@ contained in the \code{dictionary}package, for example:
 encoded in UNICODE and keep in native language.
 \cr\cr
 The function needs also a list of event (split/merge/rename/
-complexe merge/complexe split) in a standardized format to recreate
+complex merge/complex split) in a standardized format to recreate
 historical map. We advice to use or the copy the format of the list
 \code{xx_history} contained in the package \code{dictionary}.
 For example: \code{\link[dictionary]{kh_history}}.

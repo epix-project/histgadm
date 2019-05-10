@@ -24,7 +24,7 @@ internal_data <- function(country, path, from = "1960", to = "2020") {
   province <- eval(parse(text = paste0("dictionary::", ccode, "_province")))
   hist <- eval(parse(text = paste0("dictionary::", ccode, "_history")))
   event_hist <- lapply(hist, "[", "event")
-  if (any(grepl("complexe", unlist(event_hist)))) {
+  if (any(grepl("complex", unlist(event_hist)))) {
     district <- eval(parse(text = paste0("dictionary::", ccode, "_district")))
   } else {
     district <- NULL
