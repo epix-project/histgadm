@@ -16,15 +16,15 @@ test_that("`hist_map` returns the correct output", {
 
   test1a <- hist_map("Cambodia", kh_province, kh_history, intlib = FALSE,
                      save = FALSE)
-  testthat::expect_equal(length(test1a), 4)
+  testthat::expect_equal(length(test1a), 3)
 
   test1b <- hist_map("Cambodia", kh_province, kh_history, intlib = FALSE,
                      save = FALSE, lst_province_year = kh_province_year)
-  testthat::expect_equal(length(test1b), 4)
+  testthat::expect_equal(length(test1b), 3)
 
   test2 <- hist_map("Laos", la_province, la_history, d.hash = la_district,
                     save = FALSE, intlib = FALSE)
-  testthat::expect_equal(length(test2), 4)
+  testthat::expect_equal(length(test2), 3)
 
   vn_08 <- hist_map("Vietnam", vn_province, vn_history, save = FALSE,
                      from = 2008, to = 2008, intlib = FALSE)
@@ -37,11 +37,11 @@ test_that("`hist_map` returns the correct output", {
   testthat::expect_equal(test4, "1979-1990")
 
   test5 <- hist_map("France", intlib = FALSE, save = FALSE)
-  testthat::expect_equal(length(test5), 2)
+  testthat::expect_equal(length(test5), 1)
 
   test6 <- hist_map("Thailand", th_province, th_history, intlib = FALSE,
                     lst_province_year = th_province_year, from = "1960",
                     to = "1980", save = FALSE)
-  testthat::expect_equal(length(test6), 3)
+  testthat::expect_equal(length(test6), 2)
 
 })

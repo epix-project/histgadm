@@ -11,7 +11,7 @@ test_that("`map_data` returns the correct output", {
 
   test1 <- dir(paste0(tmp, "/data/"))
 
-  testthat::expect_length(test1, 4)
+  testthat::expect_length(test1, 3)
   unlink(tmp, recursive = TRUE)
 
 })

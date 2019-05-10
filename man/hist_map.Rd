@@ -6,7 +6,8 @@
 \usage{
 hist_map(country, hash, lst_history, from = "1960", to = "2020",
   d.hash = NULL, tolerance = NULL, save = FALSE, path = NULL,
-  intlib = TRUE, force = FALSE, lst_province_year = NULL)
+  intlib = TRUE, force = FALSE, lst_province_year = NULL,
+  append_country = FALSE)
 }
 \arguments{
 \item{country}{character string, name of the country to download.}
@@ -52,11 +53,13 @@ By default \code{FALSE}.}
 \item{lst_province_year}{A list containing the spatial expression of admin1
 for each year of change, use to select the map expressed with the right
 admin1 definition in time. See \code{Details} for more information.}
+
+\item{append_country}{boolean, append the country level in the
+final list. by default, FALSE}
 }
 \value{
 a list of \code{sf} object containing the maps of admin1 a
-dministrative boundaries and two maps of the country boundaries (one in high
-resolution and one in low resolution).
+dministrative boundaries.
 }
 \description{
 From a time range (by default: 1960-01-01 / 2020-12-31), recreates old map
