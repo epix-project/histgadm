@@ -113,7 +113,7 @@ sel_map <- function(lst, test_lst) {
   test <- test[!grepl("country", names(test))]
   test <- lapply(test, function(x)
     dictionary::match_pattern(x, "province", test_lst))
-  names(test) <- gsub("^.._|_.{3,4}$", "", names(test))
+  names(test) <- gsub("^.._", "", names(test))
 
   sel1 <- names(test[which(substr(test, 1, 4) != substr(names(test), 1, 4))])
   sel2 <- names(test[which(substr(test, 6, 9) != substr(names(test), 6, 9))])
@@ -133,7 +133,7 @@ sel_map <- function(lst, test_lst) {
 #' by merging back together or spliting admin1 polygons from the current admin1
 #' administrative boundaries downloaded from GADM \url{https://gadm.org}. Two
 #' maps will be create for each year of event (split, merge or rename of
-#' admin1), one in high resolution and one in low resolution.
+#' admin1).
 #'
 #' @details The functions  needs a named vector, \code{hash} and \code{d.hash}
 #' arguments, to translate the \code{NAME_1} column (and \code{NAME_2} if
@@ -152,16 +152,16 @@ sel_map <- function(lst, test_lst) {
 #' For example: \code{\link[dictionary]{kh_history}}. Example of a list with
 #' complex events:  \code{\link[dictionary]{la_history}}
 #' If no list are inputed in the \code{lst_history} argument, only the current
-#' map of admin1 administrative boundary and the country boundary in high and
-#' low resolution in a list will be created.
+#' map of admin1 administrative boundary in a list will be created.
 #' \cr\cr
 #' The package \code{dictionary} is available on GitHub, to install it, it
 #' necessary to have the \code{devtools} package:
 #' \code{devtools::install_github("choisy/dictionary")}
 #' \cr\cr
-#' The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
+#' The function can perform \code{\link[maptools]{thinnedSpatialPoly}} on
 #' each map object with the tolerance (argument \code{tolerance}) value in the
-#' metric of the input object.
+#' metric of the input object (optionnal argument). By default, the argument is
+#' set to NULL and makes not simplification.
 #' \cr\cr
 #' The function uses the function \code{\link[sptools]{gadm}} from the package
 #' \code{gadm}, to have more information on the parameters \code{save},
@@ -178,9 +178,9 @@ sel_map <- function(lst, test_lst) {
 #' \cr\cr
 #' The output of the function is a named list: the admin1 boundaries named are
 #' named as: the 2 characters ISO code, the year of expression of this admin1
-#' administrative boundaries and the resolution. For example:
-#' "vn_1997_2004_high" for the admin1 boundaries of Vietnam from 1997-01-01
-#' until 2004-01-01 (not include) in high quality.
+#' administrative boundaries. For example:
+#' "vn_1997_2004" for the admin1 boundaries of Vietnam from 1997-01-01
+#' until 2004-01-01 (not include).
 #'
 #' @param country character string, name of the country to download.
 #' @param hash named character vector containing the translation in English
@@ -209,11 +209,11 @@ sel_map <- function(lst, test_lst) {
 #' @param intlib boolean, specifies whether the downloaded file should be saved
 #' in the library of packages. If \code{NULL}, it will be asked interactively.
 #' By default \code{TRUE}.
-#' @param lst_province_year A list containing the spatial expression of admin1
-#' for each year of change, use to select the map expressed with the right
-#' admin1 definition in time. See \code{Details} for more inforamtion.
 #' @param force boolean, force to download the file even if already in the path.
 #' By default \code{FALSE}.
+#' @param lst_province_year A list containing the spatial expression of admin1
+#' for each year of change, use to select the map expressed with the right
+#' admin1 definition in time. See \code{Details} for more information.
 #'
 #' @return a list of \code{sf} object containing the maps of admin1 a
 #' dministrative boundaries and two maps of the country boundaries (one in high
@@ -231,7 +231,7 @@ sel_map <- function(lst, test_lst) {
 #'
 #' @export
 hist_map <- function(country, hash, lst_history, from = "1960",
-                     to = "2020", d.hash = NULL, tolerance = 0.01,
+                     to = "2020", d.hash = NULL, tolerance = NULL,
                      save = FALSE, path = NULL, intlib = TRUE, force = FALSE,
                      lst_province_year = NULL) {
 
@@ -243,20 +243,8 @@ hist_map <- function(country, hash, lst_history, from = "1960",
                        lst_history = lst_history, from = from, to = to,
                        d.hash = d.hash, save = save, path = path,
                        intlib = intlib, force = force)
-
   boundbox <- st_bbox(df_sf)
   crs <- st_crs(df_sf)
-
-  # COUNTRY
-  gadm0r <- gadm(country, "sf", 0, save = save, path = path,
-                 intlib = intlib, force = force)
-  gadm0r <- gadm0r[, -which(names(gadm0r) == "GID_0")]
-  names(gadm0r)[which(names(gadm0r) == "NAME_0")] <- "country"
-  gadm0r <- sf::st_as_sf(gadm0r)
-  gadm0r <- sptools::define_bbox_proj(gadm0r, boundbox, crs)
-
-  gadm0 <- sptools::thin_polygons(gadm0r, tolerance = tolerance)
-  gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
 
   # SELECT THE YEARS & MAKE THE LIST OF OLD MAP
   from <-  as.Date(paste0(from, "-01-01"))
@@ -264,10 +252,11 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   if (is.null(lst_history)) {
 
     sel_year <- NULL
-    df_sf_r <- sptools::thin_polygons(df_sf, tolerance = tolerance)
-    df_sf_r <- sptools::define_bbox_proj(df_sf_r, boundbox, crs)
-    total_lst <- list(setNames(list(df_sf, df_sf_r), c("high", "low")))
-    total_lst <- setNames(total_lst, format(Sys.time(), "%Y"))
+    if (!is.null(tolerance)) {
+      df_sf <- sptools::thin_polygons(df_sf, tolerance = tolerance)
+      df_sf <- sptools::define_bbox_proj(df_sf, boundbox, crs)
+    }
+    total_lst <- setNames(list(df_sf), format(Sys.time(), "%Y"))
 
   } else {
 
@@ -280,40 +269,57 @@ hist_map <- function(country, hash, lst_history, from = "1960",
     total_lst <- lapply(seq_along(sel_year), function (x) {
 
       if (country == "Vietnam" & sel_year[x] >= "2008") {
-        old_mapr <- gadm(country, "sf", 1, save = save, path = path,
-                         intlib = intlib, force = force)
-        old_mapr <- transform(old_mapr,
-                              province = translate(old_mapr$NAME_1, hash))
-        old_mapr <- old_mapr[, c("province", "geometry")]
-        old_mapr <- sf::st_as_sf(old_mapr)
+        old_map <- gadm(country, "sf", 1, save = save, path = path,
+                        intlib = intlib, force = force)
+        old_map <- transform(old_map,
+                             province = translate(old_map$NAME_1, hash))
+        old_map <- old_map[, c("province", "geometry")]
+        old_map <- sf::st_as_sf(old_map)
       } else {
-        old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x])
-        old_mapr <- sptools::define_bbox_proj(old_mapr, boundbox, crs)
+        old_map <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x])
+        old_map <- sptools::define_bbox_proj(old_map, boundbox, crs)
       }
 
-      old_map <- sptools::thin_polygons(old_mapr, tolerance = tolerance)
-      old_map <- sptools::define_bbox_proj(old_map, boundbox, crs)
-      setNames(list(old_mapr, old_map), c("high", "low"))
+      if (!is.null(tolerance)) {
+        old_map <- sptools::thin_polygons(old_map, tolerance = tolerance)
+        old_map <- sptools::define_bbox_proj(old_map, boundbox, crs)
+      }
+
+      old_map <- old_map[, c("province", "geometry")]
+      old_map <- transform(old_map, province = as.character(province))
+      old_map <- sf::st_as_sf(old_map)
+
     })
     date_lst <- paste(sel_year,
                       c(sel_year[-1], as.numeric(format(to, "%Y")) + 1),
                       sep = "_")
     total_lst <- setNames(total_lst, date_lst)
   }
+
   # APPEND COUNTRY MAP
-  country_lst <- setNames(list(country = gadm0r, gadm0), c("high", "low"))
-  country_lst <- setNames(list(country_lst), "country")
+  gadm0 <- gadm(country, "sf", 0, save = save, path = path,
+                intlib = intlib, force = force)
+  gadm0 <- gadm0[, -which(names(gadm0) == "GID_0")]
+  names(gadm0)[which(names(gadm0) == "NAME_0")] <- "country"
+  gadm0 <- sf::st_as_sf(gadm0)
+  gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
+
+  if (!is.null(tolerance)) {
+    gadm0 <- sptools::thin_polygons(gadm0, tolerance = tolerance)
+    gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
+  }
+
+  country_lst <- setNames(list(gadm0), "country")
   total_lst <- append(total_lst, country_lst)
 
   # MAKE NAME FILE
   name <- lapply(seq_along(total_lst), function(x) {
-    names_lst <- names(total_lst[[names(total_lst)[x]]])
     cntry_code <- tolower(countrycode::countrycode(country, "country.name",
                                                      "iso2c"))
-    names_lst <- paste0(cntry_code, "_", names(total_lst)[x], "_", names_lst)
+    names_lst <- paste0(cntry_code, "_", names(total_lst)[x])
   })
   names_lst <- unlist(name)
-  total_lst <- setNames(unlist(total_lst, FALSE), names_lst)
+  total_lst <- setNames(total_lst, names_lst)
 
   if (is.null(lst_province_year) == FALSE) {
     total_lst <- sel_map(total_lst, lst_province_year)
@@ -322,7 +328,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
 }
 
 ## quiets concerns of R CMD check for the values that appear in pipelines
-if (getRversion() >= "2.15.1") utils::globalVariables(c(".", "GID_0", "NAME_0",
-                                                        "NAME_1", "NAME_2",
-                                                        "district", "geometry",
-                                                        "province"))
+#if (getRversion() >= "2.15.1") utils::globalVariables(c(".", "GID_0", "NAME_0",
+#                                                        "NAME_1", "NAME_2",
+#                                                        "district", "geometry",
+#                                                        "province"))

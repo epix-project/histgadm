@@ -21,7 +21,7 @@ test_that("`initial_pkg` returns the correct output", {
   histgadm:::internal_data("Laos", tmp)
 
   test2 <- dir(paste0(tmp, "/man/"))
-  testthat::expect_length(test2, 8)
+  testthat::expect_length(test2, 4)
   unlink(tmp, recursive = TRUE)
 
   tmp <- file.path(tempdir(), "pkgtest")
@@ -29,7 +29,7 @@ test_that("`initial_pkg` returns the correct output", {
   histgadm:::internal_data("Cambodia", tmp)
 
   test3 <- dir(paste0(tmp, "/man/"))
-  testthat::expect_length(test3, 8)
+  testthat::expect_length(test3, 4)
   unlink(tmp, recursive = TRUE)
 
 })

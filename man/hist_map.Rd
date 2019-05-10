@@ -5,7 +5,7 @@
 \title{Create a list of historical map}
 \usage{
 hist_map(country, hash, lst_history, from = "1960", to = "2020",
-  d.hash = NULL, tolerance = 0.01, save = FALSE, path = NULL,
+  d.hash = NULL, tolerance = NULL, save = FALSE, path = NULL,
   intlib = TRUE, force = FALSE, lst_province_year = NULL)
 }
 \arguments{
@@ -51,7 +51,7 @@ By default \code{FALSE}.}
 
 \item{lst_province_year}{A list containing the spatial expression of admin1
 for each year of change, use to select the map expressed with the right
-admin1 definition in time. See \code{Details} for more inforamtion.}
+admin1 definition in time. See \code{Details} for more information.}
 }
 \value{
 a list of \code{sf} object containing the maps of admin1 a
@@ -63,7 +63,7 @@ From a time range (by default: 1960-01-01 / 2020-12-31), recreates old map
 by merging back together or spliting admin1 polygons from the current admin1
 administrative boundaries downloaded from GADM \url{https://gadm.org}. Two
 maps will be create for each year of event (split, merge or rename of
-admin1), one in high resolution and one in low resolution.
+admin1).
 }
 \details{
 The functions  needs a named vector, \code{hash} and \code{d.hash}
@@ -83,16 +83,16 @@ historical map. We advice to use or the copy the format of the list
 For example: \code{\link[dictionary]{kh_history}}. Example of a list with
 complex events:  \code{\link[dictionary]{la_history}}
 If no list are inputed in the \code{lst_history} argument, only the current
-map of admin1 administrative boundary and the country boundary in high and
-low resolution in a list will be created.
+map of admin1 administrative boundary in a list will be created.
 \cr\cr
 The package \code{dictionary} is available on GitHub, to install it, it
 necessary to have the \code{devtools} package:
 \code{devtools::install_github("choisy/dictionary")}
 \cr\cr
-The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
+The function can perform \code{\link[maptools]{thinnedSpatialPoly}} on
 each map object with the tolerance (argument \code{tolerance}) value in the
-metric of the input object.
+metric of the input object (optionnal argument). By default, the argument is
+set to NULL and makes not simplification.
 \cr\cr
 The function uses the function \code{\link[sptools]{gadm}} from the package
 \code{gadm}, to have more information on the parameters \code{save},
@@ -109,9 +109,9 @@ contained in the package \code{dictionary}. For example:
 \cr\cr
 The output of the function is a named list: the admin1 boundaries named are
 named as: the 2 characters ISO code, the year of expression of this admin1
-administrative boundaries and the resolution. For example:
-"vn_1997_2004_high" for the admin1 boundaries of Vietnam from 1997-01-01
-until 2004-01-01 (not include) in high quality.
+administrative boundaries. For example:
+"vn_1997_2004" for the admin1 boundaries of Vietnam from 1997-01-01
+until 2004-01-01 (not include).
 }
 \examples{
 library(dictionary)

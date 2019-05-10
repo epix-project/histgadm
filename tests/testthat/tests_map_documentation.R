@@ -12,6 +12,6 @@ testthat::test_that("`map_documentation` returns the correct output", {
 
   test1 <- dir(paste0(tmp, "/man/"))
 
-  testthat::expect_length(test1, 8)
+  testthat::expect_length(test1, 4)
   unlink(tmp, recursive = TRUE)
 })
