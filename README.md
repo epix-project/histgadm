@@ -41,7 +41,7 @@ definition with the different admin1 historial and current
 administrative boundaries but also the country administrative
 boundaries. The historical map are “approximate” map because the package
 only split or merge admin1 polygons when in reality, this event are
-ofter more complexe and the boundaries may not be exact.
+ofter more complex and the boundaries may not be exact.
 
 Below is a quick look at how `histgadm` is working:
 
@@ -52,13 +52,25 @@ library("histgadm")
 tmp <- file.path(tempdir(), "pkgtest")
 dir.create(tmp)
 initial_pkg(tmp, "test")
-#> ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpiPG1VS/pkgtest/test'
+#> ✔ Creating '/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVD2j7z/pkgtest/test/'
+#> ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVD2j7z/pkgtest/test'
 #> ✔ Creating 'R/'
-#> ✔ Creating 'man/'
 #> ✔ Writing 'DESCRIPTION'
+#> Package: test
+#> Title: What the Package Does (One Line, Title Case)
+#> Version: 0.0.0.9000
+#> Authors@R (parsed):
+#>     * First Last <first.last@example.com> [aut, cre] (<https://orcid.org/YOUR-ORCID-ID>)
+#> Description: What the package does (one paragraph).
+#> License: What license it uses
+#> Depends:
+#>     R (>= 2.10)
+#> Imports:
+#>     sf
+#> Encoding: UTF-8
+#> LazyData: true
 #> ✔ Writing 'NAMESPACE'
-#> ✔ Adding 'sf' to Imports field in DESCRIPTION
-#> ● Refer to functions with `sf::fun()`
+#> ✔ Setting active project to '<no active project>'
 #> 
 #> Do you want to download GADM file from the internet? y / n (default)
 #> 

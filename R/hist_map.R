@@ -54,18 +54,28 @@ current_map <- function(country, hash, lst_history, from, to, d.hash, save,
 
   if (!is.null(lst_history)) {
     event_history <- select_events(lst_history, from, to)
+    name_history <- lapply(event_history, names)
     event_history <- lapply(event_history, "[[", "event")
   }
 
   # exception for Vietnam
   if (country == "Vietnam" &
       as.Date(paste0(from, "-01-01")) < as.Date("2008-01-01")) {
-    df_sf <- get("vn_a1_0407")
-    df_sf <- transform(df_sf, province = translate(df_sf$NAME_2, hash))
-    df_sf <- df_sf[, c("province", "geometry")]
-
+    if (any(grepl("complex|merge", event_history)) &
+        any(grepl("d.bef", name_history))) {
+      df_sf <- gadm(country, "sf", 2, save = save, path = path,
+                    intlib = intlib, force = force)
+      df_sf <- transform(df_sf, province = translate(df_sf$NAME_1, hash),
+                         district = translate(df_sf$NAME_2, d.hash))
+      df_sf <- df_sf[, c("province", "district", "geometry")]
+    } else {
+      df_sf <- get("vn_a1_0407")
+      df_sf <- transform(df_sf, province = translate(df_sf$NAME_2, hash))
+      df_sf <- df_sf[, c("province", "geometry")]
+    }
   } else if (!is.null(lst_history) &&
-             any(grepl("complex", event_history))) {
+             any(grepl("complex|merge", event_history)) &&
+             any(grepl("d.bef", name_history))) {
       df_sf <- gadm(country, "sf", 2, save = save, path = path,
                     intlib = intlib, force = force)
       df_sf <- transform(df_sf, province = translate(df_sf$NAME_1, hash),
@@ -280,6 +290,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
         old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x])
         old_mapr <- sptools::define_bbox_proj(old_mapr, boundbox, crs)
       }
+
       old_map <- sptools::thin_polygons(old_mapr, tolerance = tolerance)
       old_map <- sptools::define_bbox_proj(old_map, boundbox, crs)
       setNames(list(old_mapr, old_map), c("high", "low"))

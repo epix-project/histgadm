@@ -36,7 +36,7 @@ devtools::install_github("epix-project/histgadm")
 
 The `histgadm` contains four functions. 
 
-The function `init_package` creates a package for the GADM data (https://gadm.org/), and interactively allows the user to download data from GADM for one or more country and recreates historical map from a time range (interactive input) by merging or spliting back admin1 polygons. The ouput are `sf` maps of the country in high and low definition with the different admin1 historial and current administrative boundaries but also the country administrative boundaries. The historical map are "approximate" map because the package only split or merge admin1 polygons when in reality, this event are ofter more complexe and the boundaries may not be exact. 
+The function `init_package` creates a package for the GADM data (https://gadm.org/), and interactively allows the user to download data from GADM for one or more country and recreates historical map from a time range (interactive input) by merging or spliting back admin1 polygons. The ouput are `sf` maps of the country in high and low definition with the different admin1 historial and current administrative boundaries but also the country administrative boundaries. The historical map are "approximate" map because the package only split or merge admin1 polygons when in reality, this event are ofter more complex and the boundaries may not be exact. 
 
 Below is a quick look at how `histgadm` is working:
 ```{r}

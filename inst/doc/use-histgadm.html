@@ -12,7 +12,7 @@
 
 <meta name="author" content="Contamin Lucie" />
 
-<meta name="date" content="2019-04-16" />
+<meta name="date" content="2019-05-10" />
 
 <title>histgadm Usage</title>
 
@@ -303,7 +303,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">histgadm Usage</h1>
 <h4 class="author">Contamin Lucie</h4>
-<h4 class="date">2019-04-16</h4>
+<h4 class="date">2019-05-10</h4>
 
 
 
@@ -316,7 +316,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <div id="usage" class="section level2">
 <h2>Usage</h2>
 <p>The <code>histgadm</code> contains four functions.</p>
-<p>The function <code>init_package</code> creates a package for the GADM data (<a href="https://gadm.org/" class="uri">https://gadm.org/</a>), and interactively allows the user to download data from GADM for one or more country and recreates historical map from a time range (interactive input) by merging or spliting back admin1 polygons. The ouput are <code>sf</code> maps of the country in high and low definition with the different admin1 historial and current administrative boundaries but also the country administrative boundaries. The historical map are “approximate” map because the package only split or merge admin1 polygons when in reality, this event are ofter more complexe and the boundaries may not be exact.</p>
+<p>The function <code>init_package</code> creates a package for the GADM data (<a href="https://gadm.org/" class="uri">https://gadm.org/</a>), and interactively allows the user to download data from GADM for one or more country and recreates historical map from a time range (interactive input) by merging or spliting back admin1 polygons. The ouput are <code>sf</code> maps of the country in high and low definition with the different admin1 historial and current administrative boundaries but also the country administrative boundaries. The historical map are “approximate” map because the package only split or merge admin1 polygons when in reality, this event are ofter more complex and the boundaries may not be exact.</p>
 <p>Below is a quick look at how <code>histgadm</code> is working:</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(<span class="st">&quot;histgadm&quot;</span>)</a>
 <a class="sourceLine" id="cb2-2" data-line-number="2"></a>
@@ -324,8 +324,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb2-4" data-line-number="4">tmp &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pkgtest&quot;</span>)</a>
 <a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">dir.create</span>(tmp)</a>
 <a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw">initial_pkg</span>(tmp, <span class="st">&quot;test&quot;</span>)</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; ✔ Creating '/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVe2Qb9/pkgtest/test/'</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVe2Qb9/pkgtest/test'</span></a>
+<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; ✔ Creating '/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpRhcbUq/pkgtest/test/'</span></a>
+<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpRhcbUq/pkgtest/test'</span></a>
 <a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; ✔ Creating 'R/'</span></a>
 <a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></a>
 <a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; Package: test</span></a>
@@ -358,11 +358,11 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>Let’s now take a look at <code>map_data</code>: it download the current map from GADM and recreates historical map:</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">pgkg_dir &lt;-<span class="st"> </span><span class="kw">paste0</span>(tmp, <span class="st">&quot;/test&quot;</span>)</a>
 <a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">map_data</span>(pgkg_dir, <span class="st">&quot;Cambodia&quot;</span>, dictionary<span class="op">::</span>kh_province, dictionary<span class="op">::</span>kh_history, <span class="dt">from =</span> <span class="st">&quot;1980&quot;</span>, <span class="dt">to =</span> <span class="st">&quot;2018&quot;</span>)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVe2Qb9/pkgtest/test'</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpRhcbUq/pkgtest/test'</span></a>
 <a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; ✔ Saving 'kh_1980_1997_high', 'kh_1980_1997_low', 'kh_1997_2013_high', 'kh_1997_2013_low', 'kh_2013_2019_high', 'kh_2013_2019_low', 'kh_country_high', 'kh_country_low' to 'data/kh_1980_1997_high.rda', 'data/kh_1980_1997_low.rda', 'data/kh_1997_2013_high.rda', 'data/kh_1997_2013_low.rda', 'data/kh_2013_2019_high.rda', 'data/kh_2013_2019_low.rda', 'data/kh_country_high.rda', 'data/kh_country_low.rda'</span></a></code></pre></div>
 <p>And the function <code>map_documentation</code> will create the documentation for each object.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">map_documentation</span>(pgkg_dir)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Updating roxygen version in /private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVe2Qb9/pkgtest/test/DESCRIPTION</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Updating roxygen version in /private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpRhcbUq/pkgtest/test/DESCRIPTION</span></a>
 <a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; Writing NAMESPACE</span></a>
 <a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; Loading test</span></a>
 <a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; Writing kh_1980_1997_high.Rd</span></a>

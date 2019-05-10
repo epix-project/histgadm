@@ -80,7 +80,8 @@ The function needs also a list of event (split/merge/rename/
 complex merge/complex split) in a standardized format to recreate
 historical map. We advice to use or the copy the format of the list
 \code{xx_history} contained in the package \code{dictionary}.
-For example: \code{\link[dictionary]{kh_history}}.
+For example: \code{\link[dictionary]{kh_history}}. Example of a list with
+complex events:  \code{\link[dictionary]{la_history}}
 If no list are inputed in the \code{lst_history} argument, only the current
 map of admin1 administrative boundary and the country boundary in high and
 low resolution in a list will be created.
