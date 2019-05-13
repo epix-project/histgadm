@@ -132,6 +132,7 @@ download_country <- function(country, boundbox, crs, save, path, intlib,
     gadm0 <- sptools::thin_polygons(gadm0, tolerance = tolerance)
     gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
   }
+  gadm0
 }
 
 # ------------------------------------------------------------------------------
@@ -290,16 +291,17 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   boundbox <- st_bbox(df_sf)
   crs <- st_crs(df_sf)
 
+  if (!is.null(tolerance)) {
+    df_sf <- sptools::thin_polygons(df_sf, tolerance = tolerance)
+    df_sf <- sptools::define_bbox_proj(df_sf, boundbox, crs)
+  }
+
   # SELECT THE YEARS & MAKE THE LIST OF OLD MAP
   from <-  as.Date(paste0(from, "-01-01"))
   to <- as.Date(paste0(to, "-12-31"))
   if (is.null(lst_history)) {
 
     sel_year <- NULL
-    if (!is.null(tolerance)) {
-      df_sf <- sptools::thin_polygons(df_sf, tolerance = tolerance)
-      df_sf <- sptools::define_bbox_proj(df_sf, boundbox, crs)
-    }
     total_lst <- setNames(list(df_sf), format(Sys.time(), "%Y"))
 
   } else {
@@ -321,11 +323,6 @@ hist_map <- function(country, hash, lst_history, from = "1960",
         old_map <- sf::st_as_sf(old_map)
       } else {
         old_map <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x])
-        old_map <- sptools::define_bbox_proj(old_map, boundbox, crs)
-      }
-
-      if (!is.null(tolerance)) {
-        old_map <- sptools::thin_polygons(old_map, tolerance = tolerance)
         old_map <- sptools::define_bbox_proj(old_map, boundbox, crs)
       }
 
