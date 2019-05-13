@@ -22,9 +22,29 @@ test_that("`hist_map` returns the correct output", {
                      save = FALSE, lst_province_year = kh_province_year)
   testthat::expect_equal(length(test1b), 3)
 
-  test2 <- hist_map("Laos", la_province, la_history, d.hash = la_district,
+  test1c <- hist_map("Cambodia", kh_province, kh_history, intlib = FALSE,
+                     save = FALSE, tolerance = 0.05)
+  testthat::expect_lt(sf::st_bbox(test1a$kh_1960_1997[1, ])[[1]],
+                      sf::st_bbox(test1c$kh_1960_1997[1, ])[[1]])
+
+  test1d <- hist_map("Cambodia", kh_province, kh_history, intlib = FALSE,
+                               save = FALSE, append_country = TRUE)
+  testthat::expect_equal(length(test1d), 4)
+
+  test1e <- hist_map("Cambodia", kh_province, kh_history, intlib = FALSE,
+                     save = FALSE, append_country = TRUE, tolerance = 0.05)
+  testthat::expect_lt(sf::st_bbox(test1d$kh_1960_1997[1, ])[[1]],
+                      sf::st_bbox(test1e$kh_1960_1997[1, ])[[1]])
+
+  test2a <- hist_map("Laos", la_province, la_history, d.hash = la_district,
                     save = FALSE, intlib = FALSE)
-  testthat::expect_equal(length(test2), 3)
+  testthat::expect_equal(length(test2a), 3)
+
+  test2b <- histgadm:::current_map("Vietnam", la_province, la_history,
+                                   d.hash = la_district, from = 1960, to = 2020,
+                                   save = FALSE, path = NULL, intlib = FALSE,
+                                   force = FALSE)
+  testthat::expect_equal(names(test2b), c("province", "district", "geometry"))
 
   vn_08 <- hist_map("Vietnam", vn_province, vn_history, save = FALSE,
                      from = 2008, to = 2008, intlib = FALSE)
