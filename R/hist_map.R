@@ -92,6 +92,49 @@ current_map <- function(country, hash, lst_history, from, to, d.hash, save,
 }
 
 # ------------------------------------------------------------------------------
+#' Download  Country Administrative Boundaries
+#'
+#' Download country boundaries
+#'
+#' @param country character string, name of the country to download.
+#' @param boundbox character, bounding box.
+#' @param crs character, coordinate reference system.
+#' @param save boolean, specifies whether the downloaded file should be saved
+#' in a specific path or not. If \code{NULL}, it will be asked interactively.
+#' By default \code{FALSE}.
+#' @param path character string, path to save the downloaded file. If
+#' \code{NULL}, the file will be saved in the working directory. By default
+#' \code{NULL}.
+#' @param intlib boolean, specifies whether the downloaded file should be saved
+#' in the library of packages. If \code{NULL}, it will be asked interactively.
+#' By default \code{TRUE}.
+#' @param force boolean, force to download the file even if already in the path.
+#' By default \code{FALSE}.
+#' @param tolerance numeric for thinning (simplification). the tolerance value
+#'  should be in the metric of the input object (cf. from function
+#'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.
+#'
+#' @importFrom sptools gadm define_bbox_proj thin_polygons
+#' @importFrom sf st_as_sf
+#'
+#' @keywords internal
+#' @noRd
+download_country <- function(country, boundbox, crs, save, path, intlib,
+                             force, tolerance) {
+  gadm0 <- gadm(country, "sf", 0, save = save, path = path,
+                intlib = intlib, force = force)
+  gadm0 <- gadm0[, -which(names(gadm0) == "GID_0")]
+  names(gadm0)[which(names(gadm0) == "NAME_0")] <- "country"
+  gadm0 <- sf::st_as_sf(gadm0)
+  gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
+
+  if (!is.null(tolerance)) {
+    gadm0 <- sptools::thin_polygons(gadm0, tolerance = tolerance)
+    gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
+  }
+}
+
+# ------------------------------------------------------------------------------
 #' Tests and selects map
 #'
 #' Test and select map with the spatial expression corresponding to the time
@@ -197,9 +240,9 @@ sel_map <- function(lst, test_lst) {
 #' in the \code{lst_history} object.  named character vector containing the
 #' translation in English (standardized version) of the admin2 names.
 #' See \code{Details} for more information.
-#' @param tolerance numeric for thinning (simplification). the tolerance value
+#' @param tolerance numeric for thinning (simplification), the tolerance value
 #'  should be in the metric of the input object (cf. from function
-#'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.
+#'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.
 #' @param save boolean, specifies whether the downloaded file should be saved
 #' in a specific path or not. If \code{NULL}, it will be asked interactively.
 #' By default \code{FALSE}.
@@ -298,18 +341,10 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   }
 
   # APPEND COUNTRY MAP
-  if (isTRUE(append_country)){
-    gadm0 <- gadm(country, "sf", 0, save = save, path = path,
-                  intlib = intlib, force = force)
-    gadm0 <- gadm0[, -which(names(gadm0) == "GID_0")]
-    names(gadm0)[which(names(gadm0) == "NAME_0")] <- "country"
-    gadm0 <- sf::st_as_sf(gadm0)
-    gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
-
-    if (!is.null(tolerance)) {
-      gadm0 <- sptools::thin_polygons(gadm0, tolerance = tolerance)
-      gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
-    }
+  if (isTRUE(append_country)) {
+    gadm0 <- download_country(country = country, boundbox = boundbox, crs = crs,
+                              save = save, path = path, intlib = intlib,
+                              force = force, tolerance = tolerance)
     country_lst <- setNames(list(gadm0), "country")
     total_lst <- append(total_lst, country_lst)
   }
@@ -318,7 +353,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   name <- lapply(seq_along(total_lst), function(x) {
     cntry_code <- tolower(countrycode::countrycode(country, "country.name",
                                                      "iso2c"))
-    names_lst <- paste0(cntry_code, "_", names(total_lst)[x])
+    paste0(cntry_code, "_", names(total_lst)[x])
   })
   names_lst <- unlist(name)
   total_lst <- setNames(total_lst, names_lst)

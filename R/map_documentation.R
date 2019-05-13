@@ -35,7 +35,8 @@ make_format <- function(df) {
            paste0("\\item \\code{", names(df)[x], "} ",
                   paste0("A column of class : ",
                          paste(class(df[[x]]), collapse = ", "), "."))
-         }), collapse = "\n"), "}")
+         }),
+         collapse = "\n"), "}")
 }
 
 # ------------------------------------------------------------------------------

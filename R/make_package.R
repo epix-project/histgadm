@@ -88,8 +88,8 @@ initial_pkg <-  function(path, name_pkg) {
       from <- "1960-01-01"; to <- "2020-12-31"
     } else {
       date_lst <-  strsplit(ans_date, " ")
-      from <- unlist(lapply(date_lst , "[", 1))
-      to <- unlist(lapply(date_lst , "[", 2))
+      from <- unlist(lapply(date_lst, "[", 1))
+      to <- unlist(lapply(date_lst, "[", 2))
     }
 
     if (length(ans) > 1) {

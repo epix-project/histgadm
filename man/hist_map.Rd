@@ -31,9 +31,9 @@ in the \code{lst_history} object.  named character vector containing the
 translation in English (standardized version) of the admin2 names.
 See \code{Details} for more information.}
 
-\item{tolerance}{numeric for thinning (simplification). the tolerance value
+\item{tolerance}{numeric for thinning (simplification), the tolerance value
 should be in the metric of the input object (cf. from function
-\code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.}
+\code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.}
 
 \item{save}{boolean, specifies whether the downloaded file should be saved
 in a specific path or not. If \code{NULL}, it will be asked interactively.
