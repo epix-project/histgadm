@@ -46,5 +46,4 @@ library(dictionary)
 \dontrun{
 map_data("PACKAGE", "Cambodia", kh_province, kh_history)
 }
-
 }

@@ -63,5 +63,4 @@ test_that("`hist_map` returns the correct output", {
                     lst_province_year = th_province_year, from = "1960",
                     to = "1980", save = FALSE)
   testthat::expect_equal(length(test6), 2)
-
 })

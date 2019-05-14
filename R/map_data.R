@@ -31,7 +31,6 @@
 #' \dontrun{
 #' map_data("PACKAGE", "Cambodia", kh_province, kh_history)
 #' }
-#'
 #' @export
 map_data <- function(path, country, hash, lst_history, from = "1960",
                      to = "2020", d.hash = NULL, tolerance = 0.01) {
