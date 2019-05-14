@@ -195,7 +195,7 @@ sel_map <- function(lst, test_lst) {
 #' \code{xx_history} contained in the package \code{dictionary}.
 #' For example: \code{\link[dictionary]{kh_history}}. Example of a list with
 #' complex events:  \code{\link[dictionary]{la_history}}
-#' If no list are inputed in the \code{lst_history} argument, only the current
+#' If no list are inputted in the \code{lst_history} argument, only the current
 #' map of admin1 administrative boundary in a list will be created.
 #' \cr\cr
 #' The package \code{dictionary} is available on GitHub, to install it, it

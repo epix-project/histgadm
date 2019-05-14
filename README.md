@@ -15,8 +15,8 @@ status](https://www.r-pkg.org/badges/version/histgadm)](https://cran.r-project.o
 
 `histgadm` is a workflow package: From current map from GADM
 (<https://gadm.org/>) recreates historical administrative boundaries map
-and creates one or multiple packages (one by country inputed) containing
-the data and the documentation.
+and creates one or multiple packages (one by country inputted)
+containing the data and the documentation.
 
 ## Installation
 
@@ -52,8 +52,8 @@ library("histgadm")
 tmp <- file.path(tempdir(), "pkgtest")
 dir.create(tmp)
 initial_pkg(tmp, "test")
-#> ✔ Creating '/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVD2j7z/pkgtest/test/'
-#> ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpVD2j7z/pkgtest/test'
+#> ✔ Creating '/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpnU3sSo/pkgtest/test/'
+#> ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpnU3sSo/pkgtest/test'
 #> ✔ Creating 'R/'
 #> ✔ Writing 'DESCRIPTION'
 #> Package: test
@@ -80,7 +80,7 @@ initial_pkg(tmp, "test")
 By default, the package created contained no data but if `y` is answer
 the package will then ask the user to imput at least one country name
 and a time range to download the data corresponding to gadm and to
-recreate the historical map corresonding to the time range inputed.
+recreate the historical map corresonding to the time range inputted.
 Currently, it works only for `Cambodia, Laos, Thailand and Vietnam`.
 
 For other country, the users will need to use the functions `map_data`,

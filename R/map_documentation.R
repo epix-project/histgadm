@@ -1,4 +1,35 @@
 # ------------------------------------------------------------------------------
+#' Extract information from data
+#'
+#' This function is called to generate the information in the data
+#'
+#' @param x string character name
+#' @keywords internal
+#' @noRd
+extract_info <- function(x, path){
+
+  date <- gsub("[^[:digit:]]", "", x)
+  from <- substr(date, 1, 4)
+  to <- substr(date, 5, 8)
+
+  country_iso <- substr(x, 1, 2)
+  country <- countrycode::countrycode(country_iso, "iso2c", "country.name")
+
+  version <- substr(dir(paste0(path, "/data-raw/")), 5, 6)
+  version <- strsplit(unique(version), "")
+  if (is.character(version)) {
+    source <- paste0("GADM (version ", paste(unlist(version), collapse = "."),
+                     ")")
+  } else {
+    source <- "GADM"
+  }
+  source <-  paste0(source, " data base from \\url{www.gadm.org}")
+
+  res <- c("from" = from, "to" = to, "source" = source, "country" = country)
+  res
+}
+
+# ------------------------------------------------------------------------------
 #' Format of an object
 #'
 #' This function is called to generate the default "Format" and returns the
@@ -53,48 +84,37 @@ make_format <- function(df) {
 #' @export
 map_documentation <- function(path) {
 
-  list_tab <- dir(paste0(path, "/data/"))
-  tot_rd <- lapply(seq_along(list_tab), function(x) {
+  list_tab <- grep("^.._|.rda$", dir(paste0(path, "/data/")), value = TRUE)
 
-    load(paste0(path, "/data/", list_tab[x]))
-    df <- get(gsub(".rda", "", list_tab[x]))
-    date <- gsub("[^[:digit:]]", "", list_tab[x])
-    from <- substr(date, 1, 4)
-    to <- substr(date, 5, 8)
-    qual_df <- regexpr("high|low", list_tab[x])
-    quality <- substr(list_tab[x], qual_df[1],
-                      qual_df[1] + attr(qual_df, "match.length") - 1)
-    country_iso <- substr(list_tab[x], 1, 2)
-    country <- countrycode::countrycode(country_iso, "iso2c", "country.name")
-    version <- substr(dir(paste0(path, "/data-raw/")), 5, 6)
-    version <- strsplit(unique(version), "")
-    source <- paste0("GADM (version ", paste(unlist(version), collapse = "."),
-                     ") data base from \\url{www.gadm.org}")
+  tot_rd <- lapply(list_tab, function(x) {
 
-    if (length(grep("[[:digit:]]", list_tab[x])) > 0) {
+    load(paste0(path, "/data/", x))
+    df <- get(gsub(".rda", "", x))
+    info <- extract_info(x, path)
+
+    if (length(grep("[[:digit:]]", x)) > 0) {
 
       doc <- list(
-        title = paste0("Admin1 Administrative boundaries of ", country,
-                       " from ", from, " to ", to, "."),
+        title = paste0("Admin1 Administrative boundaries of ", info["country"],
+                       " from ", info["from"], " to ", info["to"], "."),
         format = make_format(df),
         desc = paste0(
-          "Maps of the admin1 administrative boundaries of ", country,
-          " expressed from ", from, " to ", to, " in ", quality, " quality."),
-        source = source)
+          "Maps of the admin1 administrative boundaries of ", info["country"],
+          " expressed from ", info["from"], " to ", info["to"], "."),
+        source = info["source"])
 
     } else {
 
       doc <- list(
-        title = paste0(country, "Country boundaries"),
+        title = paste0(info["country"], " country boundaries"),
         format = make_format(df),
         desc = paste0(
-          "Maps of the country administrative boundaries of ", country,
-          " expressed in ", quality, "quality."),
-        source = source)
+          "Maps of the country administrative boundaries of ", info["country"],
+          "."),
+        source = info["source"])
     }
     doc <- capture.output(cat(Rd2roxygen::create_roxygen(doc), sep = "\n"))
-    doc <- c(doc,
-             paste0("'", as.character(gsub(".rda", "", list_tab[x])), "'\n"))
+    doc <- c(doc, paste0("'", as.character(gsub(".rda", "", x)), "'\n"))
   })
   writeLines(unlist(tot_rd), con = paste0(path, "/R/data.R"), sep = "\n")
   roxygen2::roxygenize(path)

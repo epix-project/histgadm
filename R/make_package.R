@@ -16,7 +16,7 @@ internal_data <- function(country, path, from = "1960", to = "2020") {
                                                      "iso2c"))
   ccode <- tolower(ccode)
   if (is.na(ccode)) {
-    stop(paste0("The `country` inputed:", country, " , was not matched.
+    stop(paste0("The `country` inputted:", country, " , was not matched.
                 A complete description of available country languages is ",
                 "available in the package `countrycode`:",
                 " ?countrycode::codelist"))
