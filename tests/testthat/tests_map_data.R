@@ -10,8 +10,13 @@ test_that("`map_data` returns the correct output", {
   map_data(tmp, "Cambodia", kh_province, kh_history)
 
   test1 <- dir(paste0(tmp, "/data/"))
-
   testthat::expect_length(test1, 3)
+
+  map_data(tmp, "Cambodia", kh_province, kh_history, save = NULL)
+
+  test1 <- dir(paste0(tmp, "/data/"))
+  testthat::expect_length(test1, 3)
+
   unlink(tmp, recursive = TRUE)
 
 })

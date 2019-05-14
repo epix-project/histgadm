@@ -17,7 +17,7 @@ extract_info <- function(x, path){
 
   version <- substr(dir(paste0(path, "/data-raw/")), 5, 6)
   version <- strsplit(unique(version), "")
-  if (is.character(version)) {
+  if (length(version) > 0) {
     source <- paste0("GADM (version ", paste(unlist(version), collapse = "."),
                      ")")
   } else {
