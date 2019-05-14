@@ -4,11 +4,13 @@
 \alias{map_data}
 \title{Creates a list of historical map in a package}
 \usage{
-map_data(path, country, hash, lst_history, from = "1960", to = "2020",
-  d.hash = NULL, tolerance = 0.01)
+map_data(pckg_path, country, hash, lst_history, from = "1960",
+  to = "2020", d.hash = NULL, intlib = FALSE, save = TRUE,
+  force = FALSE, tolerance = NULL, lst_province_year = NULL,
+  append_country = FALSE)
 }
 \arguments{
-\item{path}{character string path of the package.}
+\item{pckg_path}{character string path of the package.}
 
 \item{country}{character string, name of the country to download.}
 
@@ -31,9 +33,27 @@ in the \code{lst_history} object.  named character vector containing the
 translation in English (standardized version) of the admin2 names. See
 \code{Details} for more information.}
 
+\item{intlib}{boolean, specifies whether the downloaded file should be saved
+in the library of packages. If \code{NULL}, it will be asked interactively.
+By default \code{TRUE}.}
+
+\item{save}{boolean, specifies whether the downloaded file should be saved
+in a data-raw folder path or not. By default \code{TRUE}.
+If \code{NULL}, it will be asked interactively.}
+
+\item{force}{boolean, force to download the file even if already in the path.
+By default \code{FALSE}.}
+
 \item{tolerance}{numeric for thinning (simplification). the tolerance value
 should be in the metric of the input object (cf. from function
-\code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.}
+\code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.}
+
+\item{lst_province_year}{A list containing the spatial expression of admin1
+for each year of change, use to select the map expressed with the right
+admin1 definition in time. See \code{Details} for more information.}
+
+\item{append_country}{boolean, append the country level in the
+final list. by default, FALSE}
 }
 \description{
 Creates a list of historical map with the function

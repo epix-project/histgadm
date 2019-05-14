@@ -30,8 +30,8 @@ internal_data <- function(country, path, from = "1960", to = "2020") {
     district <- NULL
   }
 
-  map_data(path = path, country = country, hash = province, lst_history = hist,
-           from = from, to = to, d.hash = district)
+  map_data(pckg_path = path, country = country, hash = province,
+           lst_history = hist, from = from, to = to, d.hash = district)
   map_documentation(path)
 }
 
