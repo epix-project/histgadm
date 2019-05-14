@@ -93,14 +93,14 @@ necessary to have the \code{devtools} package:
 \code{devtools::install_github("choisy/dictionary")}
 \cr\cr
 The function can perform \code{\link[maptools]{thinnedSpatialPoly}} on
-each map object with the tolerance (argument \code{tolerance}) value in the
+each map object with the tolerance (argument \code{tolerance}) value, in the
 metric of the input object (optionnal argument). By default, the argument is
-set to NULL and makes not simplification.
+set to NULL and makes no simplification.
 \cr\cr
 The function uses the function \code{\link[sptools]{gadm}} from the package
-\code{gadm}, to have more information on the parameters \code{save},
-\code{path} and \code{intlib}, please take a look at the help of this
-function.
+\code{sptools} to download the source file from GADM, to have more
+information on the parameters \code{save},  \code{path} and \code{intlib},
+please take a look at the documentation of this function.
 \cr\cr
 The arguments \code{lst_province_year} should be input as a list of charactor
 vector containing the names of the admin1 written in a same way as
