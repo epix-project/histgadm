@@ -22,6 +22,37 @@ select_events <- function(hist_lst, from, to) {
 }
 
 # ------------------------------------------------------------------------------
+#' Transform GADM output in the specific format
+#'
+#' @param df_sf sf object download from GADM
+#' @param level numeric indicating if we need the output with admin1 level
+#' information (level 1) or with also admin2 level information (level2)
+#' @param hash named character vector containing the translation in English
+#'  (standardized version) of the admin1 names. See \code{Details} for more
+#'  information.
+#' @param d.hash used in case of \code{complex split} or \code{complex merge}
+#' in the \code{lst_history} object.  named character vector containing the
+#' translation in English (standardized version) of the admin2 names. See
+#' \code{Details} for more information.
+#' @return a sf object
+#' @importFrom sf st_as_sf
+#' @keywords internal
+#' @noRd
+transform_gadm <- function(df_sf, level, hash, d.hash) {
+
+  if (level == 1) {
+    df_sf <- transform(df_sf, admin1 = translate(df_sf$NAME_1, hash))
+    df_sf <- df_sf[, c("admin1", "geometry")]
+  } else if (level == 2) {
+    df_sf <- transform(df_sf, admin1 = translate(df_sf$NAME_1, hash),
+                       district = translate(df_sf$NAME_2, d.hash))
+    df_sf <- df_sf[, c("admin1", "district", "geometry")]
+  }
+  sf::st_as_sf(df_sf)
+}
+
+
+# ------------------------------------------------------------------------------
 #' Download current map for one country
 #'
 #' @param country character string, name of the country to download.
@@ -58,38 +89,51 @@ current_map <- function(country, hash, lst_history, from, to, d.hash, save,
     event_history <- lapply(event_history, "[[", "event")
   }
 
-  # exception for Vietnam
-  if (country == "Vietnam" &
+  if (country == "Vietnam" & # exception for Vietnam
       as.Date(paste0(from, "-01-01")) < as.Date("2008-01-01")) {
     if (any(grepl("complex|merge", event_history)) &
         any(grepl("d.bef", name_history))) {
       df_sf <- gadm(country, "sf", 2, save = save, path = path,
                     intlib = intlib, force = force)
-      df_sf <- transform(df_sf, province = translate(df_sf$NAME_1, hash),
-                         district = translate(df_sf$NAME_2, d.hash))
-      df_sf <- df_sf[, c("province", "district", "geometry")]
+      df_sf <- transform_gadm(df_sf, 2, hash, d.hash)
     } else {
       df_sf <- get("vn_a1_0407")
-      df_sf <- transform(df_sf, province = translate(df_sf$NAME_2, hash))
-      df_sf <- df_sf[, c("province", "geometry")]
+      df_sf <- transform_gadm(df_sf, 1, hash)
     }
   } else if (!is.null(lst_history) &&
              any(grepl("complex|merge", event_history)) &&
              any(grepl("d.bef", name_history))) {
       df_sf <- gadm(country, "sf", 2, save = save, path = path,
                     intlib = intlib, force = force)
-      df_sf <- transform(df_sf, province = translate(df_sf$NAME_1, hash),
-                         district = translate(df_sf$NAME_2, d.hash))
-      df_sf <- df_sf[, c("province", "district", "geometry")]
-
+      df_sf <- transform_gadm(df_sf, 2, hash, d.hash)
   } else {
     df_sf <- gadm(country, "sf", 1, save = save, path = path,
                   intlib = intlib, force = force)
-    df_sf <- transform(df_sf, province = translate(df_sf$NAME_1, hash))
-    df_sf <- df_sf[, c("province", "geometry")]
+    df_sf <- transform_gadm(df_sf, 1, hash)
   }
-  st_as_sf(df_sf)
+  df_sf
 }
+
+# ------------------------------------------------------------------------------
+#' Apply thinning process on the polygones of an sf object
+#'
+#' @param df_sf sf object
+#' @param tolerance numeric for thinning (simplification). the tolerance value
+#'  should be in the metric of the input object (cf. from function
+#'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.
+#' @param boundbox character, bounding box.
+#' @param crs character, coordinate reference system.
+#' @importFrom sptools define_bbox_proj thin_polygons
+#' @keywords internal
+#' @noRd
+thin_sf <- function(df_sf, tolerance, boundbox, crs) {
+  if (!is.null(tolerance)) {
+    df_sf  <- sptools::thin_polygons(df_sf, tolerance = tolerance)
+    df_sf  <- sptools::define_bbox_proj(df_sf, boundbox, crs)
+  }
+  df_sf
+}
+
 
 # ------------------------------------------------------------------------------
 #' Download  Country Administrative Boundaries
@@ -127,11 +171,7 @@ download_country <- function(country, boundbox, crs, save, path, intlib,
   names(gadm0)[which(names(gadm0) == "NAME_0")] <- "country"
   gadm0 <- sf::st_as_sf(gadm0)
   gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
-
-  if (!is.null(tolerance)) {
-    gadm0 <- sptools::thin_polygons(gadm0, tolerance = tolerance)
-    gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
-  }
+  gadm0 <- thin_sf(gadm0, tolerance, boundbox, crs)
   gadm0
 }
 
@@ -142,7 +182,7 @@ download_country <- function(country, boundbox, crs, save, path, intlib,
 #' frame selected.
 #'
 #' @param lst A list containing sf object containing two columns:
-#' \code{geometry} and \code{province} , with named slot :
+#' \code{geometry} and \code{admin1} , with named slot :
 #' \code{XX_YEAR_YEAR_QUALITY}, XX is the country name in two letters code.
 #' @param test_lst  A list containing the spatial expression of admin1
 #' for each year of change, use to select the map expressed with the right
@@ -156,7 +196,7 @@ sel_map <- function(lst, test_lst) {
   test <- lapply(test, function(x) x[-which(names(x) == "geometry")])
   test <- test[!grepl("country", names(test))]
   test <- lapply(test, function(x)
-    dictionary::match_pattern(x, "province", test_lst))
+    dictionary::match_pattern(x, "admin1", test_lst))
   names(test) <- gsub("^.._", "", names(test))
 
   sel1 <- names(test[which(substr(test, 1, 4) != substr(names(test), 1, 4))])
@@ -290,11 +330,7 @@ hist_map <- function(country, hash, lst_history, from = "1960",
                        intlib = intlib, force = force)
   boundbox <- st_bbox(df_sf)
   crs <- st_crs(df_sf)
-
-  if (!is.null(tolerance)) {
-    df_sf <- sptools::thin_polygons(df_sf, tolerance = tolerance)
-    df_sf <- sptools::define_bbox_proj(df_sf, boundbox, crs)
-  }
+  df_sf <- thin_sf(df_sf, tolerance, boundbox, crs)
 
   # SELECT THE YEARS & MAKE THE LIST OF OLD MAP
   from <-  as.Date(paste0(from, "-01-01"))
@@ -317,17 +353,14 @@ hist_map <- function(country, hash, lst_history, from = "1960",
       if (country == "Vietnam" & sel_year[x] >= "2008") {
         old_map <- gadm(country, "sf", 1, save = save, path = path,
                         intlib = intlib, force = force)
-        old_map <- transform(old_map,
-                             province = translate(old_map$NAME_1, hash))
-        old_map <- old_map[, c("province", "geometry")]
-        old_map <- sf::st_as_sf(old_map)
+        old_map <- transform_gadm(old_map, 1, hash)
       } else {
         old_map <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x])
         old_map <- sptools::define_bbox_proj(old_map, boundbox, crs)
       }
 
-      old_map <- old_map[, c("province", "geometry")]
-      old_map <- transform(old_map, province = as.character(old_map$province))
+      old_map <- old_map[, c("admin1", "geometry")]
+      old_map <- transform(old_map, admin1 = as.character(old_map$admin1))
       old_map <- sf::st_as_sf(old_map)
 
     })

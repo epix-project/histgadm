@@ -3,14 +3,20 @@
 #' @param country character string, country name.
 #' @param path character string, path of the package.
 #' @param from Initial date of the time range selected, of the class Date,
-#'   character or numeric. By default "1960".
+#'  character or numeric. By default "1960".
 #' @param to Final date of the time range selected, of the class Date, character
-#'  or numeric, by default "2020".
+#' or numeric, by default "2020".
+#' @param tolerance numeric for thinning (simplification), the tolerance value
+#' should be in the metric of the input object (cf. from function
+#' \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.
+#' @param append_country boolean, append the country level in the
+#' final list. by default, FALSE
 #'
 #' @keywords internal
 #' @importFrom countrycode countrycode
 #' @noRd
-internal_data <- function(country, path, from = "1960", to = "2020") {
+internal_data <- function(country, path, from = "1960", to = "2020",
+                          append_country = FALSE, tolerance = NULL) {
 
   suppressWarnings(ccode <- countrycode::countrycode(country, "country.name",
                                                      "iso2c"))
@@ -31,7 +37,8 @@ internal_data <- function(country, path, from = "1960", to = "2020") {
   }
 
   map_data(pckg_path = path, country = country, hash = province,
-           lst_history = hist, from = from, to = to, d.hash = district)
+           lst_history = hist, from = from, to = to, d.hash = district,
+           tolerance = tolerance, append_country = append_country)
   map_documentation(path)
 }
 
@@ -43,12 +50,18 @@ internal_data <- function(country, path, from = "1960", to = "2020") {
 #'
 #' @param path character string, path of the package.
 #' @param name_pkg character string, name of the package.
+#' @param tolerance numeric for thinning (simplification), the tolerance value
+#' should be in the metric of the input object (cf. from function
+#' \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.
+#' @param append_country boolean, append the country level in the
+#' final list. by default, FALSE
 #'
 #' @importFrom usethis create_package
 #' @import dictionary
 #'
 #' @export
-initial_pkg <-  function(path, name_pkg) {
+initial_pkg <-  function(path, name_pkg, tolerance = NULL,
+                         append_country = FALSE) {
 
   pkg_path <-  paste0(path, "/", name_pkg)
   usethis::create_package(pkg_path, open = FALSE,
@@ -94,9 +107,11 @@ initial_pkg <-  function(path, name_pkg) {
 
     if (length(ans) > 1) {
       lapply(ans, function(x) {
-        internal_data(x, pkg_path, from = from, to = to)
+        internal_data(x, pkg_path, from = from, to = to,
+                      append_country = append_country, tolerance = tolerance)
         })
     } else
-      internal_data(ans, pkg_path, from = from, to = to)
+      internal_data(ans, pkg_path, from = from, to = to,
+                    append_country = append_country, tolerance = tolerance)
   }
 }
