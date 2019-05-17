@@ -68,14 +68,12 @@ initial_pkg <-  function(path, name_pkg, tolerance = NULL,
                           fields = list(Depends = "R (>= 2.10)",
                                         Imports = "sf"))
 
-  message(cat(paste0("\n",
-                     "Do you want to download GADM file from the internet?",
-                     " y / n (default)")))
+  message(cat("\n Do you want to download GADM file from the internet?",
+                     " y / n (default)"))
   ans <- readline("Selection: ")
   if (ans %in% c("y", "yes")) {
 
-    message(cat(
-      paste0("\n", "For which country do you want to download file?")))
+    message(cat("\n", "For which country do you want to download file?"))
     message(cat(
              "Currently, the function is working only for: ",
              "Cambodia, Laos, Thailand and Vietnam. For other country, use ",
@@ -90,10 +88,9 @@ initial_pkg <-  function(path, name_pkg, tolerance = NULL,
       ans <- unlist(lapply(ans, trimws))
     }
 
+    message(cat("\n", "For which time range do you want to download file?"))
     message(cat(
-      paste0("\n", "For which time range do you want to download file?")))
-    message(cat(
-             "The time range should be input in date format separateb by '-',",
+             "The time range should be input in date format separated by ' ',",
              " by default the time range is '1960-01-01 2020-12-31'. \n",
              "For example: 1960-01-01 2020-12-31"))
     ans_date <- readline("Selection: ")
