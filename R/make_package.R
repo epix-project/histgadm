@@ -27,17 +27,17 @@ internal_data <- function(country, path, from = "1960", to = "2020",
                 "available in the package `countrycode`:",
                 " ?countrycode::codelist"))
   }
-  province <- eval(parse(text = paste0("dictionary::", ccode, "_province")))
+  admin1 <- eval(parse(text = paste0("dictionary::", ccode, "_admin1")))
   hist <- eval(parse(text = paste0("dictionary::", ccode, "_history")))
   event_hist <- lapply(hist, "[", "event")
   if (any(grepl("complex", unlist(event_hist)))) {
-    district <- eval(parse(text = paste0("dictionary::", ccode, "_district")))
+    admin2 <- eval(parse(text = paste0("dictionary::", ccode, "_admin2")))
   } else {
-    district <- NULL
+    admin2 <- NULL
   }
 
-  map_data(pckg_path = path, country = country, hash = province,
-           lst_history = hist, from = from, to = to, d.hash = district,
+  map_data(pckg_path = path, country = country, hash = admin1,
+           lst_history = hist, from = from, to = to, d.hash = admin2,
            tolerance = tolerance, append_country = append_country)
   map_documentation(path)
 }

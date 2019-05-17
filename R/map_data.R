@@ -33,7 +33,7 @@
 #' @param tolerance numeric for thinning (simplification). the tolerance value
 #' should be in the metric of the input object (cf. from function
 #' \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.
-#' @param lst_province_year A list containing the spatial expression of admin1
+#' @param lst_admin1_year A list containing the spatial expression of admin1
 #' for each year of change, use to select the map expressed with the right
 #' admin1 definition in time. See \code{Details} for more information.
 #' @param append_country boolean, append the country level in the
@@ -42,12 +42,12 @@
 #' @examples
 #' library(dictionary)
 #' \dontrun{
-#' map_data("PACKAGE", "Cambodia", kh_province, kh_history)
+#' map_data("PACKAGE", "Cambodia", kh_admin1, kh_history)
 #' }
 #' @export
 map_data <- function(pckg_path, country, hash, lst_history, from = "1960",
                      to = "2020", d.hash = NULL, intlib = FALSE, save = TRUE,
-                     force = FALSE, tolerance = NULL, lst_province_year = NULL,
+                     force = FALSE, tolerance = NULL, lst_admin1_year = NULL,
                      append_country = FALSE) {
   path0 <- getwd()
   setwd(pckg_path)
@@ -72,7 +72,7 @@ map_data <- function(pckg_path, country, hash, lst_history, from = "1960",
   data <- hist_map(country = country, hash = hash, lst_history = lst_history,
                    from = from, to = to, d.hash = d.hash,
                    tolerance = tolerance, intlib = intlib, save = save,
-                   path = datarawdir, lst_province_year = lst_province_year,
+                   path = datarawdir, lst_admin1_year = lst_admin1_year,
                    append_country = append_country)
   list2env(data, envir = environment())
   eval(parse(text = paste0("usethis::use_data(`", paste(names(data),

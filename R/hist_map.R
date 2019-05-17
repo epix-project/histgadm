@@ -45,8 +45,8 @@ transform_gadm <- function(df_sf, level, hash, d.hash) {
     df_sf <- df_sf[, c("admin1", "geometry")]
   } else if (level == 2) {
     df_sf <- transform(df_sf, admin1 = translate(df_sf$NAME_1, hash),
-                       district = translate(df_sf$NAME_2, d.hash))
-    df_sf <- df_sf[, c("admin1", "district", "geometry")]
+                       admin2 = translate(df_sf$NAME_2, d.hash))
+    df_sf <- df_sf[, c("admin1", "admin2", "geometry")]
   }
   sf::st_as_sf(df_sf)
 }
@@ -222,10 +222,10 @@ sel_map <- function(lst, test_lst) {
 #' @details The functions  needs a named vector, \code{hash} and \code{d.hash}
 #' arguments, to translate the \code{NAME_1} column (and \code{NAME_2} if
 #' necessary) from GADM \url{https://gadm.org} in a standardized English
-#' version. We advice to use the named vector \code{xx_province} for admin1 or
-#' \code{xx_district} for admin2
+#' version. We advice to use the named vector \code{xx_admin1} for admin1 or
+#' \code{xx_admin2} for admin2
 #' contained in the \code{dictionary}package, for example:
-#' \code{\link[dictionary]{kh_province}}. If no \code{hash} and/or \code{d.hash}
+#' \code{\link[dictionary]{kh_admin1}}. If no \code{hash} and/or \code{d.hash}
 #'  arguments is missing the column(s) \code{NAME_1} and/or \code{NAME_2} are
 #' encoded in UNICODE and keep in native language.
 #' \cr\cr
@@ -252,13 +252,13 @@ sel_map <- function(lst, test_lst) {
 #' information on the parameters \code{save},  \code{path} and \code{intlib},
 #' please take a look at the documentation of this function.
 #' \cr\cr
-#' The arguments \code{lst_province_year} should be input as a list of charactor
+#' The arguments \code{lst_admin1_year} should be input as a list of charactor
 #' vector containing the names of the admin1 written in a same way as
 #' \code{hash} and/or \code{lst_history} ordered by year of change in
 #' administrative boundaries.
-#' We advice to use or the copy the format of the list \code{xx_province_year}
+#' We advice to use or the copy the format of the list \code{xx_admin1_year}
 #' contained in the package \code{dictionary}. For example:
-#' \code{\link[dictionary]{kh_province_year}}.
+#' \code{\link[dictionary]{kh_admin1_year}}.
 #' \cr\cr
 #' The output of the function is a named list: the admin1 boundaries named are
 #' named as: the 2 characters ISO code, the year of expression of this admin1
@@ -295,7 +295,7 @@ sel_map <- function(lst, test_lst) {
 #' By default \code{TRUE}.
 #' @param force boolean, force to download the file even if already in the path.
 #' By default \code{FALSE}.
-#' @param lst_province_year A list containing the spatial expression of admin1
+#' @param lst_admin1_year A list containing the spatial expression of admin1
 #' for each year of change, use to select the map expressed with the right
 #' admin1 definition in time. See \code{Details} for more information.
 #' @param append_country boolean, append the country level in the
@@ -307,7 +307,7 @@ sel_map <- function(lst, test_lst) {
 #' @examples
 #' library(dictionary)
 #'
-#' kh_map <- hist_map("Cambodia", kh_province, kh_history)
+#' kh_map <- hist_map("Cambodia", kh_admin1, kh_history)
 #'
 #' @importFrom sf st_crs st_bbox st_as_sf
 #' @importFrom sptools sf_aggregate_lst thin_polygons define_bbox_proj
@@ -318,7 +318,7 @@ sel_map <- function(lst, test_lst) {
 hist_map <- function(country, hash, lst_history, from = "1960",
                      to = "2020", d.hash = NULL, tolerance = NULL,
                      save = FALSE, path = NULL, intlib = TRUE, force = FALSE,
-                     lst_province_year = NULL, append_country = FALSE) {
+                     lst_admin1_year = NULL, append_country = FALSE) {
 
   if (missing(hash)) hash <- NULL
   if (missing(lst_history)) lst_history <- NULL
@@ -388,8 +388,8 @@ hist_map <- function(country, hash, lst_history, from = "1960",
   names_lst <- unlist(name)
   total_lst <- setNames(total_lst, names_lst)
 
-  if (is.null(lst_province_year) == FALSE) {
-    total_lst <- sel_map(total_lst, lst_province_year)
+  if (is.null(lst_admin1_year) == FALSE) {
+    total_lst <- sel_map(total_lst, lst_admin1_year)
   }
  total_lst
 }

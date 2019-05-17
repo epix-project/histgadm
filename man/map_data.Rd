@@ -6,7 +6,7 @@
 \usage{
 map_data(pckg_path, country, hash, lst_history, from = "1960",
   to = "2020", d.hash = NULL, intlib = FALSE, save = TRUE,
-  force = FALSE, tolerance = NULL, lst_province_year = NULL,
+  force = FALSE, tolerance = NULL, lst_admin1_year = NULL,
   append_country = FALSE)
 }
 \arguments{
@@ -48,7 +48,7 @@ By default \code{FALSE}.}
 should be in the metric of the input object (cf. from function
 \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.}
 
-\item{lst_province_year}{A list containing the spatial expression of admin1
+\item{lst_admin1_year}{A list containing the spatial expression of admin1
 for each year of change, use to select the map expressed with the right
 admin1 definition in time. See \code{Details} for more information.}
 
@@ -64,6 +64,6 @@ the folder data of a package.
 \examples{
 library(dictionary)
 \dontrun{
-map_data("PACKAGE", "Cambodia", kh_province, kh_history)
+map_data("PACKAGE", "Cambodia", kh_admin1, kh_history)
 }
 }

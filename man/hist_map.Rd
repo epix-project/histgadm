@@ -6,7 +6,7 @@
 \usage{
 hist_map(country, hash, lst_history, from = "1960", to = "2020",
   d.hash = NULL, tolerance = NULL, save = FALSE, path = NULL,
-  intlib = TRUE, force = FALSE, lst_province_year = NULL,
+  intlib = TRUE, force = FALSE, lst_admin1_year = NULL,
   append_country = FALSE)
 }
 \arguments{
@@ -50,7 +50,7 @@ By default \code{TRUE}.}
 \item{force}{boolean, force to download the file even if already in the path.
 By default \code{FALSE}.}
 
-\item{lst_province_year}{A list containing the spatial expression of admin1
+\item{lst_admin1_year}{A list containing the spatial expression of admin1
 for each year of change, use to select the map expressed with the right
 admin1 definition in time. See \code{Details} for more information.}
 
@@ -72,10 +72,10 @@ admin1).
 The functions  needs a named vector, \code{hash} and \code{d.hash}
 arguments, to translate the \code{NAME_1} column (and \code{NAME_2} if
 necessary) from GADM \url{https://gadm.org} in a standardized English
-version. We advice to use the named vector \code{xx_province} for admin1 or
-\code{xx_district} for admin2
+version. We advice to use the named vector \code{xx_admin1} for admin1 or
+\code{xx_admin2} for admin2
 contained in the \code{dictionary}package, for example:
-\code{\link[dictionary]{kh_province}}. If no \code{hash} and/or \code{d.hash}
+\code{\link[dictionary]{kh_admin1}}. If no \code{hash} and/or \code{d.hash}
  arguments is missing the column(s) \code{NAME_1} and/or \code{NAME_2} are
 encoded in UNICODE and keep in native language.
 \cr\cr
@@ -102,13 +102,13 @@ The function uses the function \code{\link[sptools]{gadm}} from the package
 information on the parameters \code{save},  \code{path} and \code{intlib},
 please take a look at the documentation of this function.
 \cr\cr
-The arguments \code{lst_province_year} should be input as a list of charactor
+The arguments \code{lst_admin1_year} should be input as a list of charactor
 vector containing the names of the admin1 written in a same way as
 \code{hash} and/or \code{lst_history} ordered by year of change in
 administrative boundaries.
-We advice to use or the copy the format of the list \code{xx_province_year}
+We advice to use or the copy the format of the list \code{xx_admin1_year}
 contained in the package \code{dictionary}. For example:
-\code{\link[dictionary]{kh_province_year}}.
+\code{\link[dictionary]{kh_admin1_year}}.
 \cr\cr
 The output of the function is a named list: the admin1 boundaries named are
 named as: the 2 characters ISO code, the year of expression of this admin1
@@ -119,6 +119,6 @@ until 2004-01-01 (not include).
 \examples{
 library(dictionary)
 
-kh_map <- hist_map("Cambodia", kh_province, kh_history)
+kh_map <- hist_map("Cambodia", kh_admin1, kh_history)
 
 }
