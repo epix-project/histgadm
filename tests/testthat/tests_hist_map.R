@@ -1,5 +1,6 @@
 library(dictionary) # for "match_pattern", "XX_history", "XX_admin1",
 # "XX_admin2"
+library(sf)
 
 context("`hist_map`")
 
@@ -24,6 +25,8 @@ test_that("`hist_map` returns the correct output", {
 
   test1c <- hist_map("Cambodia", kh_admin1, kh_history, intlib = FALSE,
                      save = FALSE, tolerance = 0.05)
+  testthat::expect_lt(as.numeric(sf::st_area(sf::st_union(test1c[[1]]))),
+                      as.numeric(sf::st_area(sf::st_union(test1a[[1]]))))
   testthat::expect_equal(length(test1c), 3)
 
   test1d <- hist_map("Cambodia", kh_admin1, kh_history, intlib = FALSE,
@@ -32,7 +35,8 @@ test_that("`hist_map` returns the correct output", {
 
   test1e <- hist_map("Cambodia", kh_admin1, kh_history, intlib = FALSE,
                      save = FALSE, append_country = TRUE, tolerance = 0.05)
-  testthat::expect_equal(length(test1e), 4)
+  testthat::expect_lt(as.numeric(sf::st_area(test1d$kh_1960_1997[1, ])),
+                      as.numeric(sf::st_area(test1e$kh_1960_1997[1, ])))
 
   test2a <- hist_map("Laos", la_admin1, la_history, d.hash = la_admin2,
                     save = FALSE, intlib = FALSE)
