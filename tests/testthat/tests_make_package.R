@@ -12,7 +12,6 @@ test_that("`initial_pkg` returns the correct output", {
   testthat::expect_error(histgadm:::internal_data("BLABLA", tmp))
 
   test1 <- dir(paste0(tmp, "/test"))
-  print(test1)
   testthat::expect_length(test1, 3)
   unlink(tmp, recursive = TRUE)
 
@@ -25,7 +24,7 @@ test_that("`initial_pkg` returns the correct output", {
   unlink(tmp, recursive = TRUE)
 
   tmp <- file.path(tempdir(), "pkgtest")
-  create_package(tmp, open = FALSE)
+  usethis::create_package(tmp, open = FALSE)
   histgadm:::internal_data("Cambodia", tmp)
 
   test3 <- dir(paste0(tmp, "/man/"))

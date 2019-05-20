@@ -24,8 +24,8 @@ test_that("`hist_map` returns the correct output", {
 
   test1c <- hist_map("Cambodia", kh_admin1, kh_history, intlib = FALSE,
                      save = FALSE, tolerance = 0.05)
-  testthat::expect_lt(as.numeric(sf::st_area(test1a$kh_1960_1997[1, ])),
-                      as.numeric(sf::st_area(test1c$kh_1960_1997[1, ])))
+  testthat::expect_lt(as.numeric(sf::st_area(sf::st_union(test1c[[1]]))),
+                      as.numeric(sf::st_area(sf::st_union(test1a[[1]]))))
 
   test1d <- hist_map("Cambodia", kh_admin1, kh_history, intlib = FALSE,
                                save = FALSE, append_country = TRUE)
