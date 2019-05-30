@@ -19,6 +19,7 @@ should be in the metric of the input object (cf. from function
 final list. by default, FALSE}
 }
 \description{
-Creates a package for the gadm data, allow you to download (if wanted) data
-from gadm and recreates historical map from a time range (interactive input)
+Creates interactively a package for the gadm data, allowing you to download
+data from gadm and recreates historical map from a time range (interactive
+input)
 }
