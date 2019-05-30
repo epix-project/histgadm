@@ -73,8 +73,12 @@ make_format <- function(df) {
 # ------------------------------------------------------------------------------
 #' Makes documentation for sf map in a package
 #'
-#' Create a Rd file for the data, containing the documentation for each sf
-#' object in the package.
+#' Create a \code{.R} file containing the roxygen comment and \code{.Rd} files
+#' corresponding, containing the documentation or each sf object in a folder
+#'  \code{data} and \code{man} of a package.
+#
+#' If a \code{data.R} file already exists in the folder \code{R} of a package,
+#' it will be overwritten.
 #'
 #' @param path character string path of the package.
 #'

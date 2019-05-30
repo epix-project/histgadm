@@ -45,8 +45,9 @@ internal_data <- function(country, path, from = "1960", to = "2020",
 # ------------------------------------------------------------------------------
 #' Configures the intial files of the package
 #'
-#' Creates a package for the gadm data, allow you to download (if wanted) data
-#' from gadm and recreates historical map from a time range (interactive input)
+#' Creates interactively a package for the gadm data, allowing you to download
+#' data from gadm and recreates historical map from a time range (interactive
+#' input)
 #'
 #' @param path character string, path of the package.
 #' @param name_pkg character string, name of the package.

@@ -2,9 +2,12 @@
 #' Creates a list of historical map in a package
 #'
 #' Creates a list of historical map with the function
-#' \code{\link[histgadm]{hist_map}} and stores the download GADM
-#' (\url{https://gadm.org}) files in a folder data_raw and the output maps in
-#' the folder data of a package.
+#' \code{\link[histgadm]{hist_map}} and if \code{save} is \code{TRUE}, stores
+#' the download GADM (\url{https://gadm.org}) files in a folder \code{data_raw}
+#' and saves the output maps in the folder \code{data} of a package.
+#'
+#' Please find more details on the arguments of the function on the
+#' documentation of the function \code{\link[histgadm]{hist_map}}.
 #'
 #' @param pckg_path character string path of the package.
 #' @param country character string, name of the country to download.
