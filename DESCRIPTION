@@ -1,7 +1,6 @@
 Package: histgadm
 Type: Package
-Title: Makes package containing historical administrative boundaries maps from
-  GADM and from a time range 
+Title: Creates historical administrative boundaries maps
 Version: 0.1.0
 Authors@R: person("Lucie", "Contamin", 
                     email = "contamin.lucie@gmail.com", 
