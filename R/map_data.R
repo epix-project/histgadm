@@ -68,7 +68,7 @@ map_data <- function(pckg_path, country, hash, lst_history, from = "1960",
       save <- TRUE
     }
     if (ans %in% c("no", "N", "n")) {
-      save <- FALSE
+      save <- FALSE #nocov
     }
   }
 

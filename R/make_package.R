@@ -72,7 +72,7 @@ initial_pkg <-  function(path, name_pkg, tolerance = NULL,
   message(cat("\n Do you want to download GADM file from the internet?",
                      " y / n (default)"))
   ans <- readline("Selection: ")
-  if (ans %in% c("y", "yes")) {
+  if (ans %in% c("y", "yes")) { #nocov start
 
     message(cat("\n", "For which country do you want to download file?"))
     message(cat(
@@ -111,5 +111,5 @@ initial_pkg <-  function(path, name_pkg, tolerance = NULL,
     } else
       internal_data(ans, pkg_path, from = from, to = to,
                     append_country = append_country, tolerance = tolerance)
-  }
+  } #nocov end
 }
