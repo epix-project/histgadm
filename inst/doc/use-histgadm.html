@@ -315,64 +315,258 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 </div>
 <div id="usage" class="section level2">
 <h2>Usage</h2>
-<p>The <code>histgadm</code> contains four functions.</p>
-<p>The function <code>init_package</code> creates a package for the GADM data (<a href="https://gadm.org/" class="uri">https://gadm.org/</a>), and interactively allows the user to download data from GADM for one or more country and recreates historical map from a time range (interactive input) by merging or spliting back admin1 polygons. The ouput are <code>sf</code> maps of the country in high and low definition with the different admin1 historial and current administrative boundaries but also the country administrative boundaries. The historical map are “approximate” map because the package only split or merge admin1 polygons when in reality, this event are ofter more complexe and the boundaries may not be exact.</p>
-<p>Below is a quick look at how <code>histgadm</code> is working:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(<span class="st">&quot;histgadm&quot;</span>)</a>
-<a class="sourceLine" id="cb2-2" data-line-number="2"></a>
-<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co"># Create a new package ---------------------------------------------------------</span></a>
-<a class="sourceLine" id="cb2-4" data-line-number="4">tmp &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pkgtest&quot;</span>)</a>
-<a class="sourceLine" id="cb2-5" data-line-number="5"><span class="kw">dir.create</span>(tmp)</a>
-<a class="sourceLine" id="cb2-6" data-line-number="6"><span class="kw">initial_pkg</span>(tmp, <span class="st">&quot;test&quot;</span>)</a>
-<a class="sourceLine" id="cb2-7" data-line-number="7"><span class="co">#&gt; ✔ Creating '/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpDyknoV/pkgtest/test/'</span></a>
-<a class="sourceLine" id="cb2-8" data-line-number="8"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpDyknoV/pkgtest/test'</span></a>
-<a class="sourceLine" id="cb2-9" data-line-number="9"><span class="co">#&gt; ✔ Creating 'R/'</span></a>
-<a class="sourceLine" id="cb2-10" data-line-number="10"><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></a>
-<a class="sourceLine" id="cb2-11" data-line-number="11"><span class="co">#&gt; Package: test</span></a>
-<a class="sourceLine" id="cb2-12" data-line-number="12"><span class="co">#&gt; Title: What the Package Does (One Line, Title Case)</span></a>
-<a class="sourceLine" id="cb2-13" data-line-number="13"><span class="co">#&gt; Version: 0.0.0.9000</span></a>
-<a class="sourceLine" id="cb2-14" data-line-number="14"><span class="co">#&gt; Authors@R (parsed):</span></a>
-<a class="sourceLine" id="cb2-15" data-line-number="15"><span class="co">#&gt;     * First Last &lt;first.last@example.com&gt; [aut, cre] (&lt;https://orcid.org/YOUR-ORCID-ID&gt;)</span></a>
-<a class="sourceLine" id="cb2-16" data-line-number="16"><span class="co">#&gt; Description: What the package does (one paragraph).</span></a>
-<a class="sourceLine" id="cb2-17" data-line-number="17"><span class="co">#&gt; License: What license it uses</span></a>
-<a class="sourceLine" id="cb2-18" data-line-number="18"><span class="co">#&gt; Depends:</span></a>
-<a class="sourceLine" id="cb2-19" data-line-number="19"><span class="co">#&gt;     R (&gt;= 2.10)</span></a>
-<a class="sourceLine" id="cb2-20" data-line-number="20"><span class="co">#&gt; Imports:</span></a>
-<a class="sourceLine" id="cb2-21" data-line-number="21"><span class="co">#&gt;     sf</span></a>
-<a class="sourceLine" id="cb2-22" data-line-number="22"><span class="co">#&gt; Encoding: UTF-8</span></a>
-<a class="sourceLine" id="cb2-23" data-line-number="23"><span class="co">#&gt; LazyData: true</span></a>
-<a class="sourceLine" id="cb2-24" data-line-number="24"><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></a>
-<a class="sourceLine" id="cb2-25" data-line-number="25"><span class="co">#&gt; ✔ Setting active project to '&lt;no active project&gt;'</span></a>
-<a class="sourceLine" id="cb2-26" data-line-number="26"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb2-27" data-line-number="27"><span class="co">#&gt; Do you want to download GADM file from the internet? y / n (default)</span></a>
-<a class="sourceLine" id="cb2-28" data-line-number="28"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb2-29" data-line-number="29"><span class="co">#&gt; Selection:</span></a></code></pre></div>
-<p>By default, the package created contained no data but if <code>y</code> is answer the package will then ask the user to imput at least one country name and a time range to download the data corresponding to gadm and to recreate the historical map corresonding to the time range inputed. Currently, it works only for <code>Cambodia, Laos, Thailand and Vietnam</code>.</p>
-</div>
-<div id="for-other-country" class="section level2">
-<h2>For other country</h2>
-<p>For other country, the users will need to use the functions <code>map_data</code>, <code>map_documentation</code> to complete their packages. If the user want to recreate historical map, it will need to input a list containing the historical event and a dictionary for the admin1, admin2 names. For now, the package <code>dictionary</code> contains functions to create them but also dictionary and list of event for Cambodia, Laos, Thailand and Vietnam.</p>
-<p>To install it:</p>
+<p>The <code>histgadm</code> contains four functions that works together. The function <code>hist_map</code> creates historical map, the functions <code>map_data</code> &amp; <code>map_documentation</code> call the function <code>hist_map</code> in the environment of a package and stock the results (maps in <code>.rda</code> files and documentation) and download file in the folder corresponding. The function <code>init_package</code> called the three functions to create interactively with the user a package containing data, source files and documentation.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="kw">library</span>(histgadm)</a></code></pre></div>
+<div id="hist_map" class="section level3">
+<h3><code>hist_map</code></h3>
+<p>The function <code>hist_map</code> creates <code>sf</code> objects of historical admin1 administrative boundaries by merging back together, renaming or splitting admin1 polygons from the current admin1 administrative boundaries downloaded from GADM <a href="https://gadm.org" class="uri">https://gadm.org</a> for one country, one time range and by a list of events provided by the user.</p>
+<p>For example, for Vietnam: the user will need to input a list containing the historical event and a dictionary for the admin1, admin2 names (if necessary) . For that, the package <code>dictionary</code> can be used as it contains functions to create them but also dictionary and list of event for Cambodia, Laos, Thailand and Vietnam. To install it:</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># install.packages(&quot;devtools&quot;)</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2">devtools<span class="op">::</span><span class="kw">install_github</span>(<span class="st">&quot;choisy/dictionary&quot;</span>)</a></code></pre></div>
-<p>Let’s now take a look at <code>map_data</code>: it download the current map from GADM and recreates historical map:</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1">pgkg_dir &lt;-<span class="st"> </span><span class="kw">paste0</span>(tmp, <span class="st">&quot;/test&quot;</span>)</a>
-<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">map_data</span>(pgkg_dir, <span class="st">&quot;Cambodia&quot;</span>, dictionary<span class="op">::</span>kh_admin1, dictionary<span class="op">::</span>kh_history, <span class="dt">from =</span> <span class="st">&quot;1980&quot;</span>, <span class="dt">to =</span> <span class="st">&quot;2018&quot;</span>)</a>
-<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpDyknoV/pkgtest/test'</span></a>
-<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; ✔ Saving 'kh_1980_1997_high', 'kh_1980_1997_low', 'kh_1997_2013_high', 'kh_1997_2013_low', 'kh_2013_2019_high', 'kh_2013_2019_low', 'kh_country_high', 'kh_country_low' to 'data/kh_1980_1997_high.rda', 'data/kh_1980_1997_low.rda', 'data/kh_1997_2013_high.rda', 'data/kh_1997_2013_low.rda', 'data/kh_2013_2019_high.rda', 'data/kh_2013_2019_low.rda', 'data/kh_country_high.rda', 'data/kh_country_low.rda'</span></a></code></pre></div>
-<p>And the function <code>map_documentation</code> will create the documentation for each object.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">map_documentation</span>(pgkg_dir)</a>
-<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; Updating roxygen version in /private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpDyknoV/pkgtest/test/DESCRIPTION</span></a>
-<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; Writing NAMESPACE</span></a>
-<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; Loading test</span></a>
-<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; Writing kh_1980_1997_high.Rd</span></a>
-<a class="sourceLine" id="cb5-6" data-line-number="6"><span class="co">#&gt; Writing kh_1980_1997_low.Rd</span></a>
-<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt; Writing kh_1997_2013_high.Rd</span></a>
-<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; Writing kh_1997_2013_low.Rd</span></a>
-<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; Writing kh_2013_2019_high.Rd</span></a>
-<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; Writing kh_2013_2019_low.Rd</span></a>
-<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; Writing kh_country_high.Rd</span></a>
-<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; Writing kh_country_low.Rd</span></a></code></pre></div>
+<p>Let’s take a look at it:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">library</span>(dictionary)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">head</span>(vn_admin1) <span class="co"># dictionary for the admin1 names</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt;   An Giang      VN.AG   an giang      vn.ag   AN GIANG      Vn.ag </span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; &quot;An Giang&quot; &quot;An Giang&quot; &quot;An Giang&quot; &quot;An Giang&quot; &quot;An Giang&quot; &quot;An Giang&quot;</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="kw">head</span>(vn_history[[<span class="dv">1</span>]]) <span class="co"># list of event in admin1 history in vietnam</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; $year</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt; [1] &quot;1990-01-01&quot;</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-9" data-line-number="9"><span class="co">#&gt; $event</span></a>
+<a class="sourceLine" id="cb4-10" data-line-number="10"><span class="co">#&gt; [1] &quot;split&quot;</span></a>
+<a class="sourceLine" id="cb4-11" data-line-number="11"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-12" data-line-number="12"><span class="co">#&gt; $before</span></a>
+<a class="sourceLine" id="cb4-13" data-line-number="13"><span class="co">#&gt; $before[[1]]</span></a>
+<a class="sourceLine" id="cb4-14" data-line-number="14"><span class="co">#&gt; [1] &quot;Binh Tri Thien&quot;</span></a>
+<a class="sourceLine" id="cb4-15" data-line-number="15"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-16" data-line-number="16"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-17" data-line-number="17"><span class="co">#&gt; $after</span></a>
+<a class="sourceLine" id="cb4-18" data-line-number="18"><span class="co">#&gt; $after[[1]]</span></a>
+<a class="sourceLine" id="cb4-19" data-line-number="19"><span class="co">#&gt; [1] &quot;Quang Binh&quot;</span></a>
+<a class="sourceLine" id="cb4-20" data-line-number="20"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-21" data-line-number="21"><span class="co">#&gt; $after[[2]]</span></a>
+<a class="sourceLine" id="cb4-22" data-line-number="22"><span class="co">#&gt; [1] &quot;Quang Tri&quot;</span></a>
+<a class="sourceLine" id="cb4-23" data-line-number="23"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb4-24" data-line-number="24"><span class="co">#&gt; $after[[3]]</span></a>
+<a class="sourceLine" id="cb4-25" data-line-number="25"><span class="co">#&gt; [1] &quot;Thua Thien Hue&quot;</span></a></code></pre></div>
+<p>Now, we can use the function <code>hist_map</code> to create “historical” map of Vietnam in between 2000 and 2019:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">a &lt;-<span class="st"> </span><span class="kw">hist_map</span>(<span class="st">&quot;Vietnam&quot;</span>, vn_admin1, vn_history, <span class="dt">from =</span> <span class="dv">2000</span>, <span class="dt">to =</span> <span class="dv">2019</span>)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">#&gt; The file 'gadm36_VNM_0_sf.rds' is already present in the internal library.</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-4" data-line-number="4"><span class="co">#&gt; The file 'gadm36_VNM_1_sf.rds' is already present in the internal library.</span></a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">a</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7"><span class="co">#&gt; $vn_2000_2004_high</span></a>
+<a class="sourceLine" id="cb5-8" data-line-number="8"><span class="co">#&gt; Simple feature collection with 61 features and 1 field</span></a>
+<a class="sourceLine" id="cb5-9" data-line-number="9"><span class="co">#&gt; geometry type:  MULTIPOLYGON</span></a>
+<a class="sourceLine" id="cb5-10" data-line-number="10"><span class="co">#&gt; dimension:      XY</span></a>
+<a class="sourceLine" id="cb5-11" data-line-number="11"><span class="co">#&gt; bbox:           xmin: 102.145 ymin: 8.563332 xmax: 109.4694 ymax: 23.39273</span></a>
+<a class="sourceLine" id="cb5-12" data-line-number="12"><span class="co">#&gt; epsg (SRID):    4326</span></a>
+<a class="sourceLine" id="cb5-13" data-line-number="13"><span class="co">#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs</span></a>
+<a class="sourceLine" id="cb5-14" data-line-number="14"><span class="co">#&gt; First 10 features:</span></a>
+<a class="sourceLine" id="cb5-15" data-line-number="15"><span class="co">#&gt;               admin1                       geometry</span></a>
+<a class="sourceLine" id="cb5-16" data-line-number="16"><span class="co">#&gt; 1           An Giang MULTIPOLYGON (((105.1169 10...</span></a>
+<a class="sourceLine" id="cb5-17" data-line-number="17"><span class="co">#&gt; 2  Ba Ria - Vung Tau MULTIPOLYGON (((106.1453 8....</span></a>
+<a class="sourceLine" id="cb5-18" data-line-number="18"><span class="co">#&gt; 3          Bac Giang MULTIPOLYGON (((106.1623 21...</span></a>
+<a class="sourceLine" id="cb5-19" data-line-number="19"><span class="co">#&gt; 4            Bac Kan MULTIPOLYGON (((105.7406 22...</span></a>
+<a class="sourceLine" id="cb5-20" data-line-number="20"><span class="co">#&gt; 5           Bac Lieu MULTIPOLYGON (((105.2986 9....</span></a>
+<a class="sourceLine" id="cb5-21" data-line-number="21"><span class="co">#&gt; 6           Bac Ninh MULTIPOLYGON (((106.0001 21...</span></a>
+<a class="sourceLine" id="cb5-22" data-line-number="22"><span class="co">#&gt; 7            Ben Tre MULTIPOLYGON (((106.6384 9....</span></a>
+<a class="sourceLine" id="cb5-23" data-line-number="23"><span class="co">#&gt; 8          Binh Dinh MULTIPOLYGON (((109.3632 13...</span></a>
+<a class="sourceLine" id="cb5-24" data-line-number="24"><span class="co">#&gt; 9         Binh Duong MULTIPOLYGON (((106.722 11....</span></a>
+<a class="sourceLine" id="cb5-25" data-line-number="25"><span class="co">#&gt; 10        Binh Phuoc MULTIPOLYGON (((106.722 11....</span></a>
+<a class="sourceLine" id="cb5-26" data-line-number="26"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-27" data-line-number="27"><span class="co">#&gt; $vn_2000_2004_low</span></a>
+<a class="sourceLine" id="cb5-28" data-line-number="28"><span class="co">#&gt; Simple feature collection with 61 features and 1 field</span></a>
+<a class="sourceLine" id="cb5-29" data-line-number="29"><span class="co">#&gt; geometry type:  MULTIPOLYGON</span></a>
+<a class="sourceLine" id="cb5-30" data-line-number="30"><span class="co">#&gt; dimension:      XY</span></a>
+<a class="sourceLine" id="cb5-31" data-line-number="31"><span class="co">#&gt; bbox:           xmin: 102.145 ymin: 8.563332 xmax: 109.4694 ymax: 23.39273</span></a>
+<a class="sourceLine" id="cb5-32" data-line-number="32"><span class="co">#&gt; epsg (SRID):    4326</span></a>
+<a class="sourceLine" id="cb5-33" data-line-number="33"><span class="co">#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs</span></a>
+<a class="sourceLine" id="cb5-34" data-line-number="34"><span class="co">#&gt; First 10 features:</span></a>
+<a class="sourceLine" id="cb5-35" data-line-number="35"><span class="co">#&gt;               admin1                       geometry</span></a>
+<a class="sourceLine" id="cb5-36" data-line-number="36"><span class="co">#&gt; 1           An Giang MULTIPOLYGON (((105.1169 10...</span></a>
+<a class="sourceLine" id="cb5-37" data-line-number="37"><span class="co">#&gt; 2  Ba Ria - Vung Tau MULTIPOLYGON (((107.0719 10...</span></a>
+<a class="sourceLine" id="cb5-38" data-line-number="38"><span class="co">#&gt; 3          Bac Giang MULTIPOLYGON (((106.1623 21...</span></a>
+<a class="sourceLine" id="cb5-39" data-line-number="39"><span class="co">#&gt; 4            Bac Kan MULTIPOLYGON (((105.7406 22...</span></a>
+<a class="sourceLine" id="cb5-40" data-line-number="40"><span class="co">#&gt; 5           Bac Lieu MULTIPOLYGON (((105.2986 9....</span></a>
+<a class="sourceLine" id="cb5-41" data-line-number="41"><span class="co">#&gt; 6           Bac Ninh MULTIPOLYGON (((106.0001 21...</span></a>
+<a class="sourceLine" id="cb5-42" data-line-number="42"><span class="co">#&gt; 7            Ben Tre MULTIPOLYGON (((106.4035 10...</span></a>
+<a class="sourceLine" id="cb5-43" data-line-number="43"><span class="co">#&gt; 8          Binh Dinh MULTIPOLYGON (((109.3439 13...</span></a>
+<a class="sourceLine" id="cb5-44" data-line-number="44"><span class="co">#&gt; 9         Binh Duong MULTIPOLYGON (((106.722 11....</span></a>
+<a class="sourceLine" id="cb5-45" data-line-number="45"><span class="co">#&gt; 10        Binh Phuoc MULTIPOLYGON (((106.722 11....</span></a>
+<a class="sourceLine" id="cb5-46" data-line-number="46"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-47" data-line-number="47"><span class="co">#&gt; $vn_2004_2008_high</span></a>
+<a class="sourceLine" id="cb5-48" data-line-number="48"><span class="co">#&gt; Simple feature collection with 64 features and 1 field</span></a>
+<a class="sourceLine" id="cb5-49" data-line-number="49"><span class="co">#&gt; geometry type:  MULTIPOLYGON</span></a>
+<a class="sourceLine" id="cb5-50" data-line-number="50"><span class="co">#&gt; dimension:      XY</span></a>
+<a class="sourceLine" id="cb5-51" data-line-number="51"><span class="co">#&gt; bbox:           xmin: 102.145 ymin: 8.563332 xmax: 109.4694 ymax: 23.39273</span></a>
+<a class="sourceLine" id="cb5-52" data-line-number="52"><span class="co">#&gt; epsg (SRID):    4326</span></a>
+<a class="sourceLine" id="cb5-53" data-line-number="53"><span class="co">#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs</span></a>
+<a class="sourceLine" id="cb5-54" data-line-number="54"><span class="co">#&gt; First 10 features:</span></a>
+<a class="sourceLine" id="cb5-55" data-line-number="55"><span class="co">#&gt;               admin1                       geometry</span></a>
+<a class="sourceLine" id="cb5-56" data-line-number="56"><span class="co">#&gt; 1           An Giang MULTIPOLYGON (((105.1169 10...</span></a>
+<a class="sourceLine" id="cb5-57" data-line-number="57"><span class="co">#&gt; 2  Ba Ria - Vung Tau MULTIPOLYGON (((106.1453 8....</span></a>
+<a class="sourceLine" id="cb5-58" data-line-number="58"><span class="co">#&gt; 3          Bac Giang MULTIPOLYGON (((106.1623 21...</span></a>
+<a class="sourceLine" id="cb5-59" data-line-number="59"><span class="co">#&gt; 4            Bac Kan MULTIPOLYGON (((105.7406 22...</span></a>
+<a class="sourceLine" id="cb5-60" data-line-number="60"><span class="co">#&gt; 5           Bac Lieu MULTIPOLYGON (((105.2986 9....</span></a>
+<a class="sourceLine" id="cb5-61" data-line-number="61"><span class="co">#&gt; 6           Bac Ninh MULTIPOLYGON (((106.0001 21...</span></a>
+<a class="sourceLine" id="cb5-62" data-line-number="62"><span class="co">#&gt; 7            Ben Tre MULTIPOLYGON (((106.6384 9....</span></a>
+<a class="sourceLine" id="cb5-63" data-line-number="63"><span class="co">#&gt; 8          Binh Dinh MULTIPOLYGON (((109.3632 13...</span></a>
+<a class="sourceLine" id="cb5-64" data-line-number="64"><span class="co">#&gt; 9         Binh Duong MULTIPOLYGON (((106.722 11....</span></a>
+<a class="sourceLine" id="cb5-65" data-line-number="65"><span class="co">#&gt; 10        Binh Phuoc MULTIPOLYGON (((106.722 11....</span></a>
+<a class="sourceLine" id="cb5-66" data-line-number="66"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-67" data-line-number="67"><span class="co">#&gt; $vn_2004_2008_low</span></a>
+<a class="sourceLine" id="cb5-68" data-line-number="68"><span class="co">#&gt; Simple feature collection with 64 features and 1 field</span></a>
+<a class="sourceLine" id="cb5-69" data-line-number="69"><span class="co">#&gt; geometry type:  MULTIPOLYGON</span></a>
+<a class="sourceLine" id="cb5-70" data-line-number="70"><span class="co">#&gt; dimension:      XY</span></a>
+<a class="sourceLine" id="cb5-71" data-line-number="71"><span class="co">#&gt; bbox:           xmin: 102.145 ymin: 8.563332 xmax: 109.4694 ymax: 23.39273</span></a>
+<a class="sourceLine" id="cb5-72" data-line-number="72"><span class="co">#&gt; epsg (SRID):    4326</span></a>
+<a class="sourceLine" id="cb5-73" data-line-number="73"><span class="co">#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs</span></a>
+<a class="sourceLine" id="cb5-74" data-line-number="74"><span class="co">#&gt; First 10 features:</span></a>
+<a class="sourceLine" id="cb5-75" data-line-number="75"><span class="co">#&gt;               admin1                       geometry</span></a>
+<a class="sourceLine" id="cb5-76" data-line-number="76"><span class="co">#&gt; 1           An Giang MULTIPOLYGON (((105.1169 10...</span></a>
+<a class="sourceLine" id="cb5-77" data-line-number="77"><span class="co">#&gt; 2  Ba Ria - Vung Tau MULTIPOLYGON (((107.0719 10...</span></a>
+<a class="sourceLine" id="cb5-78" data-line-number="78"><span class="co">#&gt; 3          Bac Giang MULTIPOLYGON (((106.1623 21...</span></a>
+<a class="sourceLine" id="cb5-79" data-line-number="79"><span class="co">#&gt; 4            Bac Kan MULTIPOLYGON (((105.7406 22...</span></a>
+<a class="sourceLine" id="cb5-80" data-line-number="80"><span class="co">#&gt; 5           Bac Lieu MULTIPOLYGON (((105.2986 9....</span></a>
+<a class="sourceLine" id="cb5-81" data-line-number="81"><span class="co">#&gt; 6           Bac Ninh MULTIPOLYGON (((106.0001 21...</span></a>
+<a class="sourceLine" id="cb5-82" data-line-number="82"><span class="co">#&gt; 7            Ben Tre MULTIPOLYGON (((106.4035 10...</span></a>
+<a class="sourceLine" id="cb5-83" data-line-number="83"><span class="co">#&gt; 8          Binh Dinh MULTIPOLYGON (((109.3439 13...</span></a>
+<a class="sourceLine" id="cb5-84" data-line-number="84"><span class="co">#&gt; 9         Binh Duong MULTIPOLYGON (((106.722 11....</span></a>
+<a class="sourceLine" id="cb5-85" data-line-number="85"><span class="co">#&gt; 10        Binh Phuoc MULTIPOLYGON (((106.722 11....</span></a>
+<a class="sourceLine" id="cb5-86" data-line-number="86"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-87" data-line-number="87"><span class="co">#&gt; $vn_2008_2020_high</span></a>
+<a class="sourceLine" id="cb5-88" data-line-number="88"><span class="co">#&gt; Simple feature collection with 63 features and 1 field</span></a>
+<a class="sourceLine" id="cb5-89" data-line-number="89"><span class="co">#&gt; geometry type:  MULTIPOLYGON</span></a>
+<a class="sourceLine" id="cb5-90" data-line-number="90"><span class="co">#&gt; dimension:      XY</span></a>
+<a class="sourceLine" id="cb5-91" data-line-number="91"><span class="co">#&gt; bbox:           xmin: 102.1446 ymin: 8.381355 xmax: 109.4692 ymax: 23.39269</span></a>
+<a class="sourceLine" id="cb5-92" data-line-number="92"><span class="co">#&gt; epsg (SRID):    4326</span></a>
+<a class="sourceLine" id="cb5-93" data-line-number="93"><span class="co">#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs</span></a>
+<a class="sourceLine" id="cb5-94" data-line-number="94"><span class="co">#&gt; First 10 features:</span></a>
+<a class="sourceLine" id="cb5-95" data-line-number="95"><span class="co">#&gt;               admin1                       geometry</span></a>
+<a class="sourceLine" id="cb5-96" data-line-number="96"><span class="co">#&gt; 1           An Giang MULTIPOLYGON (((105.3745 10...</span></a>
+<a class="sourceLine" id="cb5-97" data-line-number="97"><span class="co">#&gt; 2           Bac Lieu MULTIPOLYGON (((105.4164 9....</span></a>
+<a class="sourceLine" id="cb5-98" data-line-number="98"><span class="co">#&gt; 3          Bac Giang MULTIPOLYGON (((105.9644 21...</span></a>
+<a class="sourceLine" id="cb5-99" data-line-number="99"><span class="co">#&gt; 4            Bac Kan MULTIPOLYGON (((105.5904 22...</span></a>
+<a class="sourceLine" id="cb5-100" data-line-number="100"><span class="co">#&gt; 5           Bac Ninh MULTIPOLYGON (((106.0285 20...</span></a>
+<a class="sourceLine" id="cb5-101" data-line-number="101"><span class="co">#&gt; 6            Ben Tre MULTIPOLYGON (((106.6355 9....</span></a>
+<a class="sourceLine" id="cb5-102" data-line-number="102"><span class="co">#&gt; 7  Ba Ria - Vung Tau MULTIPOLYGON (((107.0895 10...</span></a>
+<a class="sourceLine" id="cb5-103" data-line-number="103"><span class="co">#&gt; 8          Binh Dinh MULTIPOLYGON (((109.3709 13...</span></a>
+<a class="sourceLine" id="cb5-104" data-line-number="104"><span class="co">#&gt; 9         Binh Duong MULTIPOLYGON (((106.7618 10...</span></a>
+<a class="sourceLine" id="cb5-105" data-line-number="105"><span class="co">#&gt; 10        Binh Phuoc MULTIPOLYGON (((106.9003 11...</span></a>
+<a class="sourceLine" id="cb5-106" data-line-number="106"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-107" data-line-number="107"><span class="co">#&gt; $vn_2008_2020_low</span></a>
+<a class="sourceLine" id="cb5-108" data-line-number="108"><span class="co">#&gt; Simple feature collection with 63 features and 1 field</span></a>
+<a class="sourceLine" id="cb5-109" data-line-number="109"><span class="co">#&gt; geometry type:  MULTIPOLYGON</span></a>
+<a class="sourceLine" id="cb5-110" data-line-number="110"><span class="co">#&gt; dimension:      XY</span></a>
+<a class="sourceLine" id="cb5-111" data-line-number="111"><span class="co">#&gt; bbox:           xmin: 102.145 ymin: 8.563332 xmax: 109.4694 ymax: 23.39273</span></a>
+<a class="sourceLine" id="cb5-112" data-line-number="112"><span class="co">#&gt; epsg (SRID):    4326</span></a>
+<a class="sourceLine" id="cb5-113" data-line-number="113"><span class="co">#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs</span></a>
+<a class="sourceLine" id="cb5-114" data-line-number="114"><span class="co">#&gt; First 10 features:</span></a>
+<a class="sourceLine" id="cb5-115" data-line-number="115"><span class="co">#&gt;               admin1                       geometry</span></a>
+<a class="sourceLine" id="cb5-116" data-line-number="116"><span class="co">#&gt; 1           An Giang MULTIPOLYGON (((105.3745 10...</span></a>
+<a class="sourceLine" id="cb5-117" data-line-number="117"><span class="co">#&gt; 2           Bac Lieu MULTIPOLYGON (((105.4164 9....</span></a>
+<a class="sourceLine" id="cb5-118" data-line-number="118"><span class="co">#&gt; 3          Bac Giang MULTIPOLYGON (((105.9644 21...</span></a>
+<a class="sourceLine" id="cb5-119" data-line-number="119"><span class="co">#&gt; 4            Bac Kan MULTIPOLYGON (((105.5904 22...</span></a>
+<a class="sourceLine" id="cb5-120" data-line-number="120"><span class="co">#&gt; 5           Bac Ninh MULTIPOLYGON (((106.0285 20...</span></a>
+<a class="sourceLine" id="cb5-121" data-line-number="121"><span class="co">#&gt; 6            Ben Tre MULTIPOLYGON (((106.6355 9....</span></a>
+<a class="sourceLine" id="cb5-122" data-line-number="122"><span class="co">#&gt; 7  Ba Ria - Vung Tau MULTIPOLYGON (((107.0914 10...</span></a>
+<a class="sourceLine" id="cb5-123" data-line-number="123"><span class="co">#&gt; 8          Binh Dinh MULTIPOLYGON (((109.24 13.7...</span></a>
+<a class="sourceLine" id="cb5-124" data-line-number="124"><span class="co">#&gt; 9         Binh Duong MULTIPOLYGON (((106.7618 10...</span></a>
+<a class="sourceLine" id="cb5-125" data-line-number="125"><span class="co">#&gt; 10        Binh Phuoc MULTIPOLYGON (((106.9003 11...</span></a>
+<a class="sourceLine" id="cb5-126" data-line-number="126"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-127" data-line-number="127"><span class="co">#&gt; $vn_country_high</span></a>
+<a class="sourceLine" id="cb5-128" data-line-number="128"><span class="co">#&gt; Simple feature collection with 1 feature and 1 field</span></a>
+<a class="sourceLine" id="cb5-129" data-line-number="129"><span class="co">#&gt; geometry type:  MULTIPOLYGON</span></a>
+<a class="sourceLine" id="cb5-130" data-line-number="130"><span class="co">#&gt; dimension:      XY</span></a>
+<a class="sourceLine" id="cb5-131" data-line-number="131"><span class="co">#&gt; bbox:           xmin: 102.145 ymin: 8.563332 xmax: 109.4694 ymax: 23.39273</span></a>
+<a class="sourceLine" id="cb5-132" data-line-number="132"><span class="co">#&gt; epsg (SRID):    4326</span></a>
+<a class="sourceLine" id="cb5-133" data-line-number="133"><span class="co">#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs</span></a>
+<a class="sourceLine" id="cb5-134" data-line-number="134"><span class="co">#&gt;   country                       geometry</span></a>
+<a class="sourceLine" id="cb5-135" data-line-number="135"><span class="co">#&gt; 1 Vietnam MULTIPOLYGON (((104.8791 8....</span></a>
+<a class="sourceLine" id="cb5-136" data-line-number="136"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb5-137" data-line-number="137"><span class="co">#&gt; $vn_country_low</span></a>
+<a class="sourceLine" id="cb5-138" data-line-number="138"><span class="co">#&gt; Simple feature collection with 1 feature and 1 field</span></a>
+<a class="sourceLine" id="cb5-139" data-line-number="139"><span class="co">#&gt; geometry type:  MULTIPOLYGON</span></a>
+<a class="sourceLine" id="cb5-140" data-line-number="140"><span class="co">#&gt; dimension:      XY</span></a>
+<a class="sourceLine" id="cb5-141" data-line-number="141"><span class="co">#&gt; bbox:           xmin: 102.145 ymin: 8.563332 xmax: 109.4694 ymax: 23.39273</span></a>
+<a class="sourceLine" id="cb5-142" data-line-number="142"><span class="co">#&gt; epsg (SRID):    4326</span></a>
+<a class="sourceLine" id="cb5-143" data-line-number="143"><span class="co">#&gt; proj4string:    +proj=longlat +datum=WGS84 +no_defs</span></a>
+<a class="sourceLine" id="cb5-144" data-line-number="144"><span class="co">#&gt;   country                       geometry</span></a>
+<a class="sourceLine" id="cb5-145" data-line-number="145"><span class="co">#&gt; 1 Vietnam MULTIPOLYGON (((104.6591 10...</span></a></code></pre></div>
+<p>The output of the function is a named list containing, for each time step from the most recent to the oldest, one map of admin1 administrative boundaries. Each object in the list is named by the 2 characters ISO code of the country corresponding (by using the package countrycode), the year of expression of these admin1 administrative boundaries and the resolution. For example, here we have:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">names</span>(a)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co">#&gt; [1] &quot;vn_2000_2004_high&quot; &quot;vn_2000_2004_low&quot;  &quot;vn_2004_2008_high&quot;</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt; [4] &quot;vn_2004_2008_low&quot;  &quot;vn_2008_2020_high&quot; &quot;vn_2008_2020_low&quot; </span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt; [7] &quot;vn_country_high&quot;   &quot;vn_country_low&quot;</span></a></code></pre></div>
+<p><code>vn_2000_2004</code> for the admin1 boundaries of Vietnam from 2000-01-01 until 2004-01-01 (not include).</p>
+<p>Be careful, the historical map are “approximate” map because the package only split or merge back together admin1 polygons when in reality, this event are often more complex.</p>
+</div>
+<div id="map_data-map_documentation" class="section level3">
+<h3><code>map_data</code> &amp; <code>map_documentation</code></h3>
+<p>The users can also use the functions <code>map_data</code>, <code>map_documentation</code> to complete their packages. Let’s now take a look at <code>map_data</code>: it download the current map from GADM and recreates historical map:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">tmp &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pkgtest&quot;</span>)</a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">usethis<span class="op">::</span><span class="kw">create_package</span>(tmp, <span class="dt">open =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3"><span class="co">#&gt; ✔ Creating '/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpIG4LTm/pkgtest/'</span></a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpIG4LTm/pkgtest'</span></a>
+<a class="sourceLine" id="cb7-5" data-line-number="5"><span class="co">#&gt; ✔ Creating 'R/'</span></a>
+<a class="sourceLine" id="cb7-6" data-line-number="6"><span class="co">#&gt; ✔ Writing 'DESCRIPTION'</span></a>
+<a class="sourceLine" id="cb7-7" data-line-number="7"><span class="co">#&gt; Package: pkgtest</span></a>
+<a class="sourceLine" id="cb7-8" data-line-number="8"><span class="co">#&gt; Title: What the Package Does (One Line, Title Case)</span></a>
+<a class="sourceLine" id="cb7-9" data-line-number="9"><span class="co">#&gt; Version: 0.0.0.9000</span></a>
+<a class="sourceLine" id="cb7-10" data-line-number="10"><span class="co">#&gt; Authors@R (parsed):</span></a>
+<a class="sourceLine" id="cb7-11" data-line-number="11"><span class="co">#&gt;     * First Last &lt;first.last@example.com&gt; [aut, cre] (&lt;https://orcid.org/YOUR-ORCID-ID&gt;)</span></a>
+<a class="sourceLine" id="cb7-12" data-line-number="12"><span class="co">#&gt; Description: What the package does (one paragraph).</span></a>
+<a class="sourceLine" id="cb7-13" data-line-number="13"><span class="co">#&gt; License: What license it uses</span></a>
+<a class="sourceLine" id="cb7-14" data-line-number="14"><span class="co">#&gt; Encoding: UTF-8</span></a>
+<a class="sourceLine" id="cb7-15" data-line-number="15"><span class="co">#&gt; LazyData: true</span></a>
+<a class="sourceLine" id="cb7-16" data-line-number="16"><span class="co">#&gt; ✔ Writing 'NAMESPACE'</span></a>
+<a class="sourceLine" id="cb7-17" data-line-number="17"><span class="co">#&gt; ✔ Setting active project to '&lt;no active project&gt;'</span></a>
+<a class="sourceLine" id="cb7-18" data-line-number="18">histgadm<span class="op">::</span><span class="kw">map_data</span>(tmp, <span class="st">&quot;Cambodia&quot;</span>, dictionary<span class="op">::</span>kh_admin1, dictionary<span class="op">::</span>kh_history, <span class="dt">from =</span> <span class="st">&quot;1980&quot;</span>, <span class="dt">to =</span> <span class="st">&quot;2018&quot;</span>)</a>
+<a class="sourceLine" id="cb7-19" data-line-number="19"><span class="co">#&gt; ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpIG4LTm/pkgtest'</span></a>
+<a class="sourceLine" id="cb7-20" data-line-number="20"><span class="co">#&gt; ✔ Saving 'kh_1980_1997_high', 'kh_1980_1997_low', 'kh_1997_2013_high', 'kh_1997_2013_low', 'kh_2013_2019_high', 'kh_2013_2019_low', 'kh_country_high', 'kh_country_low' to 'data/kh_1980_1997_high.rda', 'data/kh_1980_1997_low.rda', 'data/kh_1997_2013_high.rda', 'data/kh_1997_2013_low.rda', 'data/kh_2013_2019_high.rda', 'data/kh_2013_2019_low.rda', 'data/kh_country_high.rda', 'data/kh_country_low.rda'</span></a></code></pre></div>
+<p>The arguments <code>save</code> permits to store the source file from gadm in a folder <code>\data-raw</code> in the package inputted.</p>
+<p>If we look at the folder in the packages:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">dir</span>(<span class="kw">paste0</span>(tmp, <span class="st">&quot;/data&quot;</span>))</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt; [1] &quot;kh_1980_1997_high.rda&quot; &quot;kh_1980_1997_low.rda&quot;  &quot;kh_1997_2013_high.rda&quot;</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt; [4] &quot;kh_1997_2013_low.rda&quot;  &quot;kh_2013_2019_high.rda&quot; &quot;kh_2013_2019_low.rda&quot; </span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; [7] &quot;kh_country_high.rda&quot;   &quot;kh_country_low.rda&quot;</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="kw">dir</span>(<span class="kw">paste0</span>(tmp, <span class="st">&quot;/data-raw&quot;</span>))</a>
+<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt; [1] &quot;gadm36_KHM_0_sf.rds&quot; &quot;gadm36_KHM_1_sf.rds&quot;</span></a></code></pre></div>
+<p>We can see that object were downloaded and created in the package, corresponding to the historical map in <code>sf</code> object saved in <code>.rda</code> format in <code>data</code> folder and source files saved in <code>raw-data</code>.</p>
+<p>And the function <code>map_documentation</code> will create the documentation for each object by creating a file <code>data.R</code> written in roxygen and a also by creating <code>.rd</code> file(s) in the folder <code>man</code> of the package.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="kw">map_documentation</span>(tmp)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#&gt; Updating roxygen version in /private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpIG4LTm/pkgtest/DESCRIPTION</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; Writing NAMESPACE</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt; Loading pkgtest</span></a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">#&gt; Writing kh_1980_1997_high.Rd</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6"><span class="co">#&gt; Writing kh_1980_1997_low.Rd</span></a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">#&gt; Writing kh_1997_2013_high.Rd</span></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co">#&gt; Writing kh_1997_2013_low.Rd</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9"><span class="co">#&gt; Writing kh_2013_2019_high.Rd</span></a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co">#&gt; Writing kh_2013_2019_low.Rd</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11"><span class="co">#&gt; Writing kh_country_high.Rd</span></a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">#&gt; Writing kh_country_low.Rd</span></a></code></pre></div>
+<p>If we look at the folder in the packages:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1"><span class="kw">dir</span>(<span class="kw">paste0</span>(tmp, <span class="st">&quot;/R&quot;</span>))</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt; [1] &quot;data.R&quot;</span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="kw">dir</span>(<span class="kw">paste0</span>(tmp, <span class="st">&quot;/man&quot;</span>))</a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt; [1] &quot;kh_1980_1997_high.Rd&quot; &quot;kh_1980_1997_low.Rd&quot;  &quot;kh_1997_2013_high.Rd&quot;</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt; [4] &quot;kh_1997_2013_low.Rd&quot;  &quot;kh_2013_2019_high.Rd&quot; &quot;kh_2013_2019_low.Rd&quot; </span></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt; [7] &quot;kh_country_high.Rd&quot;   &quot;kh_country_low.Rd&quot;</span></a></code></pre></div>
+<p>We can see that documentation corresponding to the object in the package were created: a <code>.R</code> file with roxygen comment who was roxigenize to make the files in the <code>man</code> folder.</p>
+</div>
+<div id="init_package" class="section level3">
+<h3><code>init_package</code></h3>
+<p>The function <code>init_package</code> creates a package for the GADM data (<a href="https://gadm.org/" class="uri">https://gadm.org/</a>), and interactively allows the user to download data from GADM for one or more country and recreates historical map from a time range (interactive input) by merging or spliting back admin1 polygons. The ouput are <code>sf</code> maps of the country with the different admin1 historial and current administrative boundaries.</p>
+<p>Below is a quick look at how <code>histgadm</code> is working:</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="co"># Create a new package ---------------------------------------------------------</span></a>
+<a class="sourceLine" id="cb11-2" data-line-number="2">tmp &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pkgtest&quot;</span>)</a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="kw">dir.create</span>(tmp)</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4"><span class="kw">initial_pkg</span>(tmp, <span class="st">&quot;test&quot;</span>)</a></code></pre></div>
+<p>By default, the package created contained no data but ask the user to imput at least one country name and a time range to download the data corresponding to and to recreate the historical map corresonding to the time range inputed. Currently, it works only for <code>Cambodia, Laos, Thailand and Vietnam</code>.</p>
+</div>
 </div>
 
 

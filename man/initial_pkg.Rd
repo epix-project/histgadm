@@ -4,14 +4,22 @@
 \alias{initial_pkg}
 \title{Configures the intial files of the package}
 \usage{
-initial_pkg(path, name_pkg)
+initial_pkg(path, name_pkg, tolerance = NULL, append_country = FALSE)
 }
 \arguments{
 \item{path}{character string, path of the package.}
 
 \item{name_pkg}{character string, name of the package.}
+
+\item{tolerance}{numeric for thinning (simplification), the tolerance value
+should be in the metric of the input object (cf. from function
+\code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.}
+
+\item{append_country}{boolean, append the country level in the
+final list. by default, FALSE}
 }
 \description{
-Creates a package for the gadm data, allow you to download (if wanted) data
-from gadm and recreates historical map from a time range (interactive input)
+Creates interactively a package for the gadm data, allowing you to download
+data from gadm and recreates historical map from a time range (interactive
+input)
 }

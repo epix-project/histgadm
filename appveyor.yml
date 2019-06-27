@@ -13,8 +13,8 @@ install:
 image:
     - Visual Studio 2017
 
-cache:
-  #- C:\RLibrary
+#cache:
+ # - C:\RLibrary
 
 # Adapt as necessary starting from here
 

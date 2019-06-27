@@ -15,8 +15,8 @@ status](https://www.r-pkg.org/badges/version/histgadm)](https://cran.r-project.o
 
 `histgadm` is a workflow package: From current map from GADM
 (<https://gadm.org/>) recreates historical administrative boundaries map
-and creates one or multiple packages (one by country inputed) containing
-the data and the documentation.
+and can also create one package containing the data and the
+documentation.
 
 ## Installation
 
@@ -30,47 +30,11 @@ devtools::install_github("epix-project/histgadm")
 
 ## Usage
 
-The `histgadm` contains four functions.
-
-The function `init_package` creates a package for the GADM data
-(<https://gadm.org/>), and interactively allows the user to download
-data from GADM for one or more country and recreates historical map from
-a time range (interactive input) by merging or spliting back admin1
-polygons. The ouput are `sf` maps of the country in high and low
-definition with the different admin1 historial and current
-administrative boundaries but also the country administrative
-boundaries. The historical map are “approximate” map because the package
-only split or merge admin1 polygons when in reality, this event are
-ofter more complexe and the boundaries may not be exact.
-
-Below is a quick look at how `histgadm` is working:
-
-``` r
-library("histgadm")
-
-# Create a new package ---------------------------------------------------------
-tmp <- file.path(tempdir(), "pkgtest")
-dir.create(tmp)
-initial_pkg(tmp, "test")
-#> ✔ Setting active project to '/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpiPG1VS/pkgtest/test'
-#> ✔ Creating 'R/'
-#> ✔ Creating 'man/'
-#> ✔ Writing 'DESCRIPTION'
-#> ✔ Writing 'NAMESPACE'
-#> ✔ Adding 'sf' to Imports field in DESCRIPTION
-#> ● Refer to functions with `sf::fun()`
-#> 
-#> Do you want to download GADM file from the internet? y / n (default)
-#> 
-#> Selection:
-```
-
-By default, the package created contained no data but if `y` is answer
-the package will then ask the user to imput at least one country name
-and a time range to download the data corresponding to gadm and to
-recreate the historical map corresonding to the time range inputed.
-Currently, it works only for `Cambodia, Laos, Thailand and Vietnam`.
-
-For other country, the users will need to use the functions `map_data`,
-`map_documentation` to complete their packages. For more details, please
-take a look at the vignettes `histgadm Usage`.
+The `histgadm` contains four functions that works together. The function
+`hist_map` creates historical map, the functions `map_data` &
+`map_documentation` call the function `hist_map` in the environment of a
+package and stock the results (maps in `.rda` files and documentation)
+and download file in the folder corresponding. The function
+`init_package` called the three functions to create interactively with
+the user a package containing data, source files and documentation.
+Please take a look at the vignette for more information.

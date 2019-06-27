@@ -1,59 +1,4 @@
 # ------------------------------------------------------------------------------
-#' Thinning (simplification)
-#'
-#' The function performs \code{\link[maptools]{thinnedSpatialPoly}} on a
-#' \code{sf} object.
-#'
-#' @param sf_obj an objet of class "sf".
-#' @param tolerance the tolerance value in the metric of the input object (cf.
-#'  function `thinnedSpatialPoly`).
-#'
-#' @importFrom sf as_Spatial st_as_sf
-#' @importFrom magrittr %>% %<>%
-#' @importFrom maptools thinnedSpatialPoly
-#' @keywords internal
-#' @noRd
-thin_polygons <- function(sf_obj, tolerance) {
-  sf_obj %<>% as_Spatial(.) %>%
-    thinnedSpatialPoly(tolerance) %>%
-    st_as_sf(.)
-}
-
-# ------------------------------------------------------------------------------
-#' Defines new boundaries box and projections of a sf object
-#'
-#' The function defines the attributes \code{bbox} and \code{crs} of a sf
-#' object.
-#'
-#' @param sf_obj an objet of class "sf".
-#' @param boundbox character, bounding box.
-#' @param crs character, coordinate reference system.
-#' @keywords internal
-#' @noRd
-define_bbox_proj <- function(sf_obj, boundbox, crs) {
-  attr(sf_obj[["geometry"]], "bbox") <- boundbox
-  attr(sf_obj[["geometry"]], "crs") <- crs
-  sf_obj
-}
-
-# ------------------------------------------------------------------------------
-#' Translates vector to standardized English
-#'
-#' @param vector vector to translate
-#' @param hash named character vector containing the translation in English
-#'  (standardized version) of the admin1 names. See \code{Details}for more
-#'  information.
-#'
-#' @importFrom stringi stri_escape_unicode
-#' @keywords internal
-#' @noRd
-translate <- function(vector, hash = NULL) {
- vector %<>% stringi::stri_escape_unicode(.)
- if (is.null(hash) == FALSE) vector %<>% hash[.]
- vector
-}
-
-# ------------------------------------------------------------------------------
 #' Filters list by a time range
 #'
 #' Filters a list to keep only the data corresponding to a certain time
@@ -68,12 +13,44 @@ translate <- function(vector, hash = NULL) {
 #' @keywords internal
 #' @noRd
 select_events <- function(hist_lst, from, to) {
-  sel0 <- map(hist_lst, "year") %>% unlist() %>% as.Date()
+  sel0 <- unlist(lapply(hist_lst, "[", "year"))
+  sel0 <- as.Date(sel0)
   sel0 <- sel0 > as.Date(paste0(from, "-01-01")) &
     sel0 <= as.Date(paste0(to, "-12-31"))
   hist_lst <- hist_lst[sel0]
   hist_lst
 }
+
+# ------------------------------------------------------------------------------
+#' Transform GADM output in the specific format
+#'
+#' @param df_sf sf object download from GADM
+#' @param level numeric indicating if we need the output with admin1 level
+#' information (level 1) or with also admin2 level information (level2)
+#' @param hash named character vector containing the translation in English
+#'  (standardized version) of the admin1 names. See \code{Details} for more
+#'  information.
+#' @param d.hash used in case of \code{complex split} or \code{complex merge}
+#' in the \code{lst_history} object.  named character vector containing the
+#' translation in English (standardized version) of the admin2 names. See
+#' \code{Details} for more information.
+#' @return a sf object
+#' @importFrom sf st_as_sf
+#' @keywords internal
+#' @noRd
+transform_gadm <- function(df_sf, level, hash, d.hash) {
+
+  if (level == 1) {
+    df_sf <- transform(df_sf, admin1 = translate(df_sf$NAME_1, hash))
+    df_sf <- df_sf[, c("admin1", "geometry")]
+  } else if (level == 2) {
+    df_sf <- transform(df_sf, admin1 = translate(df_sf$NAME_1, hash),
+                       admin2 = translate(df_sf$NAME_2, d.hash))
+    df_sf <- df_sf[, c("admin1", "admin2", "geometry")]
+  }
+  sf::st_as_sf(df_sf)
+}
+
 
 # ------------------------------------------------------------------------------
 #' Download current map for one country
@@ -83,11 +60,11 @@ select_events <- function(hist_lst, from, to) {
 #'  (standardized version) of the admin1 names. See \code{Details} for more
 #'  information.
 #' @param lst_history A list containing a list of event, each code with a slot
-#'  after, a slot before, a slotevent (split/merge/rename/ complexe merge/
-#'  complexe split) and a slot year. See \code{Details} for more information.
+#'  after, a slot before, a slotevent (split/merge/rename/ complex merge/
+#'  complex split) and a slot year. See \code{Details} for more information.
 #' @param from Initial date of the time range selected, of the class Date,
 #'   character or numeric. By default "1960".
-#' @param d.hash used in case of \code{complexe split} or \code{complexe merge}
+#' @param d.hash used in case of \code{complex split} or \code{complex merge}
 #' in the \code{lst_history} object.  named character vector containing the
 #' translation in English (standardized version) of the admin2 names. See
 #' \code{Details} for more information.
@@ -106,28 +83,96 @@ select_events <- function(hist_lst, from, to) {
 current_map <- function(country, hash, lst_history, from, to, d.hash, save,
                         path, intlib, force) {
 
-  # exception for Vietnam
-  if (country == "Vietnam" &
-      as.Date(paste0(from, "-01-01")) < as.Date("2008-01-01")) {
-    df_sf <- get("vn_a1_0407")  %>%
-      mutate(admin1 = translate(NAME_2, hash)) %>%
-      select(admin1, geometry)
+  if (!is.null(lst_history)) {
+    event_history <- select_events(lst_history, from, to)
+    name_history <- lapply(event_history, names)
+    event_history <- lapply(event_history, "[[", "event")
+  }
 
-  } else if (is.null(lst_history) == FALSE &&
-             select_events(lst_history, from, to) %>% map("event") %>%
-               grepl("complexe", .) %>% any) {
+  if (country == "Vietnam" & # exception for Vietnam
+      as.Date(paste0(from, "-01-01")) < as.Date("2008-01-01")) {
+    if (any(grepl("complex|merge", event_history)) &
+        any(grepl("d.bef", name_history))) {
       df_sf <- gadm(country, "sf", 2, save = save, path = path,
-                    intlib = intlib, force = force) %>%
-        mutate(admin1 = translate(NAME_1, hash),
-               admin2 = translate(NAME_2, d.hash)) %>%
-        select(admin1, admin2, geometry)
+                    intlib = intlib, force = force)
+      df_sf <- transform_gadm(df_sf, 2, hash, d.hash)
+    } else {
+      df_sf <- get("vn_a1_0407")
+      df_sf <- transform_gadm(df_sf, 1, hash)
+    }
+  } else if (!is.null(lst_history) &&
+             any(grepl("complex|merge", event_history)) &&
+             any(grepl("d.bef", name_history))) {
+      df_sf <- gadm(country, "sf", 2, save = save, path = path,
+                    intlib = intlib, force = force)
+      df_sf <- transform_gadm(df_sf, 2, hash, d.hash)
   } else {
     df_sf <- gadm(country, "sf", 1, save = save, path = path,
-                  intlib = intlib, force = force) %>%
-      mutate(admin1 = translate(NAME_1, hash)) %>%
-      select(admin1, geometry)
+                  intlib = intlib, force = force)
+    df_sf <- transform_gadm(df_sf, 1, hash)
   }
   df_sf
+}
+
+# ------------------------------------------------------------------------------
+#' Apply thinning process on the polygones of an sf object
+#'
+#' @param df_sf sf object
+#' @param tolerance numeric for thinning (simplification). the tolerance value
+#'  should be in the metric of the input object (cf. from function
+#'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.
+#' @param boundbox character, bounding box.
+#' @param crs character, coordinate reference system.
+#' @importFrom sptools define_bbox_proj thin_polygons
+#' @keywords internal
+#' @noRd
+thin_sf <- function(df_sf, tolerance, boundbox, crs) {
+  if (!is.null(tolerance)) {
+    df_sf  <- sptools::thin_polygons(df_sf, tolerance = tolerance)
+    df_sf  <- sptools::define_bbox_proj(df_sf, boundbox, crs)
+  }
+  df_sf
+}
+
+
+# ------------------------------------------------------------------------------
+#' Download  Country Administrative Boundaries
+#'
+#' Download country boundaries
+#'
+#' @param country character string, name of the country to download.
+#' @param boundbox character, bounding box.
+#' @param crs character, coordinate reference system.
+#' @param save boolean, specifies whether the downloaded file should be saved
+#' in a specific path or not. If \code{NULL}, it will be asked interactively.
+#' By default \code{FALSE}.
+#' @param path character string, path to save the downloaded file. If
+#' \code{NULL}, the file will be saved in the working directory. By default
+#' \code{NULL}.
+#' @param intlib boolean, specifies whether the downloaded file should be saved
+#' in the library of packages. If \code{NULL}, it will be asked interactively.
+#' By default \code{TRUE}.
+#' @param force boolean, force to download the file even if already in the path.
+#' By default \code{FALSE}.
+#' @param tolerance numeric for thinning (simplification). the tolerance value
+#'  should be in the metric of the input object (cf. from function
+#'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.
+#'
+#' @importFrom sptools gadm define_bbox_proj thin_polygons
+#' @importFrom sf st_as_sf
+#'
+#' @keywords internal
+#' @noRd
+download_country <- function(country, boundbox, crs, save, path, intlib,
+                             force, tolerance) {
+  gadm0 <- gadm(country, "sf", 0, save = save, path = path,
+                intlib = intlib, force = force)
+  gadm0 <- gadm0[, -which(names(gadm0) == "GID_0")]
+  names(gadm0)[which(names(gadm0) == "NAME_0")] <- "country"
+  gadm0 <- sf::st_as_sf(gadm0)
+  gadm0 <- sptools::define_bbox_proj(gadm0, boundbox, crs)
+  gadm0 <- thin_sf(gadm0, tolerance, boundbox, crs)
+  gadm0
 }
 
 # ------------------------------------------------------------------------------
@@ -143,22 +188,22 @@ current_map <- function(country, hash, lst_history, from, to, d.hash, save,
 #' for each year of change, use to select the map expressed with the right
 #' admin1 definition in time.
 #'
-#' @importFrom sptools gadm
 #' @keywords internal
 #' @noRd
 sel_map <- function(lst, test_lst) {
-  test <- lst %>%
-      map(as.data.frame) %>%
-      map(select, -"geometry") %>%
-      discard(grepl("country", names(.))) %>%
-      map(dictionary::match_pattern, "admin1", test_lst) %>%
-      setNames(names(.) %>% gsub("^.._", "", .) %>% gsub("_.{3,4}$", "", .)) %>%
-      map(stringr::str_replace, "-", "_")
-  sel1 <- names(test[which(substr(test, 1, 4) != names(test) %>% substr(1, 4))])
-  sel2 <- names(test[which(substr(test, 6, 9) != names(test) %>% substr(6, 9))])
+
+  test <- lapply(lst, as.data.frame)
+  test <- lapply(test, function(x) x[-which(names(x) == "geometry")])
+  test <- test[!grepl("country", names(test))]
+  test <- lapply(test, function(x)
+    dictionary::match_pattern(x, "admin1", test_lst))
+  names(test) <- gsub("^.._", "", names(test))
+
+  sel1 <- names(test[which(substr(test, 1, 4) != substr(names(test), 1, 4))])
+  sel2 <- names(test[which(substr(test, 6, 9) != substr(names(test), 6, 9))])
   sel <- intersect(sel1, sel2)
   if (length(sel) != 0) {
-    total_lst <- discard(lst, grepl(sel %>% paste(collapse = "|"), names(lst)))
+    total_lst <- lst[!grepl(paste(sel, collapse = "|"), names(lst))]
   } else {
     total_lst <- lst
   }
@@ -170,9 +215,9 @@ sel_map <- function(lst, test_lst) {
 #'
 #' From a time range (by default: 1960-01-01 / 2020-12-31), recreates old map
 #' by merging back together or spliting admin1 polygons from the current admin1
-#' administrative boundaries downloaded from GADM \url{https://gadm.org}. Two
-#' maps will be create for each year of event (split, merge or rename of
-#' admin1), one in high resolution and one in low resolution.
+#' administrative boundaries downloaded from GADM \url{https://gadm.org}. One
+#' map will be create for each year of event (split, merge or rename of
+#' admin1).
 #'
 #' @details The functions  needs a named vector, \code{hash} and \code{d.hash}
 #' arguments, to translate the \code{NAME_1} column (and \code{NAME_2} if
@@ -185,59 +230,63 @@ sel_map <- function(lst, test_lst) {
 #' encoded in UNICODE and keep in native language.
 #' \cr\cr
 #' The function needs also a list of event (split/merge/rename/
-#' complexe merge/complexe split) in a standardized format to recreate
-#' historical map. We advice to use or the copy the format of the list
+#' complex merge/complex split) in a standardized format to recreate
+#' historical map. We advice to use or to copy the format of the list
 #' \code{xx_history} contained in the package \code{dictionary}.
-#' For example: \code{\link[dictionary]{kh_history}}.
-#' If no list are inputed in the \code{lst_history} argument, only the current
-#' map of admin1 administrative boundary and the country boundary in high and
-#' low resolution in a list will be created.
+#' For example: \code{\link[dictionary]{kh_history}}. Example of a list with
+#' complex events:  \code{\link[dictionary]{la_history}}
+#' If no list are inputted in the \code{lst_history} argument, only the current
+#' map of admin1 administrative boundary in a list will be returned.
 #' \cr\cr
 #' The package \code{dictionary} is available on GitHub, to install it, it
 #' necessary to have the \code{devtools} package:
 #' \code{devtools::install_github("choisy/dictionary")}
 #' \cr\cr
-#' The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
-#' each map object with the tolerance (argument \code{tolerance}) value in the
-#' metric of the input object.
+#' The function can perform \code{\link[maptools]{thinnedSpatialPoly}} on
+#' each map object with the tolerance (argument \code{tolerance}) value, houlb
+#' be expressed in the metric of the input object. By default, the argument is
+#' set to NULL and makes no simplification.
 #' \cr\cr
 #' The function uses the function \code{\link[sptools]{gadm}} from the package
-#' \code{gadm}, to have more information on the parameters \code{save},
-#' \code{path} and \code{intlib}, please take a look at the help of this
-#' function.
+#' \code{sptools} to download the source file from GADM, to have more
+#' information on the parameters \code{save},  \code{path} and \code{intlib},
+#' please take a look at the documentation of this function.
 #' \cr\cr
-#' The arguments \code{lst_admin1_year} should be input as a list of charactor
-#' vector containing the names of the admin1 written in a same way as
-#' \code{hash} and/or \code{lst_history} ordered by year of change in
-#' administrative boundaries.
+#' The arguments \code{lst_admin1_year} is optionnal and allow the user to
+#' select only the map expressing the correct admin1 names and number for a
+#' specific time range and should be input as a list of charactor vector
+#' containing the names of the admin1 written in a same way as \code{hash}
+#' and/or \code{lst_history} and ordered by year of change in administrative
+#' boundaries. By default, the argument is set to \code{NULL}, in this case, no
+#' selection on the output is made. \cr
 #' We advice to use or the copy the format of the list \code{xx_admin1_year}
 #' contained in the package \code{dictionary}. For example:
 #' \code{\link[dictionary]{kh_admin1_year}}.
 #' \cr\cr
 #' The output of the function is a named list: the admin1 boundaries named are
 #' named as: the 2 characters ISO code, the year of expression of this admin1
-#' administrative boundaries and the resolution. For example:
-#' "vn_1997_2004_high" for the admin1 boundaries of Vietnam from 1997-01-01
-#' until 2004-01-01 (not include) in high quality.
+#' administrative boundaries. For example:
+#' "vn_1997_2004" for the admin1 boundaries of Vietnam from 1997-01-01
+#' until 2004-01-01 (not include).
 #'
 #' @param country character string, name of the country to download.
 #' @param hash named character vector containing the translation in English
 #'  (standardized version) of the admin1 names. See \code{Details} for more
 #'  information.
 #' @param lst_history A list containing a list of event, each code with a slot
-#'  after, a slot before, a slotevent (split/merge/rename/ complexe merge/
-#'  complexe split) and a slot year. See \code{Details} for more information.
+#'  after, a slot before, a slotevent (split/merge/rename/ complex merge/
+#'  complex split) and a slot year. See \code{Details} for more information.
 #' @param from Initial date of the time range selected, of the class Date,
 #'   character or numeric. By default "1960".
 #' @param to Final date of the time range selected, of the class Date, character
 #'  or numeric, by default "2020".
-#' @param d.hash used in case of \code{complexe split} or \code{complexe merge}
+#' @param d.hash used in case of \code{complex split} or \code{complex merge}
 #' in the \code{lst_history} object.  named character vector containing the
 #' translation in English (standardized version) of the admin2 names.
 #' See \code{Details} for more information.
-#' @param tolerance numeric for thinning (simplification). the tolerance value
+#' @param tolerance numeric for thinning (simplification), the tolerance value
 #'  should be in the metric of the input object (cf. from function
-#'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.
+#'  \code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.
 #' @param save boolean, specifies whether the downloaded file should be saved
 #' in a specific path or not. If \code{NULL}, it will be asked interactively.
 #' By default \code{FALSE}.
@@ -247,35 +296,32 @@ sel_map <- function(lst, test_lst) {
 #' @param intlib boolean, specifies whether the downloaded file should be saved
 #' in the library of packages. If \code{NULL}, it will be asked interactively.
 #' By default \code{TRUE}.
-#' @param lst_admin1_year A list containing the spatial expression of admin1
-#' for each year of change, use to select the map expressed with the right
-#' admin1 definition in time. See \code{Details} for more inforamtion.
 #' @param force boolean, force to download the file even if already in the path.
 #' By default \code{FALSE}.
+#' @param lst_admin1_year A list containing the spatial expression of admin1
+#' for each year of change, use to select the map expressed with the right
+#' admin1 definition in time. See \code{Details} for more information.
+#' @param append_country boolean, append the country level in the
+#' final list. by default, FALSE
 #'
 #' @return a list of \code{sf} object containing the maps of admin1 a
-#' dministrative boundaries and two maps of the country boundaries (one in high
-#' resolution and one in low resolution).
+#' dministrative boundaries.
 #'
 #' @examples
 #' library(dictionary)
 #'
 #' kh_map <- hist_map("Cambodia", kh_admin1, kh_history)
 #'
-#' @importFrom dplyr mutate select rename
-#' @importFrom sf st_crs st_bbox
-#' @importFrom sptools sf_aggregate_lst
-#' @importFrom purrr map flatten discard
-#' @importFrom lubridate year
+#' @importFrom sf st_crs st_bbox st_as_sf
+#' @importFrom sptools sf_aggregate_lst thin_polygons define_bbox_proj
 #' @importFrom stats setNames
-#' @importFrom dictionary match_pattern
-#' @importFrom stringr str_replace
+#' @importFrom dictionary match_pattern translate
 #'
 #' @export
 hist_map <- function(country, hash, lst_history, from = "1960",
-                     to = "2020", d.hash = NULL, tolerance = 0.01,
+                     to = "2020", d.hash = NULL, tolerance = NULL,
                      save = FALSE, path = NULL, intlib = TRUE, force = FALSE,
-                     lst_admin1_year = NULL) {
+                     lst_admin1_year = NULL, append_country = FALSE) {
 
   if (missing(hash)) hash <- NULL
   if (missing(lst_history)) lst_history <- NULL
@@ -285,79 +331,68 @@ hist_map <- function(country, hash, lst_history, from = "1960",
                        lst_history = lst_history, from = from, to = to,
                        d.hash = d.hash, save = save, path = path,
                        intlib = intlib, force = force)
-
   boundbox <- st_bbox(df_sf)
   crs <- st_crs(df_sf)
-
-  # COUNTRY
-  gadm0r <- gadm(country, "sf", 0, save = save, path = path,
-                 intlib = intlib, force = force) %>%
-    select(-GID_0) %>%
-    rename(country = NAME_0) %>%
-    define_bbox_proj(boundbox, crs)
-  gadm0 <- thin_polygons(gadm0r, tolerance = tolerance) %>%
-    define_bbox_proj(boundbox, crs)
+  df_sf <- thin_sf(df_sf, tolerance, boundbox, crs)
 
   # SELECT THE YEARS & MAKE THE LIST OF OLD MAP
-  from <-  paste0(from, "-01-01") %>% as.Date()
-  to <- paste0(to, "-12-31") %>% as.Date()
+  from <-  as.Date(paste0(from, "-01-01"))
+  to <- as.Date(paste0(to, "-12-31"))
   if (is.null(lst_history)) {
 
     sel_year <- NULL
-    total_lst <- list(list(df_sf,
-                      df_sf %<>%
-                        thin_polygons(tolerance = tolerance) %>%
-                        define_bbox_proj(boundbox, crs)) %>%
-                        setNames(c("high", "low"))) %>%
-      setNames(Sys.time() %>% lubridate::year(.))
+    total_lst <- setNames(list(df_sf), format(Sys.time(), "%Y"))
 
   } else {
 
-    sel_year <- lst_history %>% map("year") %>% map(as.Date) %>%
-      c(from, .) %>% unlist() %>% unique() %>% .[which(. < to & . >= from)] %>%
-      lubridate::year(.)
+    sel_year <- lapply(lst_history, "[", "year")
+    sel_year <- c(from, as.Date(unlist(sel_year)))
+    sel_year <- unique(sel_year)
+    sel_year <- sel_year[which(sel_year < to & sel_year >= from)]
+    sel_year <- format(sel_year, "%Y")
 
     total_lst <- lapply(seq_along(sel_year), function (x) {
 
       if (country == "Vietnam" & sel_year[x] >= "2008") {
-        old_mapr <- gadm(country, "sf", 1, save = save, path = path,
-                         intlib = intlib, force = force) %>%
-          mutate(admin1 = translate(NAME_1, hash)) %>%
-          select(admin1, geometry)
+        old_map <- gadm(country, "sf", 1, save = save, path = path,
+                        intlib = intlib, force = force)
+        old_map <- transform_gadm(old_map, 1, hash)
       } else {
-        old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x]) %>%
-         define_bbox_proj(boundbox, crs)
+        old_map <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x])
+        old_map <- sptools::define_bbox_proj(old_map, boundbox, crs)
       }
-      old_map <- thin_polygons(old_mapr, tolerance = tolerance) %>%
-        define_bbox_proj(boundbox, crs)
-      list(old_mapr, old_map) %>% setNames(c("high", "low"))
-    }) %>%
-      setNames(sel_year %>% paste(c(sel_year[-1], lubridate::year(to) + 1),
-                                  sep = "_"))
+
+      old_map <- old_map[, c("admin1", "geometry")]
+      old_map <- transform(old_map, admin1 = as.character(old_map$admin1))
+      old_map <- sf::st_as_sf(old_map)
+
+    })
+    date_lst <- paste(sel_year,
+                      c(sel_year[-1], as.numeric(format(to, "%Y")) + 1),
+                      sep = "_")
+    total_lst <- setNames(total_lst, date_lst)
   }
+
   # APPEND COUNTRY MAP
-  total_lst %<>% append(list(list(country = gadm0r, gadm0) %>%
-                               setNames(c("high", "low"))) %>%
-                          setNames("country"))
+  if (isTRUE(append_country)) {
+    gadm0 <- download_country(country = country, boundbox = boundbox, crs = crs,
+                              save = save, path = path, intlib = intlib,
+                              force = force, tolerance = tolerance)
+    country_lst <- setNames(list(gadm0), "country")
+    total_lst <- append(total_lst, country_lst)
+  }
 
   # MAKE NAME FILE
   name <- lapply(seq_along(total_lst), function(x) {
-    total_lst[[names(total_lst)[x]]] %>% names %>%
-      paste0(
-        countrycode::countrycode(country, "country.name", "iso2c") %>%
-          tolower(), "_", names(total_lst)[x], "_", .)
-  }) %>%
-    unlist()
-  total_lst %<>% flatten(.) %>% setNames(name)
+    cntry_code <- tolower(countrycode::countrycode(country, "country.name",
+                                                     "iso2c"))
+    paste0(cntry_code, "_", names(total_lst)[x])
+  })
+  names_lst <- unlist(name)
+  total_lst <- setNames(total_lst, names_lst)
 
-  if (is.null(lst_admin1_year) == FALSE){
+  if (is.null(lst_admin1_year) == FALSE) {
     total_lst <- sel_map(total_lst, lst_admin1_year)
   }
  total_lst
 }
-
-## quiets concerns of R CMD check for the values that appear in pipelines
-if (getRversion() >= "2.15.1") utils::globalVariables(c(".", "GID_0", "NAME_0",
-                                                        "NAME_1", "NAME_2",
-                                                        "admin2", "geometry",
-                                                        "admin1"))

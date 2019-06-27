@@ -5,8 +5,9 @@
 \title{Create a list of historical map}
 \usage{
 hist_map(country, hash, lst_history, from = "1960", to = "2020",
-  d.hash = NULL, tolerance = 0.01, save = FALSE, path = NULL,
-  intlib = TRUE, force = FALSE, lst_admin1_year = NULL)
+  d.hash = NULL, tolerance = NULL, save = FALSE, path = NULL,
+  intlib = TRUE, force = FALSE, lst_admin1_year = NULL,
+  append_country = FALSE)
 }
 \arguments{
 \item{country}{character string, name of the country to download.}
@@ -16,8 +17,8 @@ hist_map(country, hash, lst_history, from = "1960", to = "2020",
 information.}
 
 \item{lst_history}{A list containing a list of event, each code with a slot
-after, a slot before, a slotevent (split/merge/rename/ complexe merge/
-complexe split) and a slot year. See \code{Details} for more information.}
+after, a slot before, a slotevent (split/merge/rename/ complex merge/
+complex split) and a slot year. See \code{Details} for more information.}
 
 \item{from}{Initial date of the time range selected, of the class Date,
 character or numeric. By default "1960".}
@@ -25,14 +26,14 @@ character or numeric. By default "1960".}
 \item{to}{Final date of the time range selected, of the class Date, character
 or numeric, by default "2020".}
 
-\item{d.hash}{used in case of \code{complexe split} or \code{complexe merge}
+\item{d.hash}{used in case of \code{complex split} or \code{complex merge}
 in the \code{lst_history} object.  named character vector containing the
 translation in English (standardized version) of the admin2 names.
 See \code{Details} for more information.}
 
-\item{tolerance}{numeric for thinning (simplification). the tolerance value
+\item{tolerance}{numeric for thinning (simplification), the tolerance value
 should be in the metric of the input object (cf. from function
-\code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = 0.01.}
+\code{\link[maptools]{thinnedSpatialPoly}}). By default, tolerance = NULL.}
 
 \item{save}{boolean, specifies whether the downloaded file should be saved
 in a specific path or not. If \code{NULL}, it will be asked interactively.
@@ -51,19 +52,21 @@ By default \code{FALSE}.}
 
 \item{lst_admin1_year}{A list containing the spatial expression of admin1
 for each year of change, use to select the map expressed with the right
-admin1 definition in time. See \code{Details} for more inforamtion.}
+admin1 definition in time. See \code{Details} for more information.}
+
+\item{append_country}{boolean, append the country level in the
+final list. by default, FALSE}
 }
 \value{
 a list of \code{sf} object containing the maps of admin1 a
-dministrative boundaries and two maps of the country boundaries (one in high
-resolution and one in low resolution).
+dministrative boundaries.
 }
 \description{
 From a time range (by default: 1960-01-01 / 2020-12-31), recreates old map
 by merging back together or spliting admin1 polygons from the current admin1
-administrative boundaries downloaded from GADM \url{https://gadm.org}. Two
-maps will be create for each year of event (split, merge or rename of
-admin1), one in high resolution and one in low resolution.
+administrative boundaries downloaded from GADM \url{https://gadm.org}. One
+map will be create for each year of event (split, merge or rename of
+admin1).
 }
 \details{
 The functions  needs a named vector, \code{hash} and \code{d.hash}
@@ -77,40 +80,44 @@ contained in the \code{dictionary}package, for example:
 encoded in UNICODE and keep in native language.
 \cr\cr
 The function needs also a list of event (split/merge/rename/
-complexe merge/complexe split) in a standardized format to recreate
-historical map. We advice to use or the copy the format of the list
+complex merge/complex split) in a standardized format to recreate
+historical map. We advice to use or to copy the format of the list
 \code{xx_history} contained in the package \code{dictionary}.
-For example: \code{\link[dictionary]{kh_history}}.
-If no list are inputed in the \code{lst_history} argument, only the current
-map of admin1 administrative boundary and the country boundary in high and
-low resolution in a list will be created.
+For example: \code{\link[dictionary]{kh_history}}. Example of a list with
+complex events:  \code{\link[dictionary]{la_history}}
+If no list are inputted in the \code{lst_history} argument, only the current
+map of admin1 administrative boundary in a list will be returned.
 \cr\cr
 The package \code{dictionary} is available on GitHub, to install it, it
 necessary to have the \code{devtools} package:
 \code{devtools::install_github("choisy/dictionary")}
 \cr\cr
-The function performs \code{\link[maptools]{thinnedSpatialPoly}} on
-each map object with the tolerance (argument \code{tolerance}) value in the
-metric of the input object.
+The function can perform \code{\link[maptools]{thinnedSpatialPoly}} on
+each map object with the tolerance (argument \code{tolerance}) value, houlb
+be expressed in the metric of the input object. By default, the argument is
+set to NULL and makes no simplification.
 \cr\cr
 The function uses the function \code{\link[sptools]{gadm}} from the package
-\code{gadm}, to have more information on the parameters \code{save},
-\code{path} and \code{intlib}, please take a look at the help of this
-function.
+\code{sptools} to download the source file from GADM, to have more
+information on the parameters \code{save},  \code{path} and \code{intlib},
+please take a look at the documentation of this function.
 \cr\cr
-The arguments \code{lst_admin1_year} should be input as a list of charactor
-vector containing the names of the admin1 written in a same way as
-\code{hash} and/or \code{lst_history} ordered by year of change in
-administrative boundaries.
+The arguments \code{lst_admin1_year} is optionnal and allow the user to
+select only the map expressing the correct admin1 names and number for a
+specific time range and should be input as a list of charactor vector
+containing the names of the admin1 written in a same way as \code{hash}
+and/or \code{lst_history} and ordered by year of change in administrative
+boundaries. By default, the argument is set to \code{NULL}, in this case, no
+selection on the output is made. \cr
 We advice to use or the copy the format of the list \code{xx_admin1_year}
 contained in the package \code{dictionary}. For example:
 \code{\link[dictionary]{kh_admin1_year}}.
 \cr\cr
 The output of the function is a named list: the admin1 boundaries named are
 named as: the 2 characters ISO code, the year of expression of this admin1
-administrative boundaries and the resolution. For example:
-"vn_1997_2004_high" for the admin1 boundaries of Vietnam from 1997-01-01
-until 2004-01-01 (not include) in high quality.
+administrative boundaries. For example:
+"vn_1997_2004" for the admin1 boundaries of Vietnam from 1997-01-01
+until 2004-01-01 (not include).
 }
 \examples{
 library(dictionary)

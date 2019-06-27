@@ -1,4 +1,55 @@
 # ------------------------------------------------------------------------------
+#' Extract information from data
+#'
+#' This function is called to generate the information in the data
+#'
+#' @param x string character name
+#' @keywords internal
+#' @noRd
+extract_info <- function(x, path){
+
+  date <- gsub("[^[:digit:]]", "", x)
+  from <- substr(date, 1, 4)
+  to <- substr(date, 5, 8)
+
+  country_iso <- substr(x, 1, 2)
+  country <- countrycode::countrycode(country_iso, "iso2c", "country.name")
+
+  version <- substr(dir(paste0(path, "/data-raw/")), 5, 6)
+  version <- strsplit(unique(version), "")
+  if (length(version) > 0) {
+    source <- paste0("GADM (version ", paste(unlist(version), collapse = "."),
+                     ")")
+  } else {
+    source <- "GADM"
+  }
+  source <-  paste0(source, " data base from \\url{www.gadm.org}")
+
+  res <- c("from" = from, "to" = to, "source" = source, "country" = country)
+  res
+}
+
+# ------------------------------------------------------------------------------
+#' Format of an object
+#'
+#' This function is called to generate the default "Format" and returns the
+#' class and dimension information.
+#'
+#' From (https://github.com/klutometis/roxygen/blob/master/R/object-format.R)
+#'
+#' @param x A data object
+#' @return A `character` value with valid `Rd` syntax, or `NULL`.
+#' @keywords internal
+#' @noRd
+obj_format <- function(x) {
+  classes <- paste0("\\code{", class(x), "}")
+  format <- paste0("with ", nrow(x), " rows and ", ncol(x), " columns")
+  out <- paste0("An object of class ", classes, " ", format, ".")
+  out
+}
+
+
+# ------------------------------------------------------------------------------
 #' Format documentation of a data.frame
 #'
 #' From a data frame, return one vector of length one containing:
@@ -7,74 +58,67 @@
 #'
 #' @param df a object of class \code{data.frame}.
 #'
-#' @importFrom roxygen2 object_format
 #' @keywords internal
 #' @noRd
-make_format <- function(df){
-  paste0(roxygen2::object_format(df), "\n \\itemize{",
-         lapply(seq_len(dim(df)[2]), function(x) {
+make_format <- function(df) {
+  paste0(obj_format(df), "\n \\itemize{",
+         paste0(lapply(seq_len(dim(df)[2]), function(x) {
            paste0("\\item \\code{", names(df)[x], "} ",
                   paste0("A column of class : ",
-                         class(df[[x]]) %>% paste(collapse = ", "), "."))
-         }) %>%
-           paste0(collapse = "\n"), "}")
+                         paste(class(df[[x]]), collapse = ", "), "."))
+         }),
+         collapse = "\n"), "}")
 }
 
 # ------------------------------------------------------------------------------
 #' Makes documentation for sf map in a package
 #'
-#' Create a Rd file for the data, containing the documentation for each sf
-#' object in the package.
+#' Create a \code{.R} file containing the roxygen comment and \code{.Rd} files
+#' corresponding, containing the documentation or each sf object in a folder
+#'  \code{data} and \code{man} of a package.
+#
+#' If a \code{data.R} file already exists in the folder \code{R} of a package,
+#' it will be overwritten.
 #'
 #' @param path character string path of the package.
 #'
-#' @importFrom stringr str_extract
 #' @importFrom Rd2roxygen create_roxygen
+#' @importFrom roxygen2 roxygenize
 #' @importFrom utils capture.output
 #' @export
 map_documentation <- function(path) {
 
-  list_tab <- dir(paste0(path, "/data/"))
-  tot_rd <-  lapply(seq_along(list_tab), function(x){
+  list_tab <- grep("^.._|.rda$", dir(paste0(path, "/data/")), value = TRUE)
 
-    load(paste0(path, "/data/", list_tab[x]))
-    df <- get(gsub(".rda", "", list_tab[x]))
-    from <- list_tab[x] %>% gsub("[^[:digit:]]", "", .)  %>% substr(1, 4)
-    to <- list_tab[x] %>% gsub("[^[:digit:]]", "", .)  %>% substr(5, 8)
-    quality <- list_tab[x] %>% stringr::str_extract("high|low")
-    country <- list_tab[x] %>% substr(1, 2) %>%
-      countrycode::countrycode("iso2c", "country.name")
-    source <- paste0("GADM (version ",
-                     dir(paste0(path, "/data-raw/")) %>% substr(5, 6) %>%
-                       unique() %>% strsplit("") %>% unlist() %>%
-                       paste(collapse = "."),
-                     ") data base from \\url{www.gadm.org}")
+  tot_rd <- lapply(list_tab, function(x) {
 
-    if (grep("[[:digit:]]", list_tab[x]) %>% length(.) > 0) {
+    load(paste0(path, "/data/", x))
+    df <- get(gsub(".rda", "", x))
+    info <- extract_info(x, path)
+
+    if (length(grep("[[:digit:]]", x)) > 0) {
 
       doc <- list(
-        title = paste0("Admin1 Administrative boundaries of ", country,
-                       " from ", from, " to ", to, "."),
+        title = paste0("Admin1 Administrative boundaries of ", info["country"],
+                       " from ", info["from"], " to ", info["to"], "."),
         format = make_format(df),
         desc = paste0(
-          "Maps of the admin1 administrative boundaries of ", country,
-          " expressed from ", from, " to ", to, " in ", quality, " quality."),
-        source = source)
+          "Maps of the admin1 administrative boundaries of ", info["country"],
+          " expressed from ", info["from"], " to ", info["to"], "."),
+        source = info["source"])
 
     } else {
 
       doc <- list(
-        title = paste0(country, "Country boundaries"),
+        title = paste0(info["country"], " country boundaries"),
         format = make_format(df),
         desc = paste0(
-          "Maps of the country administrative boundaries of ", country,
-          " expressed in ", quality, "quality."),
-        source = source)
+          "Maps of the country administrative boundaries of ", info["country"],
+          "."),
+        source = info["source"])
     }
     doc <- capture.output(cat(Rd2roxygen::create_roxygen(doc), sep = "\n"))
-    doc <- c(doc,
-             paste0("'", gsub(".rda", "", list_tab[x]) %>%
-                      as.character(), "'\n"))
+    doc <- c(doc, paste0("'", as.character(gsub(".rda", "", x)), "'\n"))
   })
   writeLines(unlist(tot_rd), con = paste0(path, "/R/data.R"), sep = "\n")
   roxygen2::roxygenize(path)
