@@ -110,22 +110,22 @@ current_map <- function(country, hash, lst_history, from, to, d.hash, save,
   if (country == "Vietnam" &
       as.Date(paste0(from, "-01-01")) < as.Date("2008-01-01")) {
     df_sf <- get("vn_a1_0407")  %>%
-      mutate(province = translate(NAME_2, hash)) %>%
-      select(province, geometry)
+      mutate(admin1 = translate(NAME_2, hash)) %>%
+      select(admin1, geometry)
 
   } else if (is.null(lst_history) == FALSE &&
              select_events(lst_history, from, to) %>% map("event") %>%
                grepl("complexe", .) %>% any) {
       df_sf <- gadm(country, "sf", 2, save = save, path = path,
                     intlib = intlib, force = force) %>%
-        mutate(province = translate(NAME_1, hash),
-               district = translate(NAME_2, d.hash)) %>%
-        select(province, district, geometry)
+        mutate(admin1 = translate(NAME_1, hash),
+               admin2 = translate(NAME_2, d.hash)) %>%
+        select(admin1, admin2, geometry)
   } else {
     df_sf <- gadm(country, "sf", 1, save = save, path = path,
                   intlib = intlib, force = force) %>%
-      mutate(province = translate(NAME_1, hash)) %>%
-      select(province, geometry)
+      mutate(admin1 = translate(NAME_1, hash)) %>%
+      select(admin1, geometry)
   }
   df_sf
 }
@@ -137,7 +137,7 @@ current_map <- function(country, hash, lst_history, from, to, d.hash, save,
 #' frame selected.
 #'
 #' @param lst A list containing sf object containing two columns:
-#' \code{geometry} and \code{province} , with named slot :
+#' \code{geometry} and \code{admin1} , with named slot :
 #' \code{XX_YEAR_YEAR_QUALITY}, XX is the country name in two letters code.
 #' @param test_lst  A list containing the spatial expression of admin1
 #' for each year of change, use to select the map expressed with the right
@@ -151,7 +151,7 @@ sel_map <- function(lst, test_lst) {
       map(as.data.frame) %>%
       map(select, -"geometry") %>%
       discard(grepl("country", names(.))) %>%
-      map(dictionary::match_pattern, "province", test_lst) %>%
+      map(dictionary::match_pattern, "admin1", test_lst) %>%
       setNames(names(.) %>% gsub("^.._", "", .) %>% gsub("_.{3,4}$", "", .)) %>%
       map(stringr::str_replace, "-", "_")
   sel1 <- names(test[which(substr(test, 1, 4) != names(test) %>% substr(1, 4))])
@@ -177,10 +177,10 @@ sel_map <- function(lst, test_lst) {
 #' @details The functions  needs a named vector, \code{hash} and \code{d.hash}
 #' arguments, to translate the \code{NAME_1} column (and \code{NAME_2} if
 #' necessary) from GADM \url{https://gadm.org} in a standardized English
-#' version. We advice to use the named vector \code{xx_province} for admin1 or
-#' \code{xx_district} for admin2
+#' version. We advice to use the named vector \code{xx_admin1} for admin1 or
+#' \code{xx_admin2} for admin2
 #' contained in the \code{dictionary}package, for example:
-#' \code{\link[dictionary]{kh_province}}. If no \code{hash} and/or \code{d.hash}
+#' \code{\link[dictionary]{kh_admin1}}. If no \code{hash} and/or \code{d.hash}
 #'  arguments is missing the column(s) \code{NAME_1} and/or \code{NAME_2} are
 #' encoded in UNICODE and keep in native language.
 #' \cr\cr
@@ -206,13 +206,13 @@ sel_map <- function(lst, test_lst) {
 #' \code{path} and \code{intlib}, please take a look at the help of this
 #' function.
 #' \cr\cr
-#' The arguments \code{lst_province_year} should be input as a list of charactor
+#' The arguments \code{lst_admin1_year} should be input as a list of charactor
 #' vector containing the names of the admin1 written in a same way as
 #' \code{hash} and/or \code{lst_history} ordered by year of change in
 #' administrative boundaries.
-#' We advice to use or the copy the format of the list \code{xx_province_year}
+#' We advice to use or the copy the format of the list \code{xx_admin1_year}
 #' contained in the package \code{dictionary}. For example:
-#' \code{\link[dictionary]{kh_province_year}}.
+#' \code{\link[dictionary]{kh_admin1_year}}.
 #' \cr\cr
 #' The output of the function is a named list: the admin1 boundaries named are
 #' named as: the 2 characters ISO code, the year of expression of this admin1
@@ -247,7 +247,7 @@ sel_map <- function(lst, test_lst) {
 #' @param intlib boolean, specifies whether the downloaded file should be saved
 #' in the library of packages. If \code{NULL}, it will be asked interactively.
 #' By default \code{TRUE}.
-#' @param lst_province_year A list containing the spatial expression of admin1
+#' @param lst_admin1_year A list containing the spatial expression of admin1
 #' for each year of change, use to select the map expressed with the right
 #' admin1 definition in time. See \code{Details} for more inforamtion.
 #' @param force boolean, force to download the file even if already in the path.
@@ -260,7 +260,7 @@ sel_map <- function(lst, test_lst) {
 #' @examples
 #' library(dictionary)
 #'
-#' kh_map <- hist_map("Cambodia", kh_province, kh_history)
+#' kh_map <- hist_map("Cambodia", kh_admin1, kh_history)
 #'
 #' @importFrom dplyr mutate select rename
 #' @importFrom sf st_crs st_bbox
@@ -275,7 +275,7 @@ sel_map <- function(lst, test_lst) {
 hist_map <- function(country, hash, lst_history, from = "1960",
                      to = "2020", d.hash = NULL, tolerance = 0.01,
                      save = FALSE, path = NULL, intlib = TRUE, force = FALSE,
-                     lst_province_year = NULL) {
+                     lst_admin1_year = NULL) {
 
   if (missing(hash)) hash <- NULL
   if (missing(lst_history)) lst_history <- NULL
@@ -322,8 +322,8 @@ hist_map <- function(country, hash, lst_history, from = "1960",
       if (country == "Vietnam" & sel_year[x] >= "2008") {
         old_mapr <- gadm(country, "sf", 1, save = save, path = path,
                          intlib = intlib, force = force) %>%
-          mutate(province = translate(NAME_1, hash)) %>%
-          select(province, geometry)
+          mutate(admin1 = translate(NAME_1, hash)) %>%
+          select(admin1, geometry)
       } else {
         old_mapr <- sf_aggregate_lst(df_sf, lst_history, from = sel_year[x]) %>%
          define_bbox_proj(boundbox, crs)
@@ -350,8 +350,8 @@ hist_map <- function(country, hash, lst_history, from = "1960",
     unlist()
   total_lst %<>% flatten(.) %>% setNames(name)
 
-  if (is.null(lst_province_year) == FALSE){
-    total_lst <- sel_map(total_lst, lst_province_year)
+  if (is.null(lst_admin1_year) == FALSE){
+    total_lst <- sel_map(total_lst, lst_admin1_year)
   }
  total_lst
 }
@@ -359,5 +359,5 @@ hist_map <- function(country, hash, lst_history, from = "1960",
 ## quiets concerns of R CMD check for the values that appear in pipelines
 if (getRversion() >= "2.15.1") utils::globalVariables(c(".", "GID_0", "NAME_0",
                                                         "NAME_1", "NAME_2",
-                                                        "district", "geometry",
-                                                        "province"))
+                                                        "admin2", "geometry",
+                                                        "admin1"))

@@ -1,4 +1,4 @@
-library(dictionary) # for "XX_history", "XX_province"
+library(dictionary) # for "XX_history", "XX_admin1"
 library(usethis)
 
 context("`make_package`")

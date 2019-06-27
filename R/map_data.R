@@ -29,7 +29,7 @@
 #' @examples
 #' library(dictionary)
 #' \dontrun{
-#' map_data("PACKAGE", "Cambodia", kh_province, kh_history)
+#' map_data("PACKAGE", "Cambodia", kh_admin1, kh_history)
 #' }
 #'
 #' @importFrom devtools use_data_raw

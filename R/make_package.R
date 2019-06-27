@@ -21,18 +21,18 @@ internal_data <- function(country, path, from = "1960", to = "2020") {
                 " ?countrycode::codelist"))
   }
 
-  prov <- eply::evals(paste0("dictionary::", ccode, "_province"))
-  province <- as.vector(prov) %>% setNames(attr(prov, "dimnames")[[1]])
+  prov <- eply::evals(paste0("dictionary::", ccode, "_admin1"))
+  admin1 <- as.vector(prov) %>% setNames(attr(prov, "dimnames")[[1]])
   hist <- eply::evals(paste0("dictionary::", ccode, "_history"))
   if (hist %>% map("event") %>% grepl("complexe", .) %>% any) {
-    distr <- eply::evals(paste0("dictionary::", ccode, "_district"))
-    district <- as.vector(distr) %>% setNames(attr(distr, "dimnames")[[1]])
+    distr <- eply::evals(paste0("dictionary::", ccode, "_admin2"))
+    admin2 <- as.vector(distr) %>% setNames(attr(distr, "dimnames")[[1]])
   } else {
-    district <- NULL
+    admin2 <- NULL
   }
 
-  map_data(path = path, country = country, hash = province, lst_history = hist,
-           from = from, to = to, d.hash = district)
+  map_data(path = path, country = country, hash = admin1, lst_history = hist,
+           from = from, to = to, d.hash = admin2)
   map_documentation(path)
 }
 
