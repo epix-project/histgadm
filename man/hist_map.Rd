@@ -69,14 +69,14 @@ map will be create for each year of event (split, merge or rename of
 admin1).
 }
 \details{
-The functions needs one or two named vector, \code{hash} and
-if necessary \code{d.hash} arguments, to translate the \code{NAME_1} column
-(and \code{NAME_2} if necessary) from GADM \url{https://gadm.org} in a
-standardized English version. We advice to use the named vector
-\code{xx_admin1} for admin1 or \code{xx_admin2} for admin2 contained in the
-\code{dictionary}package, for example:
+The functions  needs a named vector, \code{hash} and \code{d.hash}
+arguments, to translate the \code{NAME_1} column (and \code{NAME_2} if
+necessary) from GADM \url{https://gadm.org} in a standardized English
+version. We advice to use the named vector \code{xx_admin1} for admin1 or
+\code{xx_admin2} for admin2
+contained in the \code{dictionary}package, for example:
 \code{\link[dictionary]{kh_admin1}}. If no \code{hash} and/or \code{d.hash}
-arguments is missing the column(s) \code{NAME_1} and/or \code{NAME_2} are
+ arguments is missing the column(s) \code{NAME_1} and/or \code{NAME_2} are
 encoded in UNICODE and keep in native language.
 \cr\cr
 The function needs also a list of event (split/merge/rename/
