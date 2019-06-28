@@ -53,6 +53,7 @@ map_data <- function(pckg_path, country, hash, lst_history, from = "1960",
                      force = FALSE, tolerance = NULL, lst_admin1_year = NULL,
                      append_country = FALSE) {
   path0 <- getwd()
+  on.exit(setwd(path0))
   setwd(pckg_path)
   datarawdir <- paste0(pckg_path, "/data-raw")
   if (!dir.exists(datarawdir)) dir.create(datarawdir)
@@ -81,5 +82,4 @@ map_data <- function(pckg_path, country, hash, lst_history, from = "1960",
   eval(parse(text = paste0("usethis::use_data(`", paste(names(data),
                                                   collapse = "`, `"),
                      "`, overwrite = TRUE)")))
-  setwd(path0)
 }

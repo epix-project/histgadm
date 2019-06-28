@@ -11,6 +11,8 @@ Description: From current map from GADM (https://gadm.org/) recreates historical
   a function to call the maps (current and historical) for one or multiple 
   package.
 License: MIT + file LICENSE
+URL: https://github.com/epix-project/histgadm
+BugReports: https://github.com/epix-project/histgadm/issues
 Encoding: UTF-8
 LazyData: true
 Depends:
