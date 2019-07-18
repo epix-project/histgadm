@@ -70,7 +70,7 @@ initial_pkg <-  function(path, name_pkg, tolerance = NULL,
                                         Imports = "sf"))
 
   message(cat("\n Do you want to download GADM file from the internet?",
-                     " y / n (default)"))
+                     " y / n (default) \n"))
   ans <- readline("Selection: ")
   if (ans %in% c("y", "yes")) { #nocov start
 
@@ -93,7 +93,7 @@ initial_pkg <-  function(path, name_pkg, tolerance = NULL,
     message(cat(
              "The time range should be input in date format separated by ' ',",
              " by default the time range is '1960-01-01 2020-12-31'. \n",
-             "For example: 1960-01-01 2020-12-31"))
+             "For example: 1960-01-01 2020-12-31 \n"))
     ans_date <- readline("Selection: ")
     if (ans_date == "") {
       from <- "1960-01-01"; to <- "2020-12-31"
