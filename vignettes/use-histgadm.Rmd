@@ -13,11 +13,16 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-)
+```{r include = FALSE}
+knitr::knit_hooks$set(margin = function(before, options, envir) {
+  if (before) par(mgp = c(1.5, .5, 0), bty = "n", plt = c(0, 1, 0, 1))
+  else NULL
+})
+
+knitr::opts_chunk$set(margin = TRUE, prompt = TRUE, comment = "",
+                      collapse = TRUE, cache = FALSE,
+                      dev.args = list(pointsize = 11), fig.height = 3.5,
+                      fig.width = 4.24725, fig.retina = 2, fig.align = "center")
 ```
 
 ## Installation
@@ -52,13 +57,31 @@ Let's take a look at it:
 ```{r}
 library(dictionary)
 head(vn_admin1) # dictionary for the admin1 names
-head(vn_history[[1]]) # list of event in admin1 history in vietnam
+tail(vn_admin1)
+head(vn_history, 1) # list of event in admin1 history in vietnam
 ```
 
 Now, we can use the function `hist_map` to create "historical" map of Vietnam in between 2000 and 2019:
 ```{r}
-a <- hist_map("Vietnam", vn_admin1, vn_history, from = 2000, to = 2019)
-a
+a <- hist_map("Vietnam", vn_admin1, vn_history, from = 1980, to = 2019)
+```
+
+We can look in more details at the results
+```{r}
+length(a)
+```
+
+and look at the first and last element:
+```{r}
+head(a, 1)
+tail(a, 1)
+```
+
+We can plot the first and last maps of the list to be able to see the difference:
+```{r}
+library(sf)
+plot(st_geometry(a$vn_1980_1990))
+plot(st_geometry(a$vn_2008_2020))
 ```
 
 The output of the function is a named list containing, for each time step from the most recent to the oldest, one map of admin1 administrative boundaries. Each object in the list is named by the 2 characters ISO code of the country corresponding (by using the package countrycode), the year of expression of these admin1 administrative boundaries and the resolution. 
