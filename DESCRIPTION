@@ -31,7 +31,7 @@ Imports:
     roxygen2,
     usethis
 Remotes: 
-    choisy/sptools,
-    choisy/dictionary
+    epix-project/sptools,
+    epix-project/dictionary
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
