@@ -13,7 +13,7 @@
 
 <meta name="author" content="Contamin Lucie" />
 
-<meta name="date" content="2019-07-31" />
+<meta name="date" content="2019-08-01" />
 
 <title>histgadm Usage</title>
 
@@ -304,7 +304,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 
 <h1 class="title toc-ignore">histgadm Usage</h1>
 <h4 class="author">Contamin Lucie</h4>
-<h4 class="date">2019-07-31</h4>
+<h4 class="date">2019-08-01</h4>
 
 
 
@@ -422,8 +422,8 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>The users can also use the functions <code>map_data</code>, <code>map_documentation</code> to complete their packages. Let’s now take a look at <code>map_data</code>: it download the current map from GADM and recreates historical map:</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="op">&gt;</span><span class="st"> </span>tmp &lt;-<span class="st"> </span><span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">&quot;pkgtest&quot;</span>)</a>
 <a class="sourceLine" id="cb11-2" data-line-number="2"><span class="op">&gt;</span><span class="st"> </span>usethis<span class="op">::</span><span class="kw">create_package</span>(tmp, <span class="dt">open =</span> <span class="ot">FALSE</span>)</a>
-<a class="sourceLine" id="cb11-3" data-line-number="3">✔ Creating <span class="st">'/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpGg9pJR/pkgtest/'</span></a>
-<a class="sourceLine" id="cb11-4" data-line-number="4">✔ Setting active project to <span class="st">'/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpGg9pJR/pkgtest'</span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">✔ Creating <span class="st">'/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpvXYkOa/pkgtest/'</span></a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">✔ Setting active project to <span class="st">'/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpvXYkOa/pkgtest'</span></a>
 <a class="sourceLine" id="cb11-5" data-line-number="5">✔ Creating <span class="st">'R/'</span></a>
 <a class="sourceLine" id="cb11-6" data-line-number="6">✔ Writing <span class="st">'DESCRIPTION'</span></a>
 <a class="sourceLine" id="cb11-7" data-line-number="7">Package<span class="op">:</span><span class="st"> </span>pkgtest</a>
@@ -438,8 +438,10 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <a class="sourceLine" id="cb11-16" data-line-number="16">✔ Writing <span class="st">'NAMESPACE'</span></a>
 <a class="sourceLine" id="cb11-17" data-line-number="17">✔ Setting active project to <span class="st">'&lt;no active project&gt;'</span></a>
 <a class="sourceLine" id="cb11-18" data-line-number="18"><span class="op">&gt;</span><span class="st"> </span>histgadm<span class="op">::</span><span class="kw">map_data</span>(tmp, <span class="st">&quot;Cambodia&quot;</span>, dictionary<span class="op">::</span>kh_admin1, dictionary<span class="op">::</span>kh_history, <span class="dt">from =</span> <span class="st">&quot;1980&quot;</span>, <span class="dt">to =</span> <span class="st">&quot;2018&quot;</span>)</a>
-<a class="sourceLine" id="cb11-19" data-line-number="19">✔ Setting active project to <span class="st">'/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpGg9pJR/pkgtest'</span></a>
-<a class="sourceLine" id="cb11-20" data-line-number="20">✔ Saving <span class="st">'kh_1980_1997'</span>, <span class="st">'kh_1997_2013'</span>, <span class="st">'kh_2013_2019'</span> to <span class="st">'data/kh_1980_1997.rda'</span>, <span class="st">'data/kh_1997_2013.rda'</span>, <span class="st">'data/kh_2013_2019.rda'</span></a></code></pre></div>
+<a class="sourceLine" id="cb11-19" data-line-number="19">The file <span class="st">'gadm36_KHM_1_sf.rds'</span> is already present <span class="cf">in</span> the internal library.</a>
+<a class="sourceLine" id="cb11-20" data-line-number="20"></a>
+<a class="sourceLine" id="cb11-21" data-line-number="21">✔ Setting active project to <span class="st">'/private/var/folders/fp/845v7zc96rjdgs2l_86qgy5r0000gn/T/RtmpvXYkOa/pkgtest'</span></a>
+<a class="sourceLine" id="cb11-22" data-line-number="22">✔ Saving <span class="st">'kh_1980_1997'</span>, <span class="st">'kh_1997_2013'</span>, <span class="st">'kh_2013_2019'</span> to <span class="st">'data/kh_1980_1997.rda'</span>, <span class="st">'data/kh_1997_2013.rda'</span>, <span class="st">'data/kh_2013_2019.rda'</span></a></code></pre></div>
 <p>The arguments <code>save</code> permits to store the source file from gadm in a folder <code>\data-raw</code> in the package inputted.</p>
 <p>If we look at the folder in the packages:</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="op">&gt;</span><span class="st"> </span><span class="kw">dir</span>(<span class="kw">paste0</span>(tmp, <span class="st">&quot;/data&quot;</span>))</a>
@@ -449,7 +451,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <p>We can see that object were downloaded and created in the package, corresponding to the historical map in <code>sf</code> object saved in <code>.rda</code> format in <code>data</code> folder and source files saved in <code>raw-data</code>.</p>
 <p>And the function <code>map_documentation</code> will create the documentation for each object by creating a file <code>data.R</code> written in roxygen and a also by creating <code>.rd</code> file(s) in the folder <code>man</code> of the package.</p>
 <div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="op">&gt;</span><span class="st"> </span><span class="kw">map_documentation</span>(tmp)</a>
-<a class="sourceLine" id="cb13-2" data-line-number="2">Updating roxygen version <span class="cf">in</span> <span class="op">/</span>private<span class="op">/</span>var<span class="op">/</span>folders<span class="op">/</span>fp<span class="op">/</span>845v7zc96rjdgs2l_86qgy5r0000gn<span class="op">/</span>T<span class="op">/</span>RtmpGg9pJR<span class="op">/</span>pkgtest<span class="op">/</span>DESCRIPTION</a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">Updating roxygen version <span class="cf">in</span> <span class="op">/</span>private<span class="op">/</span>var<span class="op">/</span>folders<span class="op">/</span>fp<span class="op">/</span>845v7zc96rjdgs2l_86qgy5r0000gn<span class="op">/</span>T<span class="op">/</span>RtmpvXYkOa<span class="op">/</span>pkgtest<span class="op">/</span>DESCRIPTION</a>
 <a class="sourceLine" id="cb13-3" data-line-number="3">Writing NAMESPACE</a>
 <a class="sourceLine" id="cb13-4" data-line-number="4">Loading pkgtest</a>
 <a class="sourceLine" id="cb13-5" data-line-number="5">Writing kh_<span class="dv">1980</span>_<span class="fl">1997.</span>Rd</a>
